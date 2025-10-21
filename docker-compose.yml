@@ -1,0 +1,29 @@
+services:
+  falcon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sdp26-falcon:latest
+    container_name: falcon-drone
+    
+    # Network mode host to allow UDP communication with drone
+    network_mode: host
+    
+    # Optional: mount volumes for development
+    volumes:
+      - ./software:/app/software
+      - ./data:/app/data
+      - ./results:/app/results
+    
+    # Uncomment if you need X11 display for OpenCV windows
+    # environment:
+    #   - DISPLAY=${DISPLAY}
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix
+    
+    # Keep container running for interactive use
+    stdin_open: true
+    tty: true
+    
+    # Override default command if needed
+    # command: python software/src/falcon.py
