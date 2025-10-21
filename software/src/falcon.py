@@ -4,12 +4,12 @@ import cv2
 from functools import partial
 from djitellopy import Tello
 
-class ACD(Tello):
+class FALCON(Tello):
     '''
-    The Autonomous Cinematography Drone class is an extension of DJI's
-    Tello class, using the sdk's functions for main drone control in
-    combination with custom functions and attributes needed for this
-    project.
+    The Filming Autonomous Learning and Cinematic Optic Navigator class
+    is an extension of DJI's Tello class, using the sdk's functions for
+    main drone control in combination with custom functions and
+    attributes needed for this project.
 
     Parameters:
         speed (int, default=10): Initial speed in cm/s that the drone
@@ -243,6 +243,6 @@ class ACD(Tello):
         }
 
 if __name__ == '__main__':
-    tello = ACD()
+    tello = FALCON()
     tello.start_video_stream()
     tello.end()
