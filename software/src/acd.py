@@ -225,6 +225,10 @@ class ACD(Tello):
                 print('\nExit . . .\n')
                 break
 
+    def _connect_wifi():
+        # TODO: Search for and connect to the drone's WiFi
+        pass
+
     def _init_actions(self):
         '''
         Actions to relate different key presses to.
