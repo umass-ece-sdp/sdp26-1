@@ -1,6 +1,7 @@
 import socket
 import threading
 import subprocess
+from pathlib import Path
 import cv2
 from functools import partial
 from djitellopy import Tello
@@ -35,7 +36,8 @@ class FALCON(Tello):
 
         # Connect to the drone and set it to SDK mode first
         # TODO: Drone ssid here
-        # self._connect_wifi()    # Only works on base station, commment out for testing on laptop
+        self._connect_wifi()    # Only works on base station, commment out for testing on laptop
+        exit()
         self.connect()
 
         # Create and bind a socket to the drone (after connection established)
@@ -231,11 +233,40 @@ class FALCON(Tello):
     def _connect_wifi(self, interface: str='wlan0', ssid: str='', password: str='') -> None:
         '''
         Automatically connects Linux devices to the drone using a bash
-        script stored in software/scripts. ***This will only work for
-        Linux devices, Windows users will need to conenct manually.***
+        script stored in software/scripts. Searches, starting from the
+        working directory, until it finds the script. ***This will
+        only work for Linux devices, Windows users will need to
+        connect manually.***
         '''
+
+        # Start at current working directory
+        sh_path = Path.cwd()
+        script_name = 'connection_client.sh'
+        
+        # First, try to find it by going inward (checking subdirectories)
+        found = False
+        for path in sh_path.rglob(script_name):
+            if 'software/scripts' in str(path):
+                sh_path = path
+                found = True
+                break
+        
+        # If not found, work outward (checking parent directories)
+        if not found:
+            current = sh_path
+            while current != current.parent:  # Stop at root
+                script_path = Path(current).joinpath('software', 'scripts', script_name)
+                if script_path.exists():
+                    sh_path = script_path
+                    found = True
+                    break
+                current = current.parent
+        
+        if not found:
+            raise FileNotFoundError(f'Could not find {script_name} in software/scripts/')
+
         # Call to bash script to connect WiFi
-        cmd = [r'../scripts/connection_client.sh', interface, ssid, password]
+        cmd = [sh_path, interface, ssid, password]
 
         # Error checking
         try:
@@ -265,9 +296,6 @@ class FALCON(Tello):
         }
 
 if __name__ == '__main__':
-    FALCON._connect_wifi(ssid='62A-summer', password='62Asummer!')
-    exit()
-    
     tello = FALCON()
     tello.start_video_stream()
     tello.end()
