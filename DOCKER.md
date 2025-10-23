@@ -1,8 +1,8 @@
 # Docker Setup for FALCON Drone Project
 
 ## Prerequisites
-- Docker Desktop installed on your machine
-- Docker Compose (included with Docker Desktop)
+- Docker installed on your Linux system
+- Docker Compose installed (or use `docker compose` with newer Docker versions)
 
 ## Building the Docker Image
 
@@ -60,29 +60,47 @@ docker-compose run falcon python software/src/falcon.py
 
 1. **Network Mode**: The container uses `network_mode: host` to enable UDP communication with the Tello drone on ports 8889, 8890, and 11111.
 
-2. **WiFi Connection**: Your host machine must be connected to the Tello drone's WiFi network. Docker will use the host's network stack.
+2. **WiFi Connection**: Your Linux machine must be connected to the Tello drone's WiFi network. Docker will use the host's network stack.
 
-3. **Video Streaming**: If you need to display video from the drone, you may need to configure X11 forwarding (Linux/Mac) or use alternative display methods on Windows.
+3. **Video Streaming**: X11 display is configured for OpenCV windows. Make sure to allow X11 connections:
+   ```bash
+   xhost +local:docker
+   ```
 
-## Windows-Specific Considerations
+## Linux-Specific Setup for X11 Display
 
-On Windows, Docker runs in a VM, which can complicate UDP networking. Consider:
-- Running the Python code directly on Windows for drone control
-- Using WSL2 with Docker for better networking
-- Or using the container for development/testing with mock data
+To enable OpenCV video display from the container:
+
+```bash
+# Allow Docker to access X11 display
+xhost +local:docker
+
+# Run the container (X11 is already configured in docker-compose.yml)
+docker-compose up
+```
+
+To revoke access after you're done:
+```bash
+xhost -local:docker
+```
 
 ## Troubleshooting
 
 ### Container can't connect to drone
 - Ensure your computer is connected to the drone's WiFi
 - Verify network_mode is set to "host"
-- Check that no firewall is blocking UDP ports
+- Check that no firewall is blocking UDP ports (8889, 8890, 11111)
 
 ### OpenCV display issues
-- On Windows, OpenCV windows won't display from Docker containers
-- Consider saving images/videos to mounted volumes instead
-- Or run the code natively on Windows for GUI features
+- Run `xhost +local:docker` before starting the container
+- Verify the DISPLAY environment variable is set correctly
+- Check that X11 socket is mounted: `/tmp/.X11-unix`
 
 ### Permission issues with volumes
-- On Windows, ensure Docker has access to shared drives
-- Check Docker Desktop settings > Resources > File Sharing
+- Ensure your user has read/write permissions on mounted directories
+- If needed, fix ownership: `sudo chown -R $USER:$USER ./software ./data ./results`
+
+### Docker daemon issues
+- Make sure Docker service is running: `sudo systemctl status docker`
+- Add your user to docker group to run without sudo: `sudo usermod -aG docker $USER`
+- Log out and back in for group changes to take effect

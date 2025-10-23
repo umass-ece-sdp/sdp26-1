@@ -9,17 +9,16 @@ services:
     # Network mode host to allow UDP communication with drone
     network_mode: host
     
-    # Optional: mount volumes for development
+    # Mount volumes for development
     volumes:
       - ./software:/app/software
       - ./data:/app/data
       - ./results:/app/results
+      - /tmp/.X11-unix:/tmp/.X11-unix
     
-    # Uncomment if you need X11 display for OpenCV windows
-    # environment:
-    #   - DISPLAY=${DISPLAY}
-    # volumes:
-    #   - /tmp/.X11-unix:/tmp/.X11-unix
+    # X11 display for OpenCV windows on Linux
+    environment:
+      - DISPLAY=${DISPLAY}
     
     # Keep container running for interactive use
     stdin_open: true
