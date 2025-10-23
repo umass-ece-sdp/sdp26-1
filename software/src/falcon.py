@@ -235,36 +235,13 @@ class FALCON(Tello):
         script stored in software/scripts. Searches, starting from the
         working directory, until it finds the script. ***This will
         only work for Linux devices, Windows users will need to
-        connect manually.***
+        connect manually. Run any scripts containing this function
+        from the parent directory of the repository.***
         '''
 
-        # Start at current working directory
-        sh_path = Path.cwd()
-        script_name = 'connection_client.sh'
-        
-        # First, try to find it by going inward (checking subdirectories)
-        found = False
-        for path in sh_path.rglob(script_name):
-            if 'software/scripts' in str(path):
-                sh_path = path
-                found = True
-                break
-        
-        # If not found, work outward (checking parent directories)
-        if not found:
-            current = sh_path
-            while current != current.parent:  # Stop at root
-                script_path = Path(current).joinpath('software', 'scripts', script_name)
-                if script_path.exists():
-                    sh_path = script_path
-                    found = True
-                    break
-                current = current.parent
-        
-        if not found:
-            raise FileNotFoundError(f'Could not find {script_name} in software/scripts/')
 
         # Call to bash script to connect WiFi
+        sh_path =  './software/scripts/connection_client.sh'
         cmd = [sh_path, interface, ssid, password]
 
         # Error checking
