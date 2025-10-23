@@ -36,8 +36,7 @@ class FALCON(Tello):
 
         # Connect to the drone and set it to SDK mode first
         # TODO: Drone ssid here
-        self._connect_wifi()    # Only works on base station, commment out for testing on laptop
-        exit()
+        self._connect_wifi()    # Only works on base station, commment out for testing on laptop, add ssid and password
         self.connect()
 
         # Create and bind a socket to the drone (after connection established)
@@ -211,7 +210,7 @@ class FALCON(Tello):
         '''
         Helper function to initialize and bind a socket to the drone.
         '''
-        host = ''
+        host = 'wlP1p1s0'   # Hard code the on-board WiFi card
         port = 9000
         self.telloaddr = ('192.168.10.1', 8889)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -230,7 +229,7 @@ class FALCON(Tello):
                 print('\nExit . . .\n')
                 break
 
-    def _connect_wifi(self, interface: str='wlan0', ssid: str='', password: str='') -> None:
+    def _connect_wifi(self, interface: str='wlP1p1s0', ssid: str='', password: str='') -> None:
         '''
         Automatically connects Linux devices to the drone using a bash
         script stored in software/scripts. Searches, starting from the
@@ -271,7 +270,7 @@ class FALCON(Tello):
         # Error checking
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-            print(f'STDOUT: {result.stdout}')
+            print('STDOUT:\n', result.stdout)
             print('Connected successfully.')
         except subprocess.CalledProcessError as e:
             print("Command failed with exit", e.returncode)
@@ -296,6 +295,6 @@ class FALCON(Tello):
         }
 
 if __name__ == '__main__':
-    tello = FALCON()
-    tello.start_video_stream()
-    tello.end()
+    falcon = FALCON()
+    falcon.start_video_stream()
+    falcon.end()
