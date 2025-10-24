@@ -41,11 +41,6 @@ YOLO_MODEL_PATH = "yolo11n.pt"
 YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
-# Assign color/area constants after all required functions are defined and before main logic
-TARGET_HSV = to_hsv(TARGET_COLOR)
-COLOR_RANGES = build_hsv_ranges(TARGET_HSV, HSV_TOLERANCE)
-TARGET_AREA = compute_target_area(TARGET_DISTANCE)
-
 # ----- Utility Functions -----
 
 @dataclass
@@ -246,6 +241,11 @@ def apply_movement(tello, for_back, up_down, yaw, last_command):
 	return command_description
 
 # ----- Main Loop (Object Detection + Drone Movement) -----
+
+# Assign color/area constants after all required functions are defined and before main logic
+TARGET_HSV = to_hsv(TARGET_COLOR)
+COLOR_RANGES = build_hsv_ranges(TARGET_HSV, HSV_TOLERANCE)
+TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 
 def run_tracking():
 	"""Execute the full tracking loop, handling connection, control, and safety fallbacks."""
