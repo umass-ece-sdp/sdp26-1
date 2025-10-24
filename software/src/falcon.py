@@ -251,8 +251,10 @@ class FALCON(Tello):
             print('Connected successfully.')
         except subprocess.CalledProcessError as e:
             print("Command failed with exit", e.returncode)
-            print("STDOUT:\n", e.stdout)
-            print("STDERR:\n", e.stderr)
+            print('STDOUT:\n', e.stdout)
+            print('STDERR:\n', e.stderr)
+            print('Cannot connect to Tello\'s WiFi, exiting...')
+            exit()
 
     def _init_actions(self):
         '''
