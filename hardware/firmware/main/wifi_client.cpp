@@ -128,28 +128,19 @@ void tcp_client_task(void *pvParameters)
 
             while (1)
             {
-                // Prepare a single float: remaining_balance
-                float remaining_balance = 67.67; // placeholder value; replace with real remaining balance
-                printf("[CLIENT] Preparing to send remaining balance: %f\n", remaining_balance);
-
-                // Serialize the single float into network-order 32-bit word
-                // printf("[CLIENT] Serializing float to network byte order...\n");
-                uint8_t out_buffer[sizeof(uint32_t)];
-                uint32_t hostbits;
-                memcpy(&hostbits, &remaining_balance, sizeof(uint32_t));
-                uint32_t netbits = htonl(hostbits);
-                memcpy(out_buffer, &netbits, sizeof(uint32_t));
-                // printf("[CLIENT] Serialization complete, buffer ready\n");
+                // Prepare a 4-character string to send
+                const char *message = "TEST"; // 4 character string; replace with your data
+                printf("[CLIENT] Preparing to send message: %s\n", message);
 
                 // Send all bytes (handle partial sends)
                 // printf("[CLIENT] Starting to send data...\n");
-                size_t to_send = sizeof(out_buffer);
+                size_t to_send = 4; // Exactly 4 characters
                 size_t sent = 0;
                 while (sent < to_send)
                 {
                     printf("[CLIENT] Sending %u bytes (already sent %u)\n",
                            (unsigned)(to_send - sent), (unsigned)sent);
-                    int s = send(sock, out_buffer + sent, to_send - sent, 0);
+                    int s = send(sock, message + sent, to_send - sent, 0);
                     if (s < 0)
                     {
                         printf("[CLIENT] Send failed (result=%d)\n", s);
@@ -160,7 +151,7 @@ void tcp_client_task(void *pvParameters)
                     sent += (size_t)s;
                 }
                 // printf("[CLIENT] Data send complete: %u bytes total\n", (unsigned)sent);
-                ESP_LOGI(TAG, "Sent remaining balance: %f (%u bytes)", remaining_balance, (unsigned)to_send);
+                ESP_LOGI(TAG, "Sent message: %s (%u bytes)", message, (unsigned)to_send);
 
                 // Wait for ACK from server
                 printf("[CLIENT] Waiting for ACK from server...\n");
