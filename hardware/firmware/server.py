@@ -1,6 +1,7 @@
 import socket
 import sys
 import struct
+from software.lib import variables
 
 HOST = ''
 PORT = 5000
@@ -69,18 +70,29 @@ def receive_instructions(conn: socket.socket):
         print(f"Error receiving data: {e}")
         return None
 
-def run_server():
+def run_server(shared_dict):
     """
     Main server loop that continuously receives data from the client.
+    
+    Parameters:
+        shared_dict: multiprocessing.Manager dict for sharing variables
     """
+    # Initialize shared variables
+    variables.init_shared(shared_dict)
+    
     conn, sock = server_init()
     
     try:
         while True:
-            # Receive float from ESP32
+            # Receive instruction from ESP32
             instruction = receive_instructions(conn)
+
+            # Write the instruction to shared dict
+            variables.write_instr(instruction)
+
     except KeyboardInterrupt:
         print("\nServer shutting down...")
+            
     finally:
         conn.close()
         sock.close()
