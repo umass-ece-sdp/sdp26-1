@@ -33,11 +33,11 @@ UP_DOWN_SPEED = 30
 CENTER_DEADBAND = 40
 AREA_TOLERANCE_RATIO = 0.12
 
-SEARCH_DURATION = 5.0
+SEARCH_DURATION = 10.0
 SEARCH_YAW_SPEED = 20
 FRAME_SLEEP = 0.03
 
-YOLO_MODEL_PATH = "software/lib/yolo11n.pt"
+YOLO_MODEL_PATH = "../lib/yolo11n.pt"
 YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
@@ -72,6 +72,7 @@ def to_hsv(color_hex):
 	r, g, b = (int(hex_value[i : i + 2], 16) for i in (0, 2, 4))
 	rgb_array = np.array([[(r, g, b)]], dtype=np.uint8)
 	h, s, v = cv2.cvtColor(rgb_array, cv2.COLOR_RGB2HSV)[0, 0]
+	print(f'HSV RANGES: {int(h)}, {int(s)}, {int(v)}')
 	return int(h), int(s), int(v)
 
 
