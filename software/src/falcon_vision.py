@@ -287,7 +287,7 @@ def run_tracking():
 		"""Process one ``frame`` to update drone control, returning the new command label, timestamp, and detection."""
 
 		resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
-		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2HSV)
+		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_RGB2HSV)
 
 		detection = detect_with_color(hsv_frame, COLOR_RANGES)
 		#detection = detect_with_yolo(resized_frame, hsv_frame, model, TARGET_HSV, HSV_TOLERANCE)
@@ -317,6 +317,7 @@ def run_tracking():
 	try:
 		while True:
 			frame = frame_reader.frame
+			print(f"frame height: {frame.shape[0]}, frame width:{frame.shape[1]}")
 			if frame is None:
 				continue
 
