@@ -18,7 +18,7 @@ from ultralytics import YOLO
 # ----- Parameters -----
 
 TARGET_COLOR: str = "#a61919"
-TARGET_DISTANCE: float = 100.0
+TARGET_DISTANCE: float = 150.0 # cm
 
 FRAME_WIDTH = 960
 FRAME_HEIGHT = 720
@@ -286,7 +286,8 @@ def run_tracking():
 	def process_frame(frame, tello, model, frame_center, last_command):
 		"""Process one ``frame`` to update drone control, returning the new command label, timestamp, and detection."""
 
-		resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
+		# resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
+		resized_frame = frame
 		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_RGB2HSV)
 
 		detection = detect_with_color(hsv_frame, COLOR_RANGES)
@@ -301,7 +302,9 @@ def run_tracking():
 			tello.send_rc_control(0, 0, 0, 0)
 			detection_timestamp = None
 
-		cv2.imshow("Falcon Vision", resized_frame)
+		# Convert frame HSV->BGR to look like real life
+		real_colors = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB)
+		cv2.imshow("Falcon Vision", real_colors)
 		return last_command, detection_timestamp, detection
 
 	tello, model = setup_drone_and_model()
