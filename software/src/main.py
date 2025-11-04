@@ -1,13 +1,12 @@
 from software.lib import falcon, variables
 from hardware.firmware import server
-import multiprocessing
+import multiprocessing, socket
 
 
-def server_process(shared_dict):
+def server_process(shared_dict: dict, conn: socket.socket, sock: socket.socket):
     '''Process function to run the server'''
     print('Starting server process...')
-    server.run_server(shared_dict)
-
+    server.run_server(shared_dict, conn, sock)
 
 def drone_process(shared_dict):
     '''Process function to run the drone controller'''
@@ -29,15 +28,17 @@ def drone_process(shared_dict):
     #         # Process instruction...
     #     time.sleep(0.1)
 
-
 if __name__ == '__main__':
     # Create a Manager to share variables between processes
     manager = multiprocessing.Manager()
     shared_dict = manager.dict()
     shared_dict['instruction'] = ''
+
+    # Start the server and connect to glove before starting process
+    conn, sock = server.server_init()
     
     # Create the server and drone processes
-    server_proc = multiprocessing.Process(target=server_process, args=(shared_dict,))
+    server_proc = multiprocessing.Process(target=server_process, args=(shared_dict, conn, sock,))
     drone_proc = multiprocessing.Process(target=drone_process, args=(shared_dict,))
     
     # Start both processes

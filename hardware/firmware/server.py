@@ -70,7 +70,7 @@ def receive_instructions(conn: socket.socket):
         print(f"Error receiving data: {e}")
         return None
 
-def run_server(shared_dict):
+def run_server(shared_dict: dict, conn: socket.socket, sock: socket.socket):
     """
     Main server loop that continuously receives data from the client.
     
@@ -79,8 +79,6 @@ def run_server(shared_dict):
     """
     # Initialize shared variables
     variables.init_shared(shared_dict)
-    
-    conn, sock = server_init()
     
     try:
         while True:
