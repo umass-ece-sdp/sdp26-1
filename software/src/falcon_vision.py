@@ -17,7 +17,7 @@ from ultralytics import YOLO
 
 # ----- Parameters -----
 
-TARGET_COLOR: str = "#ff8800"
+TARGET_COLOR: str = "#a61919"
 TARGET_DISTANCE: float = 100.0
 
 FRAME_WIDTH = 960
@@ -37,7 +37,7 @@ SEARCH_DURATION = 5.0
 SEARCH_YAW_SPEED = 20
 FRAME_SLEEP = 0.03
 
-YOLO_MODEL_PATH = "yolo11n.pt"
+YOLO_MODEL_PATH = "software/lib/yolo11n.pt"
 YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
@@ -289,8 +289,7 @@ def run_tracking():
 		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2HSV)
 
 		detection = detect_with_color(hsv_frame, COLOR_RANGES)
-		"""if detection is None:
-			detection = detect_with_yolo(resized_frame, hsv_frame, model, TARGET_HSV, HSV_TOLERANCE)"""
+		#detection = detect_with_yolo(resized_frame, hsv_frame, model, TARGET_HSV, HSV_TOLERANCE)
 
 		if detection:
 			draw_annotations(resized_frame, detection, TARGET_AREA, frame_center)
@@ -357,4 +356,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
