@@ -13,6 +13,285 @@
 		(comment 2 "Author: Sasha Shikhanovich")
 	)
 	(lib_symbols
+		(symbol "Connector:Conn_01x01_Pin"
+			(pin_names
+				(offset 1.016) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x01_Pin"
+				(at 0 -2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x01, script generated"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_01x01_Pin_1_1"
+				(polyline
+					(pts
+						(xy 1.27 0) (xy 0.8636 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 0.8636 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
+		(symbol "Connector:Conn_01x02_Pin"
+			(pin_names
+				(offset 1.016) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x02_Pin"
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x02, script generated"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_01x02_Pin_1_1"
+				(polyline
+					(pts
+						(xy 1.27 -2.54) (xy 0.8636 -2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 0) (xy 0.8636 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start 0.8636 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start 0.8636 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "ESP32-S3-DEVKITC-1-N8R8:ESP32-S3-DEVKITC-1-N8R8"
 			(pin_names
 				(offset 1.016)
@@ -952,22 +1231,22 @@
 				)
 			)
 		)
-		(symbol "Switch:SW_SP3T"
+		(symbol "Switch:SW_DIP_x01"
 			(pin_names
 				(offset 0) hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "SW"
-				(at 0 5.08 0)
+				(at 0 3.81 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "SW_SP3T"
-				(at 0 -5.08 0)
+			(property "Value" "SW_DIP_x01"
+				(at 0 -3.81 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -975,7 +1254,7 @@
 				)
 			)
 			(property "Footprint" ""
-				(at -15.875 4.445 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -984,15 +1263,6 @@
 				)
 			)
 			(property "Datasheet" "~"
-				(at 0 -7.62 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1001,7 +1271,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "switch sp3t ON-ON-ON"
+			(property "Description" "1x DIP Switch, Single Pole Single Throw (SPST) switch, small symbol"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1010,7 +1280,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "SW* SP3T*"
+			(property "ki_keywords" "dip switch"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1019,10 +1289,19 @@
 					(hide yes)
 				)
 			)
-			(symbol "SW_SP3T_0_1"
+			(property "ki_fp_filters" "SW?DIP?x1*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "SW_DIP_x01_0_0"
 				(circle
 					(center -2.032 0)
-					(radius 0.4572)
+					(radius 0.508)
 					(stroke
 						(width 0)
 						(type default)
@@ -1033,19 +1312,8 @@
 				)
 				(polyline
 					(pts
-						(xy -1.651 0.254) (xy 1.651 2.286)
+						(xy -1.524 0.127) (xy 2.3622 1.1684)
 					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 -2.54)
-					(radius 0.4572)
 					(stroke
 						(width 0)
 						(type default)
@@ -1056,18 +1324,7 @@
 				)
 				(circle
 					(center 2.032 0)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 2.54)
-					(radius 0.4572)
+					(radius 0.508)
 					(stroke
 						(width 0)
 						(type default)
@@ -1077,22 +1334,24 @@
 					)
 				)
 			)
-			(symbol "SW_SP3T_1_1"
+			(symbol "SW_DIP_x01_0_1"
 				(rectangle
-					(start -3.175 3.81)
-					(end 3.175 -3.81)
+					(start -3.81 2.54)
+					(end 3.81 -2.54)
 					(stroke
-						(width 0)
+						(width 0.254)
 						(type default)
 					)
 					(fill
 						(type background)
 					)
 				)
+			)
+			(symbol "SW_DIP_x01_1_1"
 				(pin passive line
-					(at 5.08 2.54 180)
-					(length 2.54)
-					(name "1"
+					(at -7.62 0 0)
+					(length 5.08)
+					(name "~"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1108,9 +1367,9 @@
 					)
 				)
 				(pin passive line
-					(at 5.08 0 180)
-					(length 2.54)
-					(name "2"
+					(at 7.62 0 180)
+					(length 5.08)
+					(name "~"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1118,215 +1377,6 @@
 						)
 					)
 					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 -2.54 180)
-					(length 2.54)
-					(name "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "Switch:SW_SPDT"
-			(pin_names
-				(offset 0) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SW_SPDT"
-				(at 0 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 -7.62 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Switch, single pole double throw"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "switch single-pole double-throw spdt ON-ON"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_SPDT_0_1"
-				(circle
-					(center -2.032 0)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.651 0.254) (xy 1.651 2.286)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 -2.54)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 2.54)
-					(radius 0.4572)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_SPDT_1_1"
-				(rectangle
-					(start -3.175 3.81)
-					(end 3.175 -3.81)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin passive line
-					(at 5.08 2.54 180)
-					(length 2.54)
-					(name "A"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5.08 0 0)
-					(length 2.54)
-					(name "B"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 -2.54 180)
-					(length 2.54)
-					(name "C"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1656,40 +1706,22 @@
 		(uuid "2520f66c-3645-453c-8968-978ae8c03d7e")
 	)
 	(junction
-		(at 270.51 226.06)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3460dd24-2cde-42da-8ea8-9f9d0ca9ac3c")
-	)
-	(junction
 		(at 270.51 167.64)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3fe1caa2-d1c9-4273-9897-5d238d11ca66")
 	)
 	(junction
-		(at 259.08 208.28)
+		(at 270.51 226.06)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "4af3f8c3-4f54-42ce-89f4-b8600f9d6970")
+		(uuid "5e4c3398-d7c0-4759-a85c-97c23d343f39")
 	)
 	(junction
-		(at 259.08 193.04)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "ba791f28-ec1d-42f1-be40-47b9e7baf452")
-	)
-	(junction
-		(at 270.51 149.86)
+		(at 270.51 144.78)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c64bc306-b48d-4276-ab66-fe691019b2ee")
-	)
-	(junction
-		(at 259.08 226.06)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c893af3d-f1ae-41e8-8a07-fa3bd712b4f7")
 	)
 	(no_connect
 		(at 270.51 218.44)
@@ -1702,10 +1734,6 @@
 	(no_connect
 		(at 316.23 226.06)
 		(uuid "07904bf8-fbfd-4a32-a76f-14c5897915ae")
-	)
-	(no_connect
-		(at 247.65 177.8)
-		(uuid "08af2d22-e54e-4097-add3-a817703785c8")
 	)
 	(no_connect
 		(at 316.23 190.5)
@@ -1740,8 +1768,8 @@
 		(uuid "37408959-8966-47db-976d-2094c778121a")
 	)
 	(no_connect
-		(at 247.65 193.04)
-		(uuid "4139aa58-29f1-4edf-9a8c-f427976e9f1f")
+		(at 270.51 177.8)
+		(uuid "3de0ebf1-462d-4694-b78f-e21257c457ae")
 	)
 	(no_connect
 		(at 316.23 220.98)
@@ -1776,10 +1804,6 @@
 		(uuid "56f7f066-6974-4134-99db-c6b0e6c79990")
 	)
 	(no_connect
-		(at 267.97 166.37)
-		(uuid "5e17a7c0-0e98-47f6-a5e5-0a37e2b257b5")
-	)
-	(no_connect
 		(at 316.23 205.74)
 		(uuid "647d83d5-553d-48ae-9f92-b73b91401d7b")
 	)
@@ -1812,20 +1836,8 @@
 		(uuid "a91eb61b-4461-4939-8d94-84046abf60bd")
 	)
 	(no_connect
-		(at 247.65 208.28)
-		(uuid "bcf90cb6-0681-47dd-886a-f7fdac4dfd00")
-	)
-	(no_connect
-		(at 270.51 177.8)
-		(uuid "c3ac57d5-e3eb-4e55-a137-05a347c1e9ac")
-	)
-	(no_connect
 		(at 316.23 223.52)
 		(uuid "c83e5b94-dd9b-4a12-8eb1-81c7a4a2aaf4")
-	)
-	(no_connect
-		(at 247.65 226.06)
-		(uuid "cb0642c1-0fc5-4cbe-a199-3696d113b1f9")
 	)
 	(no_connect
 		(at 316.23 180.34)
@@ -1849,43 +1861,33 @@
 	)
 	(wire
 		(pts
-			(xy 266.7 198.12) (xy 270.51 198.12)
+			(xy 255.27 187.96) (xy 255.27 185.42)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "04a60b05-79a9-4c38-a663-fa9eeaf18f5d")
+		(uuid "01552cb6-d361-4cd5-8bdf-5a243d431819")
 	)
 	(wire
 		(pts
-			(xy 266.7 228.6) (xy 266.7 198.12)
+			(xy 250.19 187.96) (xy 255.27 187.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0610072c-cde9-4e33-8892-ad9fddf75ec7")
+		(uuid "0b6264f3-f31a-4931-99af-4fa27312b5c2")
 	)
 	(wire
 		(pts
-			(xy 265.43 223.52) (xy 265.43 195.58)
+			(xy 265.43 180.34) (xy 265.43 182.88)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "06b1e804-3249-4ae3-8fbd-b7ea8e2d2b8f")
-	)
-	(wire
-		(pts
-			(xy 257.81 190.5) (xy 260.35 190.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0c0c84cf-d5fb-4a93-8088-cf0c6dbb789f")
+		(uuid "0cc67190-c879-4904-9213-31ea5fa53be7")
 	)
 	(wire
 		(pts
@@ -1899,23 +1901,13 @@
 	)
 	(wire
 		(pts
-			(xy 259.08 226.06) (xy 270.51 226.06)
+			(xy 262.89 213.36) (xy 262.89 195.58)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "18353af1-0454-4a99-b785-86383916b7dd")
-	)
-	(wire
-		(pts
-			(xy 262.89 190.5) (xy 270.51 190.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1dc03bc2-032e-48d9-92b8-eb78bf5fa1bb")
+		(uuid "19a3a169-2688-40aa-83ed-9ef7294f2741")
 	)
 	(wire
 		(pts
@@ -1929,27 +1921,17 @@
 	)
 	(wire
 		(pts
-			(xy 257.81 208.28) (xy 259.08 208.28)
+			(xy 257.81 190.5) (xy 270.51 190.5)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "23e08106-bf22-4fdd-942f-3769e93155b4")
+		(uuid "29019113-817b-4ee8-bc40-434ebb71035c")
 	)
 	(wire
 		(pts
-			(xy 265.43 195.58) (xy 270.51 195.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2b3ae79c-f112-4782-abb0-1328ae446d8f")
-	)
-	(wire
-		(pts
-			(xy 270.51 166.37) (xy 270.51 167.64)
+			(xy 270.51 163.83) (xy 270.51 167.64)
 		)
 		(stroke
 			(width 0)
@@ -1959,17 +1941,17 @@
 	)
 	(wire
 		(pts
-			(xy 257.81 210.82) (xy 264.16 210.82)
+			(xy 250.19 215.9) (xy 265.43 215.9)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "327a92df-76e1-41ab-8f7b-30aa6fc42d60")
+		(uuid "2dc09f1b-9a9b-40fa-911f-7f8b83811c54")
 	)
 	(wire
 		(pts
-			(xy 270.51 146.05) (xy 270.51 149.86)
+			(xy 270.51 140.97) (xy 270.51 144.78)
 		)
 		(stroke
 			(width 0)
@@ -1979,33 +1961,103 @@
 	)
 	(wire
 		(pts
-			(xy 264.16 193.04) (xy 270.51 193.04)
+			(xy 255.27 224.79) (xy 264.16 224.79)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "414da12c-64f0-459a-b0c0-d3423b5aff9d")
+		(uuid "387b8909-e4e8-4878-beae-d672f34adfa2")
 	)
 	(wire
 		(pts
-			(xy 257.81 223.52) (xy 265.43 223.52)
+			(xy 262.89 195.58) (xy 270.51 195.58)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "516f4c7b-b00a-42a7-9756-e3616b237020")
+		(uuid "3b4687ad-d211-4dd6-987b-7bd593f22a89")
 	)
 	(wire
 		(pts
-			(xy 269.24 175.26) (xy 269.24 180.34)
+			(xy 250.19 180.34) (xy 265.43 180.34)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "5b001f7a-60c5-42cf-b266-358291bc7f64")
+		(uuid "3b5b6164-929c-4413-8467-de185c6b97bb")
+	)
+	(wire
+		(pts
+			(xy 250.19 177.8) (xy 266.7 177.8)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "41d5b841-88ee-48fa-b4c5-f5f27e8d9ae0")
+	)
+	(wire
+		(pts
+			(xy 266.7 180.34) (xy 270.51 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4242085b-46da-4c6d-a0c7-b842f96f8cf6")
+	)
+	(wire
+		(pts
+			(xy 266.7 177.8) (xy 266.7 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c1b3485-56a8-4a6f-96a6-db0475d88745")
+	)
+	(wire
+		(pts
+			(xy 265.43 215.9) (xy 265.43 198.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4e519900-681d-4033-8699-2da7c68fe904")
+	)
+	(wire
+		(pts
+			(xy 250.19 203.2) (xy 257.81 203.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4f48b159-0f5d-4038-9760-4e2f608b8ef3")
+	)
+	(wire
+		(pts
+			(xy 265.43 198.12) (xy 270.51 198.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "501ebc4c-382f-4c70-a199-760958faebe3")
+	)
+	(wire
+		(pts
+			(xy 250.19 213.36) (xy 262.89 213.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "533573d7-5e9c-49c7-9a3c-4005d271428d")
 	)
 	(wire
 		(pts
@@ -2019,117 +2071,67 @@
 	)
 	(wire
 		(pts
-			(xy 269.24 180.34) (xy 270.51 180.34)
+			(xy 264.16 224.79) (xy 264.16 226.06)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6e24c6f0-4098-4458-a7c4-cadb6592e96a")
+		(uuid "65076209-e3c1-438d-994b-6dfa429cbf54")
 	)
 	(wire
 		(pts
-			(xy 270.51 166.37) (xy 273.05 166.37)
+			(xy 250.19 205.74) (xy 259.08 205.74)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "6fe4a53f-4d7f-43cc-b98d-1ec5667c612c")
+		(uuid "66123c74-eb89-4890-bd35-45155887375a")
 	)
 	(wire
 		(pts
-			(xy 260.35 190.5) (xy 260.35 185.42)
+			(xy 256.54 190.5) (xy 256.54 187.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "74aad82e-24ca-461a-8b92-d70e98489b8b")
+		(uuid "67dc6884-65f4-4e08-ad9e-e1f578849a85")
 	)
 	(wire
 		(pts
-			(xy 259.08 208.28) (xy 259.08 226.06)
+			(xy 250.19 190.5) (xy 256.54 190.5)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "79938012-7abc-40ca-8fd6-1c00c52dc4cc")
+		(uuid "7cc1b30b-3282-48d0-b457-f271958c7ac8")
 	)
 	(wire
 		(pts
-			(xy 261.62 195.58) (xy 261.62 187.96)
+			(xy 255.27 185.42) (xy 270.51 185.42)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "7ba3f330-5b40-4e6f-ae6c-8c8d3addb11a")
+		(uuid "8209ddb0-b1ea-40ca-a8fa-6ec7fb30a784")
 	)
 	(wire
 		(pts
-			(xy 259.08 193.04) (xy 259.08 208.28)
+			(xy 259.08 205.74) (xy 259.08 193.04)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "846f217f-88f8-4736-945f-2d9fccaea5e9")
+		(uuid "9fb1a795-cc17-4d91-98a6-b67ab02b36f6")
 	)
 	(wire
 		(pts
-			(xy 259.08 177.8) (xy 259.08 193.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "900d9e32-00fb-4d16-adaa-0d93bd07a2ba")
-	)
-	(wire
-		(pts
-			(xy 267.97 182.88) (xy 270.51 182.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "909e6422-8ae0-4c5b-a7ab-6e1dc7650e58")
-	)
-	(wire
-		(pts
-			(xy 257.81 175.26) (xy 269.24 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9b2f4957-8695-4d1c-bbc1-ba5a7127a998")
-	)
-	(wire
-		(pts
-			(xy 260.35 185.42) (xy 270.51 185.42)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d9115f9-884c-4bb4-bcda-656d3929089a")
-	)
-	(wire
-		(pts
-			(xy 257.81 180.34) (xy 267.97 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9e7c8a40-78a3-4128-b631-3dc10b7b84df")
-	)
-	(wire
-		(pts
-			(xy 270.51 149.86) (xy 270.51 156.21)
+			(xy 270.51 144.78) (xy 270.51 148.59)
 		)
 		(stroke
 			(width 0)
@@ -2139,103 +2141,121 @@
 	)
 	(wire
 		(pts
-			(xy 264.16 210.82) (xy 264.16 193.04)
+			(xy 265.43 182.88) (xy 270.51 182.88)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "b6a9ac33-8ebf-4b8f-a858-eda8ed206798")
+		(uuid "d4738263-4f78-4291-87bc-26e81ae76de0")
 	)
 	(wire
 		(pts
-			(xy 257.81 177.8) (xy 259.08 177.8)
+			(xy 257.81 203.2) (xy 257.81 190.5)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d36eb401-6a78-4cdc-97cb-e8f6c8ac8f05")
+		(uuid "ddae440c-8f7c-4d47-9563-450f51f2a5ad")
 	)
 	(wire
 		(pts
-			(xy 257.81 193.04) (xy 259.08 193.04)
+			(xy 256.54 187.96) (xy 270.51 187.96)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d6d66389-f7bf-43fb-b967-9d3cf46dceae")
+		(uuid "e2ce053e-6ba2-4c84-b9f8-775aea5af2f0")
 	)
 	(wire
 		(pts
-			(xy 257.81 228.6) (xy 266.7 228.6)
+			(xy 259.08 193.04) (xy 270.51 193.04)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d7a254ff-f39e-42fd-8c8b-326941fc3d1d")
+		(uuid "ea3da785-d366-443c-bb8a-de02d85fd039")
 	)
 	(wire
 		(pts
-			(xy 257.81 226.06) (xy 259.08 226.06)
+			(xy 264.16 226.06) (xy 270.51 226.06)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "d9b6c699-e1a0-4454-bc71-7609e1172f4a")
+		(uuid "ebcf9413-2caa-41c3-a478-4d139f66b438")
 	)
-	(wire
-		(pts
-			(xy 261.62 187.96) (xy 270.51 187.96)
+	(symbol
+		(lib_id "Connector:Conn_01x02_Pin")
+		(at 245.11 203.2 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "02a51d78-afac-4cda-81ee-5ac67c13383d")
+		(property "Reference" "J3"
+			(at 245.745 198.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
-		(stroke
-			(width 0)
-			(type default)
+		(property "Value" "Conn_01x02_Pin"
+			(at 245.745 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
 		)
-		(uuid "e459345f-3432-4fd9-b895-4c1d93ef8eb5")
-	)
-	(wire
-		(pts
-			(xy 267.97 180.34) (xy 267.97 182.88)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
+			(at 245.11 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
-		(stroke
-			(width 0)
-			(type default)
+		(property "Datasheet" "~"
+			(at 245.11 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
-		(uuid "e9422515-9dda-4965-8a4a-33c7e5c103f1")
-	)
-	(wire
-		(pts
-			(xy 257.81 195.58) (xy 261.62 195.58)
+		(property "Description" "Generic connector, single row, 01x02, script generated"
+			(at 245.11 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
 		)
-		(stroke
-			(width 0)
-			(type default)
+		(pin "2"
+			(uuid "f8ed4925-7c85-4276-ac7e-0d80cbf5c9e2")
 		)
-		(uuid "eae46e6f-7ce3-43f3-8f83-0ebf8c8f352c")
-	)
-	(wire
-		(pts
-			(xy 257.81 205.74) (xy 262.89 205.74)
+		(pin "1"
+			(uuid "fe931b45-19a6-47f2-9ca4-7ed5b7e2a69e")
 		)
-		(stroke
-			(width 0)
-			(type default)
+		(instances
+			(project "handheld_controller"
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "J3")
+					(unit 1)
+				)
+			)
 		)
-		(uuid "f7c9cc4e-90f5-40b4-bccd-5703fd849782")
-	)
-	(wire
-		(pts
-			(xy 262.89 205.74) (xy 262.89 190.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fab98143-cffc-49d6-9638-217700185d45")
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
@@ -2263,6 +2283,7 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" ""
@@ -2299,80 +2320,6 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "#FLG02")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Switch:SW_SP3T")
-		(at 252.73 177.8 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "33b82010-1a13-48d5-9a6c-82e0b65caecd")
-		(property "Reference" "SW1"
-			(at 252.73 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SW_SP3T"
-			(at 252.73 171.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Button_Switch_SMD:SW_SP3T_PCM13"
-			(at 236.855 173.355 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 252.73 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
-			(at 252.73 177.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "4"
-			(uuid "117b558a-b879-428f-a682-549bf5cf29f1")
-		)
-		(pin "3"
-			(uuid "02b89293-e49f-4a4a-8ea6-2943b1ed02de")
-		)
-		(pin "2"
-			(uuid "530796c3-faae-4019-a00b-b9e8e2c3822e")
-		)
-		(pin "1"
-			(uuid "6cd15c3c-7c32-4428-90b8-0bd8c5dfd9b4")
-		)
-		(instances
-			(project ""
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "SW1")
 					(unit 1)
 				)
 			)
@@ -2446,33 +2393,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SP3T")
-		(at 252.73 193.04 0)
+		(lib_id "Connector:Conn_01x01_Pin")
+		(at 250.19 224.79 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "43c8c2c2-13eb-48ff-a026-de49b7fe956c")
-		(property "Reference" "SW2"
-			(at 252.73 184.15 0)
+		(uuid "4cbd852b-0e56-4249-8790-72484aa4cd57")
+		(property "Reference" "J5"
+			(at 250.825 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "SW_SP3T"
-			(at 252.73 186.69 0)
+		(property "Value" "Conn_01x01_Pin"
+			(at 250.825 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_SP3T_PCM13"
-			(at 236.855 188.595 0)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x01_P2.54mm_Vertical"
+			(at 250.19 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2481,7 +2428,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 252.73 200.66 0)
+			(at 250.19 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2489,104 +2436,22 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
-			(at 252.73 193.04 0)
+		(property "Description" "Generic connector, single row, 01x01, script generated"
+			(at 250.19 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(pin "3"
-			(uuid "7dee87a9-b3d9-4226-b212-4e01a7aeca70")
-		)
-		(pin "4"
-			(uuid "7f125f55-5c4d-48b5-9362-7b23846188ff")
-		)
-		(pin "2"
-			(uuid "81b825e9-fe42-41ca-878b-f820d11a0b79")
 		)
 		(pin "1"
-			(uuid "26c93c86-64cc-45ee-92c4-55add2261e30")
+			(uuid "ebade5d8-1b50-454e-9647-09a45a426e13")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "SW2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Switch:SW_SPDT")
-		(at 270.51 161.29 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4c142c49-6f09-4f6c-b2f3-560ca5b02b10")
-		(property "Reference" "SW6"
-			(at 275.59 160.0199 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "SW_SPDT"
-			(at 275.59 162.5599 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Button_Switch_THT:SW_Lever_1P2T_NKK_GW12LxH"
-			(at 270.51 161.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 262.89 161.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Switch, single pole double throw"
-			(at 270.51 161.29 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "074c11fb-3513-4f56-b055-6b204b984fc3")
-		)
-		(pin "1"
-			(uuid "d22242df-3486-492c-b3c1-6426ff6fddcc")
-		)
-		(pin "3"
-			(uuid "922f12c1-4532-4afe-87e2-9768ce935784")
-		)
-		(instances
-			(project ""
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "SW6")
+					(reference "J5")
 					(unit 1)
 				)
 			)
@@ -2660,7 +2525,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 270.51 149.86 90)
+		(at 270.51 144.78 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2669,7 +2534,7 @@
 		(fields_autoplaced yes)
 		(uuid "580ca82e-8fcc-44f1-aa3e-6e5bd6deb69f")
 		(property "Reference" "#FLG01"
-			(at 268.605 149.86 0)
+			(at 268.605 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2678,7 +2543,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 266.7 149.8599 90)
+			(at 266.7 144.7799 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2687,7 +2552,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 270.51 149.86 0)
+			(at 270.51 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2696,7 +2561,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 270.51 149.86 0)
+			(at 270.51 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2705,7 +2570,7 @@
 			)
 		)
 		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 270.51 149.86 0)
+			(at 270.51 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2726,33 +2591,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SP3T")
-		(at 252.73 208.28 0)
+		(lib_id "Connector:Conn_01x02_Pin")
+		(at 245.11 187.96 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "8dbfdba3-5a9a-4e96-9994-fd762fe15b91")
-		(property "Reference" "SW3"
-			(at 252.73 199.39 0)
+		(uuid "6fcef8a7-d702-41d8-875a-97c342e77832")
+		(property "Reference" "J2"
+			(at 245.745 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "SW_SP3T"
-			(at 252.73 201.93 0)
+		(property "Value" "Conn_01x02_Pin"
+			(at 245.745 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_SP3T_PCM13"
-			(at 236.855 203.835 0)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
+			(at 245.11 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2761,7 +2626,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 252.73 215.9 0)
+			(at 245.11 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2769,31 +2634,231 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
-			(at 252.73 208.28 0)
+		(property "Description" "Generic connector, single row, 01x02, script generated"
+			(at 245.11 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(pin "3"
-			(uuid "7dee87a9-b3d9-4226-b212-4e01a7aeca70")
-		)
-		(pin "4"
-			(uuid "7f125f55-5c4d-48b5-9362-7b23846188ff")
 		)
 		(pin "2"
-			(uuid "81b825e9-fe42-41ca-878b-f820d11a0b79")
+			(uuid "e4fa9fcd-b0bc-4680-879d-c69d31550055")
 		)
 		(pin "1"
-			(uuid "26c93c86-64cc-45ee-92c4-55add2261e30")
+			(uuid "a698d773-aa54-498e-a203-06ee4f5bac1b")
+		)
+		(instances
+			(project "handheld_controller"
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "J2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x02_Pin")
+		(at 245.11 213.36 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "94136011-8abc-4341-b0fe-d32ab922cbd0")
+		(property "Reference" "J4"
+			(at 245.745 208.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02_Pin"
+			(at 245.745 210.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
+			(at 245.11 213.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 245.11 213.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x02, script generated"
+			(at 245.11 213.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "b5d84c80-98d1-497a-a1a3-1d92c3f88022")
+		)
+		(pin "1"
+			(uuid "3a1022f6-c8b7-431c-ac4f-7901232c9d0b")
+		)
+		(instances
+			(project "handheld_controller"
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "J4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x02_Pin")
+		(at 245.11 177.8 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "97dc4a98-d9e7-45d5-8aa7-bda5f98e63b1")
+		(property "Reference" "J1"
+			(at 245.745 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02_Pin"
+			(at 245.745 175.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
+			(at 245.11 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 245.11 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x02, script generated"
+			(at 245.11 177.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "dc854fa8-30ce-48a7-aa15-66fd80bb0685")
+		)
+		(pin "1"
+			(uuid "9966158d-64b2-48e8-b1e0-5c78f5684923")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "SW3")
+					(reference "J1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Switch:SW_DIP_x01")
+		(at 270.51 156.21 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9ea07605-d53f-41af-b499-b8c87b8eb4db")
+		(property "Reference" "SW1"
+			(at 274.32 154.9399 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SW_DIP_x01"
+			(at 274.32 157.4799 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_SKQG_WithStem"
+			(at 270.51 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 270.51 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "1x DIP Switch, Single Pole Single Throw (SPST) switch, small symbol"
+			(at 270.51 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bcfc8d84-df86-47a8-812b-ce10890a761d")
+		)
+		(pin "2"
+			(uuid "b5225c18-b881-47ad-9e93-1ea63dbd77bb")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "SW1")
 					(unit 1)
 				)
 			)
@@ -2801,7 +2866,7 @@
 	)
 	(symbol
 		(lib_id "power:+BATT")
-		(at 270.51 146.05 0)
+		(at 270.51 140.97 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -2810,7 +2875,7 @@
 		(fields_autoplaced yes)
 		(uuid "c1284d26-d2a9-4021-adcc-48faf021dc47")
 		(property "Reference" "#PWR03"
-			(at 270.51 149.86 0)
+			(at 270.51 144.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2819,7 +2884,7 @@
 			)
 		)
 		(property "Value" "+BATT"
-			(at 270.51 140.97 0)
+			(at 270.51 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2827,7 +2892,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 270.51 146.05 0)
+			(at 270.51 140.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2836,7 +2901,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 270.51 146.05 0)
+			(at 270.51 140.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2845,7 +2910,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+BATT\""
-			(at 270.51 146.05 0)
+			(at 270.51 140.97 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2860,80 +2925,6 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "#PWR03")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Switch:SW_SP3T")
-		(at 252.73 226.06 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d03f09a3-4ad5-40a9-b86e-1a9a198fc1cc")
-		(property "Reference" "SW4"
-			(at 252.73 217.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SW_SP3T"
-			(at 252.73 219.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Button_Switch_SMD:SW_SP3T_PCM13"
-			(at 236.855 221.615 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 252.73 233.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
-			(at 252.73 226.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "3"
-			(uuid "7dee87a9-b3d9-4226-b212-4e01a7aeca70")
-		)
-		(pin "4"
-			(uuid "7f125f55-5c4d-48b5-9362-7b23846188ff")
-		)
-		(pin "2"
-			(uuid "81b825e9-fe42-41ca-878b-f820d11a0b79")
-		)
-		(pin "1"
-			(uuid "26c93c86-64cc-45ee-92c4-55add2261e30")
-		)
-		(instances
-			(project ""
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "SW4")
 					(unit 1)
 				)
 			)
