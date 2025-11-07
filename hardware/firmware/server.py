@@ -43,6 +43,7 @@ def receive_instructions(conn: socket.socket):
         str: The received 4-character string, or None if connection closed.
     """
     try:
+        print('Reading instruction...')
         # Receive exactly 4 bytes
         data = conn.recv(4)
         
@@ -76,9 +77,11 @@ def run_server():
     conn, sock = server_init()
     
     try:
+        print('Waiting for instructions...')
         while True:
             # Receive float from ESP32
             instruction = receive_instructions(conn)
+            print(instruction)
     except KeyboardInterrupt:
         print("\nServer shutting down...")
     finally:
