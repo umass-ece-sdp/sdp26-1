@@ -1,16 +1,26 @@
-#include <Arduino.h>
+#pragma once
+
+#include <cstdint>
+#include "driver/gpio.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 // === Pin Assignments ===
 struct ThreeStateSwitch {
-  int pinA;
-  int pinB;
-  char actionA;  // prixnted when pinA active
-  char actionB;  // printed when pinB active
-  int lastState; // previous state (-1, 0, +1)
+  gpio_num_t pinA;   // GPIO pin for A
+  gpio_num_t pinB;   // GPIO pin for B
+  char actionA;      // printed when pinA active
+  char actionB;      // printed when pinB active
+  int8_t lastState;  // previous state (-1, 0, +1)
 };
 
-int read3StateSwitch(int pinA, int pinB);
+// Read a three-state switch connected to two GPIOs.
+// Returns -1, 0 or +1.
+int8_t read3StateSwitch(gpio_num_t pinA, gpio_num_t pinB);
 
-void setup();
+// Initialize glove hardware (configure GPIOs, etc.).
+void glove_init();
 
-void loop();
+// Optional FreeRTOS task entry that can run glove processing in a loop.
+// Use xTaskCreatePinnedToCore/glove_task(...) or call glove_init() from app_main.
+void glove_task(void *arg);
