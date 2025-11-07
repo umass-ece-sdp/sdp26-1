@@ -19,29 +19,33 @@ int read3StateSwitch(int pinA, int pinB) {
   return 0;
 }
 
-void setup() {
-  Serial.begin(115200);
-  delay(500);
-  Serial.println("\nESP32-S3 Three-State Switch Monitor");
-
+void setup_glove() {
+  Serial.println("[GLOVE] Initializing switches...");
+  
   for (int i = 0; i < numSwitches; i++) {
     pinMode(switches[i].pinA, INPUT_PULLUP);
     pinMode(switches[i].pinB, INPUT_PULLUP);
   }
+  
+  Serial.println("[GLOVE] Switches initialized");
 }
 
-void loop() {
-  // Serial.print('.'); // heartbeat
-
-  for (int i = 0; i < numSwitches; i++) {
+void read_glove_inputs(char* output, int maxLen) {
+  // Read all switches and build a command string
+  int idx = 0;
+  
+  for (int i = 0; i < numSwitches && idx < maxLen - 1; i++) {
     int state = read3StateSwitch(switches[i].pinA, switches[i].pinB);
     switches[i].lastState = state;
+    
     if (state == +1) {
-      Serial.print(switches[i].actionA);
+      output[idx++] = switches[i].actionA;
     } else if (state == -1) {
-      Serial.print(switches[i].actionB);
+      output[idx++] = switches[i].actionB;
+    } else {
+      output[idx++] = '0'; // neutral state
     }
   }
-
-  delay(50); // debounce interval
+  
+  output[idx] = '\0'; // null terminate
 }
