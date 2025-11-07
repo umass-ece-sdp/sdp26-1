@@ -129,7 +129,7 @@ void tcp_client_task(void *pvParameters)
             while (1)
             {
                 // Prepare a 4-character string to send
-                const char *message = "TEST"; // 4 character string; replace with your data
+                const char *message = "1001"; // 4 character string; replace with your data
                 printf("[CLIENT] Preparing to send message: %s\n", message);
 
                 // Send all bytes (handle partial sends)
