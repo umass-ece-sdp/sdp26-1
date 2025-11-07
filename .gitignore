@@ -1,3 +1,5 @@
 **/*.zip
 **/*.pio
 **/sdkconfig*
+**/*.vscode
+**/*.DS_Store
