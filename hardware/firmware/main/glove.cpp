@@ -1,13 +1,4 @@
-#include <Arduino.h>
-
-// === Pin Assignments ===
-struct ThreeStateSwitch {
-  int pinA;
-  int pinB;
-  char actionA;  // prixnted when pinA active
-  char actionB;  // printed when pinB active
-  int lastState; // previous state (-1, 0, +1)
-};
+#include "glove.h"
 
 ThreeStateSwitch switches[] = {
   {4, 5, 'A', 'D', 0}, // left/right
