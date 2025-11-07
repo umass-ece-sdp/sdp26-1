@@ -9,23 +9,5 @@ static const char* TAG = "Main";
 
 extern "C" void app_main(void)
 {
-    // Initialize NVS
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret);
-
-    // Initialize WiFi client
-    wifi_client_init();
-
-    // Initialize Glove
-    glove_init();
-
-    // Main loop
-    while (1) {
-        // Main processing here
-        vTaskDelay(pdMS_TO_TICKS(100)); // 100ms delay
-    }
+    run_client_app();
 }

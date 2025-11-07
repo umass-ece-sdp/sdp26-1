@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "wifi_client.cpp"
+    SRCS "main.cpp"
     INCLUDE_DIRS "."
-    REQUIRES esp_wifi esp_netif nvs_flash esp_event lwip freertos log
+    REQUIRES esp_wifi esp_netif nvs_flash esp_event lwip freertos log arduino
 )
