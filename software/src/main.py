@@ -16,7 +16,9 @@ def drone_process(shared_dict):
     variables.init_shared(shared_dict)
     
     # Create a FALCON object to connect to the drone
-    drone = falcon.FALCON()
+    # drone = falcon.FALCON()
+
+    print(f'Instruction seen in drone process ----- {variables.get_instr()}')
     
     # Your drone control logic here
     # You can read instructions using: variables.get_instr()
