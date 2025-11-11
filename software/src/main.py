@@ -30,7 +30,8 @@ def drone_process(shared_dict):
     #         # Process instruction...
     #     time.sleep(0.1)
 
-if __name__ == '__main__':
+def main():
+    '''Main entry point for the application'''
     # Create a Manager to share variables between processes
     manager = multiprocessing.Manager()
     shared_dict = manager.dict()
@@ -58,3 +59,6 @@ if __name__ == '__main__':
         server_proc.join()
         drone_proc.join()
         print('Processes terminated.')
+
+if __name__ == '__main__':
+    main()
