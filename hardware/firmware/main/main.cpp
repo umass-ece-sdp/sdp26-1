@@ -6,8 +6,6 @@ void setup() {
     Serial.begin(115200);
     delay(1000);
 
-    update_color(COLOR_BLUE);
-
     Serial.println("\n[MAIN] Starting ESP32 Client...");
 
     // Initialize glove switches
@@ -15,6 +13,9 @@ void setup() {
     
     // Initialize WiFi
     setup_wifi();
+
+    update_color(COLOR_BLUE);
+
 }
 
 void loop() {
