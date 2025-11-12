@@ -1,5 +1,9 @@
 #include "glove.h"
 
+  Adafruit_NeoPixel pixel(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+
+// Switch Setup
+
 ThreeStateSwitch switches[] = {
   {4, 5, 'A', 'D', 0}, // left/right
   {6, 7, 'W', 'S', 0}, // fwd/back
@@ -48,4 +52,18 @@ void read_glove_inputs(char* output, int maxLen) {
   }
   
   output[idx] = '\0'; // null terminate
+}
+
+void update_color(uint32_t color) {
+  pixel.begin();
+  pixel.setBrightness(LED_BRIGHTNESS);
+  pixel.setPixelColor(0, color);
+  pixel.show();
+}
+
+void blink_light(uint32_t color, int interval_ms) {
+  update_color(color);
+  delay(interval_ms);
+  update_color(COLOR_OFF);
+  delay(interval_ms);
 }

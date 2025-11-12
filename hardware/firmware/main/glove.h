@@ -3,6 +3,18 @@
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
 
+#define LED_PIN     48
+#define LED_COUNT   1
+#define LED_BRIGHTNESS 35
+
+// Color Definitions
+
+#define COLOR_PINK  0xEF2D56
+#define COLOR_BLUE   0x15616D
+#define COLOR_YELLOW 0xFFD447
+#define COLOR_OFF   0x000000
+
+
 // === Pin Assignments ===
 struct ThreeStateSwitch {
   int pinA;
@@ -20,3 +32,5 @@ extern const int numSwitches;
 int read3StateSwitch(int pinA, int pinB);
 void setup_glove();
 void read_glove_inputs(char* output, int maxLen);
+void update_color(uint32_t color);
+void blink_light(uint32_t color, int interval_ms);

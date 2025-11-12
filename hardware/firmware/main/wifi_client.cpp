@@ -9,6 +9,7 @@ void setup_wifi() {
     
     int attempts = 0;
     while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+        blink_light(COLOR_PINK, 500);
         delay(500);
         Serial.print(".");
         attempts++;
@@ -20,6 +21,7 @@ void setup_wifi() {
         Serial.println(WiFi.localIP());
         Serial.print("[CLIENT] Gateway: ");
         Serial.println(WiFi.gatewayIP());
+        update_color(COLOR_PINK);
     } else {
         Serial.println("\n[CLIENT] WiFi connection failed!");
     }
@@ -29,6 +31,7 @@ void connect_and_send() {
     // Check WiFi connection
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("[CLIENT] WiFi disconnected, reconnecting...");
+        blink_light(COLOR_PINK, 500);
         setup_wifi();
         return;
     }
@@ -41,6 +44,7 @@ void connect_and_send() {
     
     if (!client.connect(HOST_IP, PORT)) {
         Serial.println("[CLIENT] Connection to server failed!");
+        blink_light(COLOR_YELLOW, 500);
         delay(5000);
         return;
     }
@@ -67,9 +71,11 @@ void connect_and_send() {
         if (client.available()) {
             String response = client.readStringUntil('\n');
             Serial.print("[CLIENT] Received: ");
+            update_color(COLOR_YELLOW);
             Serial.println(response);
         } else {
             Serial.println("[CLIENT] Server response timeout");
+            blink_light(COLOR_YELLOW, 500);
         }
         
         // Wait before sending next message

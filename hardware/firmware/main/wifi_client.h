@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include <glove.h>
 
 // WiFi configuration
 #define WIFI_SSID "jetson_nano_wifi"
