@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "falcon"
+version = "1.0.0"
+description = "Filming Autonomous Learning and Cinematic Optic Navigator"
+authors = [
+    {name = "SDP Team", email = "your-email@umass.edu"}
+]
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "djitellopy",
+    "opencv-python",
+    "numpy",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["software*", "hardware*"]
+
+[project.scripts]
+falcon = "software.src.main:main"

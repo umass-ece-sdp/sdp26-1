@@ -1,3 +1,5 @@
 **/*.zip
 **/*.pio
 **/sdkconfig*
+**/build
+**/*.egg-info
