@@ -226,7 +226,7 @@ def _connect_wifi(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B5
         from the parent directory of the repository.***
         '''
         # Call to bash script to connect WiFi
-        path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
+        path_to_script = Path(__file__).parent.joinpath('scripts', 'connection_client.sh').as_posix()
         cmd = ['bash', path_to_script, interface, ssid, password]
 
         # Error checking
