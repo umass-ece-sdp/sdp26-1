@@ -15,6 +15,7 @@ dependencies = [
     "djitellopy",
     "opencv-python",
     "numpy",
+    "ultralytics",
 ]
 
 [tool.setuptools.packages.find]

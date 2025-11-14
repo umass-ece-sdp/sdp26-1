@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 from djitellopy import Tello
 from ultralytics import YOLO
+from software.lib.falcon import FALCON
 
 # ----- Parameters -----
 
@@ -253,8 +254,7 @@ def run_tracking():
 
 	def setup_drone_and_model():
 		"""Connect to drone, setup stream, and load YOLO model."""
-		tello = Tello()
-		tello.connect()
+		tello = FALCON()
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
