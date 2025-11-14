@@ -12,9 +12,11 @@ from dataclasses import dataclass
 from typing import Optional, Sequence, Tuple
 import cv2
 import numpy as np
-# from djitellopy import Tello
 from ultralytics import YOLO
-from software.lib.falcon import FALCON
+from djitellopy import Tello
+from pathlib import Path
+import subprocess
+# from software.lib.falcon import FALCON
 
 # ----- Parameters -----
 
@@ -214,6 +216,30 @@ def draw_annotations(frame, detection, target_area, frame_center):
 		2,
 	)
 
+def _connect_wifi(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str='') -> None:
+        '''
+        Automatically connects Linux devices to the drone using a bash
+        script stored in software/scripts. Searches, starting from the
+        working directory, until it finds the script. ***This will
+        only work for Linux devices, Windows users will need to
+        connect manually. Run any scripts containing this function
+        from the parent directory of the repository.***
+        '''
+        # Call to bash script to connect WiFi
+        path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
+        cmd = ['bash', path_to_script, interface, ssid, password]
+
+        # Error checking
+        try:
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+            print('STDOUT:\n', result.stdout)
+            print('Connected successfully.')
+        except subprocess.CalledProcessError as e:
+            print("Command failed with exit", e.returncode)
+            print('STDOUT:\n', e.stdout)
+            print('STDERR:\n', e.stderr)
+            print('Cannot connect to Tello\'s WiFi, exiting...')
+            exit()
 
 def apply_movement(tello, for_back, up_down, yaw, last_command):
 	"""Send RC control signals to ``tello`` and log human-readable changes versus ``last_command``."""
@@ -254,7 +280,9 @@ def run_tracking():
 
 	def setup_drone_and_model():
 		"""Connect to drone, setup stream, and load YOLO model."""
-		tello = FALCON(ssid='TELLO-AA7B55', password='')
+		tello = Tello()
+		_connect_wifi(ssid='TELLO-AA7B55', password='')
+		tello.connect()
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
