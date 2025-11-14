@@ -3,3 +3,4 @@
 **/sdkconfig*
 **/build
 **/*.egg-info
+**/.venv

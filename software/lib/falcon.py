@@ -28,6 +28,7 @@ class FALCON(Tello):
         self.distance = distance
         self.degrees = degrees
         self._init_actions()
+        self.file_path = Path(__file__).parent
 
         # Video streaming variables
         self.stream_on = False
@@ -238,11 +239,10 @@ class FALCON(Tello):
         connect manually. Run any scripts containing this function
         from the parent directory of the repository.***
         '''
-
-
         # Call to bash script to connect WiFi
-        sh_path =  './software/scripts/connection_client.sh'
-        cmd = [sh_path, interface, ssid, password]
+        path_to_script = self.file_path.joinpath(r'../scripts/connection_client.sh').as_posix()
+        command =  f'source {path_to_script}'
+        cmd = [command, interface, ssid, password]
 
         # Error checking
         try:
