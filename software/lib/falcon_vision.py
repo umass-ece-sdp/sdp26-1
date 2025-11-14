@@ -40,7 +40,7 @@ SEARCH_DURATION = 10.0
 SEARCH_YAW_SPEED = 20
 FRAME_SLEEP = 0.03
 
-YOLO_MODEL_PATH = "../lib/yolo11n.pt"
+YOLO_MODEL_PATH = Path(__file__).parent.joinpath('yolo11n.pt')
 YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
@@ -281,7 +281,7 @@ def run_tracking():
 	def setup_drone_and_model():
 		"""Connect to drone, setup stream, and load YOLO model."""
 		tello = Tello()
-		_connect_wifi(ssid='TELLO-AA7B55', password='')
+		# _connect_wifi(ssid='TELLO-AA7B55', password='')
 		tello.connect()
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
