@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from typing import Optional, Sequence, Tuple
 import cv2
 import numpy as np
-from djitellopy import Tello
+# from djitellopy import Tello
 from ultralytics import YOLO
 from software.lib.falcon import FALCON
 
