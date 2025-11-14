@@ -20,7 +20,7 @@ class FALCON(Tello):
             moves when told to move a direction
         degrees (int, default=10): Initial degrees the drone will turn
     '''
-    def __init__(self):
+    def __init__(self, ssid: str, password: str):
         super().__init__()
 
         # Initialize variables
@@ -29,7 +29,7 @@ class FALCON(Tello):
 
         # Connect to the drone and set it to SDK mode first
         # TODO: Drone ssid here
-        self._connect_wifi()    # Only works on base station, commment out for testing on laptop, add ssid and password
+        self._connect_wifi(ssid=ssid, password=password)    # Only works on base station, commment out for testing on laptop, add ssid and password
         self.connect()
 
         # Create and bind a socket to the drone (after connection established)
