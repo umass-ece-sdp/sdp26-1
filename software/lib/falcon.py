@@ -73,8 +73,7 @@ class FALCON(Tello):
         '''
         # Call to bash script to connect WiFi
         path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
-        command =  f'source {path_to_script}'
-        cmd = [command, interface, ssid, password]
+        cmd = ['bash', path_to_script, interface, ssid, password]
 
         # Error checking
         try:
