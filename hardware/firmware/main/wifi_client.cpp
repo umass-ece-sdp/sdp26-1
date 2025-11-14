@@ -61,7 +61,6 @@ void connect_and_send() {
         if (client.available()) {
             String response = client.readStringUntil('\n');
             Serial.print("[CLIENT] Received: ");
-            update_color(COLOR_YELLOW);
             Serial.println(response);
         } else {
             Serial.println("[CLIENT] Server response timeout");
