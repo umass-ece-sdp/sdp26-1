@@ -13,4 +13,4 @@
 
 // Function prototypes
 void setup_wifi();
-void connect_and_send();
+// void connect_and_send();

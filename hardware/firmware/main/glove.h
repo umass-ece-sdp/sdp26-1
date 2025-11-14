@@ -9,9 +9,9 @@
 
 // Color Definitions
 
-#define COLOR_PINK  0xEF2D56
-#define COLOR_BLUE   0x15616D
-#define COLOR_YELLOW 0xFFD447
+#define COLOR_PINK  0xAA0000
+#define COLOR_BLUE   0x00008B
+#define COLOR_YELLOW 0xFFAA00
 #define COLOR_OFF   0x000000
 
 

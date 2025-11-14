@@ -3,28 +3,18 @@
 WiFiClient client;
 
 void setup_wifi() {
-    Serial.println("[CLIENT] Connecting to WiFi...");
-    WiFi.mode(WIFI_STA);
+    printf("[WIFI] Connecting to %s\n", WIFI_SSID);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
-    
-    int attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+
+    while (WiFi.status() != WL_CONNECTED) {
+        printf("[WIFI] Connecting...\n");
         blink_light(COLOR_PINK, 500);
-        delay(500);
-        Serial.print(".");
-        attempts++;
+        delay(50);
     }
-    
-    if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("\n[CLIENT] WiFi connected!");
-        Serial.print("[CLIENT] IP address: ");
-        Serial.println(WiFi.localIP());
-        Serial.print("[CLIENT] Gateway: ");
-        Serial.println(WiFi.gatewayIP());
-        update_color(COLOR_PINK);
-    } else {
-        Serial.println("\n[CLIENT] WiFi connection failed!");
-    }
+
+    Serial.println("\n[WIFI] Connected to WiFi network");
+    Serial.print("[WIFI] IP Address: ");
+    Serial.println(WiFi.localIP());
 }
 
 void connect_and_send() {

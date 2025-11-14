@@ -13,9 +13,6 @@ void setup() {
     
     // Initialize WiFi
     setup_wifi();
-
-    update_color(COLOR_BLUE);
-
 }
 
 void loop() {
@@ -24,11 +21,11 @@ void loop() {
     read_glove_inputs(gloveData, sizeof(gloveData));
     
     // Display glove data
-    Serial.print("[MAIN] Glove data: ");
-    Serial.println(gloveData);
+    // Serial.print("[MAIN] Glove data: ");
+    // Serial.println(gloveData);
     
     // Try to connect and send data
-    connect_and_send();
+    // connect_and_send();
     
     // If connection fails or disconnects, wait before retrying
     delay(100); // Small delay for switch debouncing
