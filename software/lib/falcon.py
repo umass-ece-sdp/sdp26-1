@@ -72,7 +72,7 @@ class FALCON(Tello):
         from the parent directory of the repository.***
         '''
         # Call to bash script to connect WiFi
-        path_to_script = self.file_path.parent.joinpath(r'/scripts/connection_client.sh').as_posix()
+        path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
         command =  f'source {path_to_script}'
         cmd = [command, interface, ssid, password]
 
@@ -105,3 +105,6 @@ class FALCON(Tello):
             '': partial(self.rotate_clockwise, self.degrees),
         }
 """
+
+if __name__ == '__main__':
+    tello = FALCON()
