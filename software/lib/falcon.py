@@ -34,10 +34,10 @@ class FALCON(Tello):
 
         # Create and bind a socket to the drone (after connection established)
         # Receive output from drone
-        self._open_socket()
-        recvThread = threading.Thread(target=self._recv)
-        recvThread.daemon = True
-        recvThread.start()
+        # self._open_socket()
+        # recvThread = threading.Thread(target=self._recv)
+        # recvThread.daemon = True
+        # recvThread.start()
 
     def _open_socket(self) -> None:
         '''
