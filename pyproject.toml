@@ -22,5 +22,8 @@ dependencies = [
 where = ["."]
 include = ["software*", "hardware*"]
 
+[tool.setuptools.package-data]
+software = ["scripts/*.sh"]
+
 [project.scripts]
 falcon = "software.src.main:main"
