@@ -216,7 +216,7 @@ def draw_annotations(frame, detection, target_area, frame_center):
 		2,
 	)
 
-def _connect_wifi(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str='') -> None:
+def _connect_wifi(interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str='') -> None:
         '''
         Automatically connects Linux devices to the drone using a bash
         script stored in software/scripts. Searches, starting from the
