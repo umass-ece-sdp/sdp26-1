@@ -7,10 +7,10 @@ name = "falcon"
 version = "1.0.0"
 description = "Filming Autonomous Learning and Cinematic Optic Navigator"
 authors = [
-    {name = "SDP Team", email = "your-email@umass.edu"}
+    {name = "Team FALCON", email = "thocmurphy@umass.edu"}
 ]
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 dependencies = [
     "djitellopy",
     "opencv-python",
