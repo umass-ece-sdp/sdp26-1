@@ -1,6 +1,7 @@
 from software.lib import falcon, variables
 from hardware.firmware import server
 import multiprocessing, socket, time
+from software.lib import falcon_vision as fv
 
 
 def server_process(shared_dict: dict, conn: socket.socket, sock: socket.socket):
@@ -12,25 +13,7 @@ def drone_process(shared_dict):
     '''Process function to run the drone controller'''
     print('Starting drone process...')
     
-    # Initialize shared variables for this process
-    variables.init_shared(shared_dict)
-    
-    # Create a FALCON object to connect to the drone
-    # drone = falcon.FALCON()
-
-    while True:
-        print(f'Instruction seen in drone process ----- {variables.get_instr()}')
-        time.sleep(1)
-    
-    # Your drone control logic here
-    # You can read instructions using: variables.get_instr()
-    # Example:
-    # while True:
-    #     instruction = variables.get_instr()
-    #     if instruction:
-    #         print(f'Drone received instruction: {instruction}')
-    #         # Process instruction...
-    #     time.sleep(0.1)
+    fv.run_tracking(shared_dict)
 
 def main():
     '''Main entry point for the application'''
