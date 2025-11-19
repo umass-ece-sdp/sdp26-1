@@ -5,6 +5,9 @@ from pathlib import Path
 import cv2
 from functools import partial
 from djitellopy import Tello
+import time
+
+# client_socket: socket.socket
 
 class FALCON(Tello):
     '''
@@ -20,30 +23,33 @@ class FALCON(Tello):
             moves when told to move a direction
         degrees (int, default=10): Initial degrees the drone will turn
     '''
-    def __init__(self, ssid: str, password: str):
+    def __init__(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str=''):
         super().__init__()
 
         # Initialize variables
         # self._init_actions()
         self.file_path = Path(__file__).parent
+        self.interface = interface
+        self.ssid = ssid
+        self.password = password
 
         # Connect to the drone and set it to SDK mode first
         # TODO: Drone ssid here
-        self._connect_wifi(ssid=ssid, password=password)    # Only works on base station, commment out for testing on laptop, add ssid and password
+        self._connect_wifi()    # Only works on base station, commment out for testing on laptop, add ssid and password
         self.connect()
 
         # Create and bind a socket to the drone (after connection established)
         # Receive output from drone
-        # self._open_socket()
-        # recvThread = threading.Thread(target=self._recv)
-        # recvThread.daemon = True
-        # recvThread.start()
+        self._open_socket()
+        recvThread = threading.Thread(target=self._recv)
+        recvThread.daemon = True
+        recvThread.start()
 
     def _open_socket(self) -> None:
         '''
         Helper function to initialize and bind a socket to the drone.
         '''
-        host = 'wlP1p1s0'   # Hard code the on-board WiFi card
+        host = self.interface
         port = 9000
         self.telloaddr = ('192.168.10.1', 8889)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -62,7 +68,7 @@ class FALCON(Tello):
                 print('\nExit . . .\n')
                 break
 
-    def _connect_wifi(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str='') -> None:
+    def _connect_wifi(self) -> None:
         '''
         Automatically connects Linux devices to the drone using a bash
         script stored in software/scripts. Searches, starting from the
@@ -73,7 +79,7 @@ class FALCON(Tello):
         '''
         # Call to bash script to connect WiFi
         path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
-        cmd = ['bash', path_to_script, interface, ssid, password]
+        cmd = ['bash', path_to_script, self.interface, self.ssid, self.password]
 
         # Error checking
         try:
@@ -86,6 +92,46 @@ class FALCON(Tello):
             print('STDERR:\n', e.stderr)
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
+
+    # def send_command_with_return(self, command: str, timeout: int = Tello.RESPONSE_TIMEOUT) -> str:
+    #     """Send command to Tello and wait for its response.
+    #     Internal method, you normally wouldn't call this yourself.
+    #     Return:
+    #         bool/str: str with response text on success, False when unsuccessfull.
+    #     """
+    #     # Commands very consecutive makes the drone not respond to them.
+    #     # So wait at least self.TIME_BTW_COMMANDS seconds
+    #     diff = time.time() - self.last_received_command_timestamp
+    #     if diff < self.TIME_BTW_COMMANDS:
+    #         self.LOGGER.debug('Waiting {} seconds to execute command: {}...'.format(diff, command))
+    #         time.sleep(diff)
+
+    #     self.LOGGER.info("Send command: '{}'".format(command))
+    #     timestamp = time.time()
+
+    #     client_socket.sendto(command.encode('utf-8'), self.address)
+
+    #     responses = self.get_own_udp_object()['responses']
+
+    #     while not responses:
+    #         if time.time() - timestamp > timeout:
+    #             message = "Aborting command '{}'. Did not receive a response after {} seconds".format(command, timeout)
+    #             self.LOGGER.warning(message)
+    #             return message
+    #         time.sleep(0.1)  # Sleep during send command
+
+    #     self.last_received_command_timestamp = time.time()
+
+    #     first_response = responses.pop(0)  # first datum from socket
+    #     try:
+    #         response = first_response.decode("utf-8")
+    #     except UnicodeDecodeError as e:
+    #         self.LOGGER.error(e)
+    #         return "response decode error"
+    #     response = response.rstrip("\r\n")
+
+    #     self.LOGGER.info("Response {}: '{}'".format(command, response))
+    #     return response
 
 """
     def _init_actions(self):
