@@ -251,7 +251,8 @@ TARGET_HSV = to_hsv(TARGET_COLOR)
 COLOR_RANGES = build_hsv_ranges(TARGET_HSV, HSV_TOLERANCE)
 TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 
-def run_tracking(shared_dict):
+# def run_tracking(shared_dict):
+def run_tracking():
 	"""Execute the full tracking loop, handling connection, control, and safety fallbacks."""
 
 	def setup_drone_and_model():
@@ -330,14 +331,14 @@ def run_tracking(shared_dict):
 				continue
 
 			# update distance with glove interrupt
-			instr = shared_dict.get("instruction")
-			if instr in ('0', '1', '2'):
-				# map glove instructions to target distances (cm)
-				dist_map = {'0': 100.0, '1': 150.0, '2': 200.0}
-				TARGET_DISTANCE = dist_map[instr]
-				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
-			else:
-				print("No glove instruction received")
+			# instr = shared_dict.get("instruction")
+			# if instr in ('0', '1', '2'):
+			# 	# map glove instructions to target distances (cm)
+			# 	dist_map = {'0': 100.0, '1': 150.0, '2': 200.0}
+			# 	TARGET_DISTANCE = dist_map[instr]
+			# 	TARGET_AREA = compute_target_area(TARGET_DISTANCE)
+			# else:
+			# 	print("No glove instruction received")
 
 			last_command, detection_time, detection = process_frame(
 				frame, tello, model, frame_center, last_command
