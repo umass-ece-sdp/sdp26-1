@@ -1,9 +1,5 @@
-import socket
-import threading
 import subprocess
-import time
 from pathlib import Path
-from functools import partial
 from djitellopy import Tello
 
 # client_socket: socket.socket
@@ -61,24 +57,6 @@ class FALCON(Tello):
             print('STDERR:\n', e.stderr)
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
-
-"""
-    def _init_actions(self):
-        '''
-        Actions to relate different key presses to.
-        '''
-        self.actions = {
-            '': self.land,
-            '': partial(self.move_forward, self.distance),
-            '': partial(self.move_left, self.distance),
-            '': partial(self.move_back, self.distance),
-            '': partial(self.move_right, self.distance),
-            '': partial(self.move_up, self.distance),
-            '': partial(self.move_down, self.distance),
-            '': partial(self.rotate_counter_clockwise, self.degrees),
-            '': partial(self.rotate_clockwise, self.degrees),
-        }
-"""
 
 if __name__ == '__main__':
     tello = FALCON()
