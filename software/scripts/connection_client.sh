@@ -23,6 +23,10 @@ RC=$?
 if [ $RC -eq 0 ]; then
   echo "Connected to $SSID on $IFACE"
   nmcli -g GENERAL.STATE device show "$IFACE"
+  
+  # Add explicit route to ensure Tello traffic goes through correct interface
+  echo "Adding route for Tello network through $IFACE..."
+  sudo ip route add 192.168.10.0/24 dev "$IFACE" 2>/dev/null || echo "Route already exists or failed to add"
 else
   echo "Failed to connect (exit $RC)."
   nmcli --terse --fields STATE,STATE_ACTIVE device show "$IFACE"

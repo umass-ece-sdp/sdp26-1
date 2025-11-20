@@ -4,7 +4,6 @@ import subprocess
 from pathlib import Path
 from functools import partial
 from djitellopy import Tello
-import netifaces
 
 # client_socket: socket.socket
 
@@ -36,38 +35,6 @@ class FALCON(Tello):
         # TODO: Drone ssid here
         self._connect_wifi()    # Only works on base station, commment out for testing on laptop, add ssid and password
         self.connect()
-
-        # Create and bind a socket to the drone (after connection established)
-        # Receive output from drone
-        self._open_socket()
-        recvThread = threading.Thread(target=self._recv)
-        recvThread.daemon = True
-        recvThread.start()
-
-    def _open_socket(self) -> None:
-        '''
-        Helper function to initialize and bind a socket to the drone.
-        '''
-        # Get the IP address assigned to the interface
-        addrs = netifaces.ifaddresses(self.interface)
-        host = addrs[netifaces.AF_INET][0]['addr']
-        port = 9000
-        self.telloaddr = ('192.168.10.1', 8889)
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((host, port))
-
-    def _recv(self) -> None:
-        '''
-        Continuously listens for incoming UDP packets from the drone
-        and prints the contents of the package.
-        '''
-        while True:
-            try:
-                data, server = self.sock.recvfrom(1518)
-                print(data.decode(encoding='utf-8'))
-            except Exception:
-                print('\nExit . . .\n')
-                break
 
     def _connect_wifi(self) -> None:
         '''
