@@ -31,26 +31,6 @@ class FALCON(Tello):
         # Connect to WiFi before initializing Tello
         self._connect_wifi()
         
-        # Give the network a moment to stabilize
-        print("Waiting for network to stabilize...")
-        time.sleep(2)
-        
-        # Verify we can reach the Tello
-        print(f"Testing connection to Tello at 192.168.10.1...")
-        test_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        test_sock.settimeout(2)
-        try:
-            test_sock.sendto(b'command', ('192.168.10.1', 8889))
-            data, addr = test_sock.recvfrom(1024)
-            response = data.decode('utf-8').strip()
-            print(f"Pre-init test response from {addr}: '{response}'")
-            if response == 'command':
-                print("WARNING: Receiving echo of our own packet! Check network configuration.")
-        except socket.timeout:
-            print("No response in pre-init test (this might be OK)")
-        finally:
-            test_sock.close()
-        
         # Initialize normal Tello behavior
         super().__init__()
         
