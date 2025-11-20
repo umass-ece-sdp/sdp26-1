@@ -3,3 +3,6 @@
 **/sdkconfig*
 **/*.vscode
 **/*.DS_Store
+**.egg-info
+**/.venv
+build
