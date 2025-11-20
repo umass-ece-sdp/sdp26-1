@@ -2,10 +2,9 @@ import socket
 import threading
 import subprocess
 from pathlib import Path
-import cv2
 from functools import partial
 from djitellopy import Tello
-import time
+import netifaces
 
 # client_socket: socket.socket
 
@@ -49,7 +48,9 @@ class FALCON(Tello):
         '''
         Helper function to initialize and bind a socket to the drone.
         '''
-        host = self.interface
+        # Get the IP address assigned to the interface
+        addrs = netifaces.ifaddresses(self.interface)
+        host = addrs[netifaces.AF_INET][0]['addr']
         port = 9000
         self.telloaddr = ('192.168.10.1', 8889)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

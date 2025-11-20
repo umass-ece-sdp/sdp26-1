@@ -16,6 +16,7 @@ dependencies = [
     "opencv-python",
     "numpy",
     "ultralytics",
+    "netifaces",
 ]
 
 [tool.setuptools.packages.find]
