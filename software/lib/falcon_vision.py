@@ -14,9 +14,7 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 from pathlib import Path
-import subprocess
 from software.lib import variables
-# from software.lib.falcon import FALCON
 from software.lib.falcon import FALCON
 
 # ----- Parameters -----
@@ -251,14 +249,12 @@ TARGET_HSV = to_hsv(TARGET_COLOR)
 COLOR_RANGES = build_hsv_ranges(TARGET_HSV, HSV_TOLERANCE)
 TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 
-# def run_tracking(shared_dict):
-def run_tracking():
+def run_tracking(shared_dict):
 	"""Execute the full tracking loop, handling connection, control, and safety fallbacks."""
 
 	def setup_drone_and_model():
 		"""Connect to drone, setup stream, and load YOLO model."""
 		tello = FALCON()
-		# tello.connect()
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
@@ -331,14 +327,14 @@ def run_tracking():
 				continue
 
 			# update distance with glove interrupt
-			# instr = shared_dict.get("instruction")
-			# if instr in ('0', '1', '2'):
-			# 	# map glove instructions to target distances (cm)
-			# 	dist_map = {'0': 100.0, '1': 150.0, '2': 200.0}
-			# 	TARGET_DISTANCE = dist_map[instr]
-			# 	TARGET_AREA = compute_target_area(TARGET_DISTANCE)
-			# else:
-			# 	print("No glove instruction received")
+			instr = shared_dict.get("instruction")
+			if instr in ('0', '1', '2'):
+				# map glove instructions to target distances (cm)
+				dist_map = {'0': 100.0, '1': 150.0, '2': 200.0}
+				TARGET_DISTANCE = dist_map[instr]
+				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
+			else:
+				print("No glove instruction received")
 
 			last_command, detection_time, detection = process_frame(
 				frame, tello, model, frame_center, last_command
