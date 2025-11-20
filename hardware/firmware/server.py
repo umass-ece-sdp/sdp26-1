@@ -2,7 +2,7 @@ import socket
 import sys
 import struct
 
-HOST = ''
+HOST = '192.168.20.1'
 PORT = 5000
 
 def server_init() -> tuple[socket.socket, socket.socket]:
