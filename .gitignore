@@ -1,8 +1,6 @@
 **/*.zip
 **/*.pio
 **/sdkconfig*
-**/*.vscode
-**/*.DS_Store
-**.egg-info
+**/**.egg-info
+**/build
 **/.venv
-build
