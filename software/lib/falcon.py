@@ -1,6 +1,7 @@
 import socket
 import threading
 import subprocess
+import time
 from pathlib import Path
 from functools import partial
 from djitellopy import Tello
@@ -29,6 +30,26 @@ class FALCON(Tello):
 
         # Connect to WiFi before initializing Tello
         self._connect_wifi()
+        
+        # Give the network a moment to stabilize
+        print("Waiting for network to stabilize...")
+        time.sleep(2)
+        
+        # Verify we can reach the Tello
+        print(f"Testing connection to Tello at 192.168.10.1...")
+        test_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        test_sock.settimeout(2)
+        try:
+            test_sock.sendto(b'command', ('192.168.10.1', 8889))
+            data, addr = test_sock.recvfrom(1024)
+            response = data.decode('utf-8').strip()
+            print(f"Pre-init test response from {addr}: '{response}'")
+            if response == 'command':
+                print("WARNING: Receiving echo of our own packet! Check network configuration.")
+        except socket.timeout:
+            print("No response in pre-init test (this might be OK)")
+        finally:
+            test_sock.close()
         
         # Initialize normal Tello behavior
         super().__init__()
@@ -60,46 +81,6 @@ class FALCON(Tello):
             print('STDERR:\n', e.stderr)
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
-
-    # def send_command_with_return(self, command: str, timeout: int = Tello.RESPONSE_TIMEOUT) -> str:
-    #     """Send command to Tello and wait for its response.
-    #     Internal method, you normally wouldn't call this yourself.
-    #     Return:
-    #         bool/str: str with response text on success, False when unsuccessfull.
-    #     """
-    #     # Commands very consecutive makes the drone not respond to them.
-    #     # So wait at least self.TIME_BTW_COMMANDS seconds
-    #     diff = time.time() - self.last_received_command_timestamp
-    #     if diff < self.TIME_BTW_COMMANDS:
-    #         self.LOGGER.debug('Waiting {} seconds to execute command: {}...'.format(diff, command))
-    #         time.sleep(diff)
-
-    #     self.LOGGER.info("Send command: '{}'".format(command))
-    #     timestamp = time.time()
-
-    #     client_socket.sendto(command.encode('utf-8'), self.address)
-
-    #     responses = self.get_own_udp_object()['responses']
-
-    #     while not responses:
-    #         if time.time() - timestamp > timeout:
-    #             message = "Aborting command '{}'. Did not receive a response after {} seconds".format(command, timeout)
-    #             self.LOGGER.warning(message)
-    #             return message
-    #         time.sleep(0.1)  # Sleep during send command
-
-    #     self.last_received_command_timestamp = time.time()
-
-    #     first_response = responses.pop(0)  # first datum from socket
-    #     try:
-    #         response = first_response.decode("utf-8")
-    #     except UnicodeDecodeError as e:
-    #         self.LOGGER.error(e)
-    #         return "response decode error"
-    #     response = response.rstrip("\r\n")
-
-    #     self.LOGGER.info("Response {}: '{}'".format(command, response))
-    #     return response
 
 """
     def _init_actions(self):
