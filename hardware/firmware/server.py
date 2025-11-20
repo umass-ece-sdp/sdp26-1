@@ -44,6 +44,7 @@ def receive_instructions(conn: socket.socket):
         str: The received 4-character string, or None if connection closed.
     """
     try:
+        print('Reading instruction...')
         # Receive exactly 4 bytes
         data = conn.recv(4)
         
@@ -81,6 +82,7 @@ def run_server(shared_dict: dict, conn: socket.socket, sock: socket.socket):
     variables.init_shared(shared_dict)
     
     try:
+        print('Waiting for instructions...')
         while True:
             # Receive instruction from ESP32
             instruction = receive_instructions(conn)
@@ -88,6 +90,8 @@ def run_server(shared_dict: dict, conn: socket.socket, sock: socket.socket):
             # Write the instruction to shared dict
             variables.write_instr(instruction)
 
+            print(instruction)
+            
     except KeyboardInterrupt:
         print("\nServer shutting down...")
             

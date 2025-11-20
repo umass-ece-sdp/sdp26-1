@@ -1,6 +1,6 @@
 **/*.zip
 **/*.pio
 **/sdkconfig*
+**/**.egg-info
 **/build
-**/*.egg-info
 **/.venv
