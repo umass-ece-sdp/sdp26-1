@@ -22,18 +22,18 @@ class FALCON(Tello):
         degrees (int, default=10): Initial degrees the drone will turn
     '''
     def __init__(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str=''):
-        super().__init__()
-
-        # Initialize variables
-        # self._init_actions()
         self.file_path = Path(__file__).parent
         self.interface = interface
         self.ssid = ssid
         self.password = password
 
-        # Connect to the drone and set it to SDK mode first
-        # TODO: Drone ssid here
-        self._connect_wifi()    # Only works on base station, commment out for testing on laptop, add ssid and password
+        # Connect to WiFi before initializing Tello
+        self._connect_wifi()
+        
+        # Initialize normal Tello behavior
+        super().__init__()
+        
+        # Connect to the drone and set it to SDK mode
         self.connect()
 
     def _connect_wifi(self) -> None:
