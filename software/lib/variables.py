@@ -1,5 +1,6 @@
 # Shared dictionary for multiprocessing
 shared_dict = None
+glove_connected = False
 
 def init_shared(manager_dict):
     '''Initialize shared variables for multiprocessing'''
@@ -18,3 +19,11 @@ def write_instr(instr: str):
     '''Write instruction to shared dict'''
     if shared_dict is not None:
         shared_dict['instruction'] = instr
+
+def set_glove_on():
+    global glove_connected
+    glove_connected = True
+
+def set_glove_off():
+    global glove_connected
+    glove_connected = False

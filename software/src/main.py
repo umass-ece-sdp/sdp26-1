@@ -1,8 +1,7 @@
-from software.lib import falcon, variables
 from hardware.firmware import server
-import multiprocessing, socket, time
+import multiprocessing, socket
 from software.lib import falcon_vision as fv
-
+from software.lib import variables
 
 def server_process(shared_dict: dict, conn: socket.socket, sock: socket.socket):
     '''Process function to run the server'''
@@ -12,6 +11,10 @@ def server_process(shared_dict: dict, conn: socket.socket, sock: socket.socket):
 def drone_process(shared_dict):
     '''Process function to run the drone controller'''
     print('Starting drone process...')
+
+    # Wait for glove to be connected before starting drone
+    while not variables.glove_connected:
+        continue
     
     fv.run_tracking(shared_dict)
 

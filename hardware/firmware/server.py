@@ -1,6 +1,5 @@
 import socket
 import sys
-import struct
 from software.lib import variables
 
 HOST = '192.168.20.1'
@@ -30,6 +29,7 @@ def server_init() -> tuple[socket.socket, socket.socket]:
     sock.listen(9)
     conn, addr = sock.accept()
     print(f'Connected with {addr[0]}: {(str(addr[1]))}')
+    variables.set_glove_on()
     return conn, sock
 
 def receive_instructions(conn: socket.socket):
@@ -98,6 +98,7 @@ def run_server(shared_dict: dict, conn: socket.socket, sock: socket.socket):
     finally:
         conn.close()
         sock.close()
+        variables.set_glove_off()
 
 if __name__ == '__main__':
     run_server()
