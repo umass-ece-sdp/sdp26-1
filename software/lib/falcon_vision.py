@@ -43,6 +43,12 @@ YOLO_MODEL_PATH = Path(__file__).parent.joinpath('yolo11n.pt')
 YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
+dist_map = {
+	'1001': 100.0,
+	# '1': 150.0,
+	# '2': 200.0,
+}
+
 # ----- Utility Functions -----
 
 @dataclass
@@ -328,9 +334,8 @@ def run_tracking(shared_dict):
 
 			# update distance with glove interrupt
 			instr = shared_dict.get("instruction")
-			if instr in ('0', '1', '2'):
+			if instr in dist_map:
 				# map glove instructions to target distances (cm)
-				dist_map = {'0': 100.0, '1': 150.0, '2': 200.0}
 				TARGET_DISTANCE = dist_map[instr]
 				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 			else:
