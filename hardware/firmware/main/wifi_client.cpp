@@ -40,52 +40,46 @@ void connect_and_send(char *message)
         return;
     }
 
-    // Try to connect to server
-    Serial.print("[CLIENT] Connecting to server ");
-    Serial.print(HOST_IP);
-    Serial.print(":");
-    Serial.println(PORT);
-
-    if (!client.connect(HOST_IP, PORT))
+    // Try to connect to server if not already connected
+    if (!client.connected())
     {
-        Serial.println("[CLIENT] Connection to server failed!");
-        delay(5000);
-        return;
+        Serial.print("[CLIENT] Connecting to server ");
+        Serial.print(HOST_IP);
+        Serial.print(":");
+        Serial.println(PORT);
+
+        if (!client.connect(HOST_IP, PORT))
+        {
+            Serial.println("[CLIENT] Connection to server failed!");
+            delay(5000);
+            return;
+        }
+
+        Serial.println("[CLIENT] Connected to server!");
     }
 
-    Serial.println("[CLIENT] Connected to server!");
+    // Send the message
+    Serial.print("[CLIENT] Sending message: ");
+    Serial.println(message);
+    client.print(message);
 
-    // Send data loop
-    while (client.connected())
+    // Wait for ACK from server
+    unsigned long timeout = millis() + 5000; // 5 second timeout
+    while (client.available() == 0 && millis() < timeout)
     {
-        Serial.print("[CLIENT] Sending message: ");
-        Serial.println(message);
-
-        // Send the message
-        client.print(message);
-
-        // Wait for ACK from server
-        unsigned long timeout = millis() + 5000; // 5 second timeout
-        while (client.available() == 0 && millis() < timeout)
-        {
-            delay(10);
-        }
-
-        if (client.available())
-        {
-            String response = client.readStringUntil('\n');
-            Serial.print("[CLIENT] Received: ");
-            Serial.println(response);
-        }
-        else
-        {
-            Serial.println("[CLIENT] Server response timeout");
-        }
-
-        // Wait before sending next message
-        delay(WAIT_TIME);
+        delay(10);
     }
 
-    Serial.println("[CLIENT] Disconnected from server");
-    client.stop();
+    if (client.available())
+    {
+        String response = client.readStringUntil('\n');
+        Serial.print("[CLIENT] Received: ");
+        Serial.println(response);
+    }
+    else
+    {
+        Serial.println("[CLIENT] Server response timeout");
+        // Disconnect on timeout
+        client.stop();
+    }
 }
