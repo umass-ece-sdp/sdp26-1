@@ -24,7 +24,7 @@ def main():
     '''Main entry point for the application'''
 
     # Configure the AP interface to be the correct IP address
-    subprocess.run(['bash', Path(__file__).parent.parent.joinpath('software', 'scripts', 'config_ap.sh')], check=True)
+    subprocess.run(['bash', Path(__file__).parent.parent.joinpath('scripts', 'config_ap.sh')], check=True)
 
     # Start the server and connect to glove before starting threads
     conn, sock = server.server_init()
