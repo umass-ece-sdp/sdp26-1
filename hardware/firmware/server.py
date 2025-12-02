@@ -95,4 +95,5 @@ def run_server(conn: socket.socket, sock: socket.socket):
         variables.set_glove_off()
 
 if __name__ == '__main__':
+    server_init()
     run_server()
