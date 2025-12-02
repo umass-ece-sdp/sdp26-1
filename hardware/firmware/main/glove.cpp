@@ -14,8 +14,8 @@ int read3StateSwitch(int pinA, int pinB) {
   // With INPUT_PULLUP, LOW means switch is active
   bool a = digitalRead(pinA) == LOW;
   bool b = digitalRead(pinB) == LOW;
-  if (a && !b) return +1;
-  if (!a && b) return -1;
+  if (a && !b) return 2;
+  if (!a && b) return 1;
   return 0;
 }
 

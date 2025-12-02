@@ -25,7 +25,7 @@ void loop() {
     Serial.println(gloveData);
     
     // Try to connect and send data
-    connect_and_send();
+    connect_and_send(gloveData);
     
     // If connection fails or disconnects, wait before retrying
     delay(100); // Small delay for switch debouncing
