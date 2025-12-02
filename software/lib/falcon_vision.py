@@ -371,6 +371,7 @@ def run_tracking():
 		tello.streamoff()
 		cv2.destroyAllWindows()
 		tello.end()
+		variables.set_drone_off()
 
 
 def main():
