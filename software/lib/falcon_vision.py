@@ -255,7 +255,7 @@ TARGET_HSV = to_hsv(TARGET_COLOR)
 COLOR_RANGES = build_hsv_ranges(TARGET_HSV, HSV_TOLERANCE)
 TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 
-def run_tracking(shared_dict):
+def run_tracking():
 	"""Execute the full tracking loop, handling connection, control, and safety fallbacks."""
 
 	def setup_drone_and_model():
@@ -333,7 +333,7 @@ def run_tracking(shared_dict):
 				continue
 
 			# update distance with glove interrupt
-			instr = shared_dict.get("instruction")
+			instr = variables.instruction
 			if instr in dist_map:
 				# map glove instructions to target distances (cm)
 				TARGET_DISTANCE = dist_map[instr]

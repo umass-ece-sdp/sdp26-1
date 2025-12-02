@@ -1,52 +1,43 @@
 from hardware.firmware import server
-import multiprocessing, socket
+import threading, socket
 from software.lib import falcon_vision as fv
 from software.lib import variables
 
-def server_process(shared_dict: dict, conn: socket.socket, sock: socket.socket):
-    '''Process function to run the server'''
-    print('Starting server process...')
-    server.run_server(shared_dict, conn, sock)
+def server_thread(conn: socket.socket, sock: socket.socket):
+    '''Thread function to run the server'''
+    print('Starting server thread...')
+    server.run_server(conn, sock)
 
-def drone_process(shared_dict):
-    '''Process function to run the drone controller'''
-    print('Starting drone process...')
+def drone_thread():
+    '''Thread function to run the drone controller'''
+    print('Starting drone thread...')
 
     # Wait for glove to be connected before starting drone
     while not variables.glove_connected:
         continue
     
-    fv.run_tracking(shared_dict)
+    fv.run_tracking()
 
 def main():
     '''Main entry point for the application'''
-    # Create a Manager to share variables between processes
-    manager = multiprocessing.Manager()
-    shared_dict = manager.dict()
-    shared_dict['instruction'] = ''
-
-    # Start the server and connect to glove before starting process
+    # Start the server and connect to glove before starting threads
     conn, sock = server.server_init()
     
-    # Create the server and drone processes
-    server_proc = multiprocessing.Process(target=server_process, args=(shared_dict, conn, sock,))
-    drone_proc = multiprocessing.Process(target=drone_process, args=(shared_dict,))
+    # Create the server and drone threads
+    server_thrd = threading.Thread(target=server_thread, args=(conn, sock,), daemon=True)
+    drone_thrd = threading.Thread(target=drone_thread, daemon=True)
     
-    # Start both processes
-    server_proc.start()
-    drone_proc.start()
+    # Start both threads
+    server_thrd.start()
+    drone_thrd.start()
     
     try:
-        # Wait for both processes to complete
-        server_proc.join()
-        drone_proc.join()
+        # Wait for both threads to complete
+        server_thrd.join()
+        drone_thrd.join()
     except KeyboardInterrupt:
-        print('\nShutting down processes...')
-        server_proc.terminate()
-        drone_proc.terminate()
-        server_proc.join()
-        drone_proc.join()
-        print('Processes terminated.')
+        print('\nShutting down threads...')
+        print('Threads terminated.')
 
 if __name__ == '__main__':
     main()

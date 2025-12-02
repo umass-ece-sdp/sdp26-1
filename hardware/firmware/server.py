@@ -71,23 +71,17 @@ def receive_instructions(conn: socket.socket):
         print(f"Error receiving data: {e}")
         return None
 
-def run_server(shared_dict: dict, conn: socket.socket, sock: socket.socket):
+def run_server(conn: socket.socket, sock: socket.socket):
     """
     Main server loop that continuously receives data from the client.
-    
-    Parameters:
-        shared_dict: multiprocessing.Manager dict for sharing variables
     """
-    # Initialize shared variables
-    variables.init_shared(shared_dict)
-    
     try:
         print('Waiting for instructions...')
         while True:
             # Receive instruction from ESP32
             instruction = receive_instructions(conn)
 
-            # Write the instruction to shared dict
+            # Write the instruction to shared variable
             variables.write_instr(instruction)
 
             print(instruction)
