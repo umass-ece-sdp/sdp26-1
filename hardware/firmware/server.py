@@ -20,7 +20,7 @@ def server_init() -> tuple[socket.socket, socket.socket]:
     try:
         sock.bind((HOST, PORT))
     except socket.error as message:
-        print(f'Bind failed. Error code: {str(message[0])} Message {message[1]}')
+        print(f'Bind failed. Error: {message}')
         sys.exit()
 
     print('Binding complete')
@@ -95,5 +95,5 @@ def run_server(conn: socket.socket, sock: socket.socket):
         variables.set_glove_off()
 
 if __name__ == '__main__':
-    server_init()
-    run_server()
+    conn, sock = server_init()
+    run_server(conn, sock)
