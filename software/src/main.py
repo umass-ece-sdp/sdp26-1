@@ -8,6 +8,11 @@ from pathlib import Path
 def server_thread(conn: socket.socket, sock: socket.socket):
     '''Thread function to run the server'''
     print('Starting server thread...')
+    
+    # Wait for the drone to be connected before looking for instructions
+    while not variables.drone_connected:
+        continue
+    
     server.run_server(conn, sock)
 
 def drone_thread():
