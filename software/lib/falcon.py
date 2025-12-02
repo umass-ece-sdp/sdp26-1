@@ -2,8 +2,6 @@ import subprocess
 from pathlib import Path
 from djitellopy import Tello
 
-# client_socket: socket.socket
-
 class FALCON(Tello):
     '''
     The Filming Autonomous Learning and Cinematic Optic Navigator class

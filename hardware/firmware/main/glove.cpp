@@ -1,10 +1,10 @@
 #include "glove.h"
 
 ThreeStateSwitch switches[] = {
-  {4, 5, 'A', 'D', 0}, // left/right
-  {6, 7, 'W', 'S', 0}, // fwd/back
-  {15, 16, 'N', 'M', 0}, // cw/ccw (heading)
-  {17, 18, '+', '-', 0} // up/down (altitude)
+  {4, 5, '2', '1', 0}, // left/right
+  {6, 7, '2', '1', 0}, // fwd/back
+  {15, 16, '2', '1', 0}, // cw/ccw (heading)
+  {17, 18, '2', '1', 0} // up/down (altitude)
 };
 
 const int numSwitches = sizeof(switches) / sizeof(switches[0]);
@@ -14,8 +14,8 @@ int read3StateSwitch(int pinA, int pinB) {
   // With INPUT_PULLUP, LOW means switch is active
   bool a = digitalRead(pinA) == LOW;
   bool b = digitalRead(pinB) == LOW;
-  if (a && !b) return 2;
-  if (!a && b) return 1;
+  if (a && !b) return +1;
+  if (!a && b) return -1;
   return 0;
 }
 
