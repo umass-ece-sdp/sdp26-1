@@ -285,7 +285,7 @@ def run_tracking():
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
-		model = YOLO(YOLO_MODEL_PATH)
+		model = None #YOLO(YOLO_MODEL_PATH)
 		return tello, model
 
 	def compute_control(detection, frame_center, pd_state: PDState) -> Tuple[int, int, int, PDState]:
@@ -381,7 +381,6 @@ def run_tracking():
 	try:
 		while True:
 			frame = frame_reader.frame
-			print(f"frame height: {frame.shape[0]}, frame width:{frame.shape[1]}")
 			if frame is None:
 				continue
 
