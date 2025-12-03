@@ -1,6 +1,6 @@
 from hardware.firmware import server
 import threading, socket
-from software.lib import falcon_vision as fv
+from software.lib import falcon_vision2 as fv
 from software.lib import variables
 import subprocess
 from pathlib import Path

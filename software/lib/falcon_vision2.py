@@ -63,9 +63,8 @@ YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
 dist_map = {
-	'1001': 100.0,
-	# '1': 150.0,
-	# '2': 200.0,
+	'2000': 50.0,
+	'1200': 100.0,
 }
 
 # ----- Utility Functions -----
@@ -431,7 +430,7 @@ def run_tracking():
 				TARGET_DISTANCE = dist_map[instr]
 				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 			else:
-				print("No glove instruction received")
+				print(f'Received {instr}, not in dist_map.')
 
 			last_command, detection_time, detection, pd_state = process_frame(
 				frame, tello, model, frame_center, last_command, pd_state
