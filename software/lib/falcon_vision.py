@@ -338,7 +338,7 @@ def run_tracking():
 				TARGET_DISTANCE = dist_map[instr]
 				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 			else:
-				print("No glove instruction received")
+				print(f'Received {instr}, not in dist_map.')
 
 			last_command, detection_time, detection = process_frame(
 				frame, tello, model, frame_center, last_command
