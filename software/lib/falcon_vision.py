@@ -291,8 +291,8 @@ def run_tracking():
 	def process_frame(frame, tello, model, frame_center, last_command):
 		"""Process one ``frame`` to update drone control, returning the new command label, timestamp, and detection."""
 
-		# resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
-		resized_frame = frame
+		resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
+		# resized_frame = frame
 		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_RGB2HSV)
 
 		detection = detect_with_color(hsv_frame, COLOR_RANGES)
@@ -370,7 +370,7 @@ def run_tracking():
 		tello.streamoff()
 		cv2.destroyAllWindows()
 		tello.end()
-		variables.set_drone_off()
+		# variables.set_drone_off()
 
 
 def main():

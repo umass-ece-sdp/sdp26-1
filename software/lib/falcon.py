@@ -32,8 +32,8 @@ class FALCON(Tello):
         # Connect to the drone and set it to SDK mode
         self.connect()
 
-        # Let the environment know the drone is connected
-        variables.set_drone_on()
+        # # Let the environment know the drone is connected
+        # variables.set_drone_on()
 
     def _connect_wifi(self) -> None:
         '''
