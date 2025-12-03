@@ -9,7 +9,7 @@ Falcon Vision logic flow:
 
 import time
 from dataclasses import dataclass
-from typing import Optional, Sequence, Tuple
+from typing import Optional, Sequence, Tuple, cast
 import cv2
 import numpy as np
 from ultralytics import YOLO
@@ -424,7 +424,7 @@ def run_tracking():
 				continue
 
 			# update distance with glove interrupt
-			instr = variables.instruction
+			instr = cast(str, variables.instruction)
 			if instr in dist_map:
 				# map glove instructions to target distances (cm)
 				TARGET_DISTANCE = dist_map[instr]
