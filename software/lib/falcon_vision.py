@@ -80,7 +80,6 @@ def to_hsv(color_hex):
 	r, g, b = (int(hex_value[i : i + 2], 16) for i in (0, 2, 4))
 	rgb_array = np.array([[(r, g, b)]], dtype=np.uint8)
 	h, s, v = cv2.cvtColor(rgb_array, cv2.COLOR_RGB2HSV)[0, 0]
-	print(f'HSV RANGES: {int(h)}, {int(s)}, {int(v)}')
 	return int(h), int(s), int(v)
 
 
@@ -328,14 +327,14 @@ def run_tracking():
 	try:
 		while True:
 			frame = frame_reader.frame
-			print(f"frame height: {frame.shape[0]}, frame width:{frame.shape[1]}")
 			if frame is None:
 				continue
 
 			# update distance with glove interrupt
-			instr = variables.instruction
+			instr = str(variables.instruction)
 			if instr in dist_map:
 				# map glove instructions to target distances (cm)
+				print(f'Changing TARGET_DISTANCE to {dist_map[instr]}')
 				TARGET_DISTANCE = dist_map[instr]
 				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 			else:
