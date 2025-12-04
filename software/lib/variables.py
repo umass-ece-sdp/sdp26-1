@@ -28,15 +28,3 @@ def set_drone_off():
     global drone_connected
     drone_connected = False
     print('Drone disconnected and set to off')
-
-def set_color(c: str):
-    global color
-    color_map = {
-        'red': '#a61919',
-        'orange': '#F98C1E',
-        'green': '#75F91E',
-        'yellow': '#F6FA00',
-        'pink': '#FA00D5',
-    }
-
-    color = color_map[c.lower().strip()]
