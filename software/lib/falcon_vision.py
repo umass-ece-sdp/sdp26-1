@@ -17,18 +17,9 @@ from pathlib import Path
 from software.lib import variables
 from software.lib.falcon import FALCON
 
-color_map = {
-	'red': '#a61919',
-	'orange': '#F98C1E',
-	'green': '#75F91E',
-	'yellow': '#F6FA00',
-	'pink': '#FA00D5',
-}
-color = color_map[input('Target color: ').lower().strip()]
-
 # ----- Parameters -----
 
-TARGET_COLOR: str = color
+TARGET_COLOR: str = '#a61919'
 TARGET_DISTANCE: float = 100.0 # cm
 
 FRAME_WIDTH = 960
