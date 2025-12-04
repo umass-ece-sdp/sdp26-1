@@ -19,9 +19,10 @@ from software.lib.falcon import FALCON
 
 # ----- Parameters -----
 
-TARGET_COLOR: str = '#a61919'
+# TARGET_COLOR: str = '#a61919'
 # TARGET_COLOR: str = '#368327'
 # TARGET_COLOR: str = '#EDED1F'
+TARGET_COLOR: str = '#F341A0'
 
 TARGET_DISTANCE: float = 100.0 # cm
 
@@ -47,9 +48,9 @@ YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
 dist_map = {
-	'2000': 50.0,
-	# '1': 150.0,
-	# '2': 200.0,
+	'0000': 100.0,
+	'1000': 50.0,
+	'2000': 200.0,
 }
 
 # ----- Utility Functions -----
