@@ -19,7 +19,9 @@ from software.lib.falcon import FALCON
 
 # ----- Parameters -----
 
-TARGET_COLOR: str = '#a61919'
+# TARGET_COLOR: str = '#a61919'
+TARGET_COLOR: str = '#368327'
+
 TARGET_DISTANCE: float = 100.0 # cm
 
 FRAME_WIDTH = 960
