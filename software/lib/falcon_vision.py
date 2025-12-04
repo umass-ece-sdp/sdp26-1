@@ -24,7 +24,7 @@ color_map = {
 	'yellow': '#F6FA00',
 	'pink': '#FA00D5',
 }
-color = color_map(input('Target color: ').lower().strip())
+color = color_map[input('Target color: ').lower().strip()]
 
 # ----- Parameters -----
 
