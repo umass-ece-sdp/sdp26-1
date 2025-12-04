@@ -28,6 +28,9 @@ def drone_thread():
 def main():
     '''Main entry point for the application'''
 
+    color = input('Target color: ')
+    variables.set_color(color)
+
     # Configure the AP interface to be the correct IP address
     subprocess.run(['bash', Path(__file__).parent.parent.joinpath('scripts', 'config_ap.sh')], check=True)
 
