@@ -9,7 +9,7 @@ Falcon Vision logic flow:
 
 import time
 from dataclasses import dataclass
-from typing import Optional, Sequence, Tuple
+from typing import Optional, Sequence, Tuple, cast
 import cv2
 import numpy as np
 from ultralytics import YOLO
@@ -48,6 +48,12 @@ KD_YAW = 0.3
 KD_FORWARD = 0.002
 KD_VERTICAL = 0.25
 
+# Minimum command speed (below this, treat as 0 since Tello won't respond)
+MIN_COMMAND_SPEED = 5
+
+# Derivative low-pass filter (0.0-1.0, lower = more smoothing but more lag)
+DERIVATIVE_FILTER_ALPHA = 0.4
+
 SEARCH_DURATION = 10.0
 SEARCH_YAW_SPEED = 20
 FRAME_SLEEP = 0.03
@@ -58,8 +64,7 @@ YOLO_IMAGE_SIZE = 640
 
 dist_map = {
 	'2000': 50.0,
-	# '1': 150.0,
-	# '2': 200.0,
+	'1200': 100.0,
 }
 
 # ----- Utility Functions -----
@@ -80,11 +85,15 @@ class Detection:
 
 @dataclass
 class PDState:
-	"""Tracks previous errors and timestamp for derivative calculation."""
+	"""Tracks previous errors, filtered derivatives, and timestamp for PD control."""
 	prev_offset_x: float = 0.0
 	prev_offset_y: float = 0.0
 	prev_area_error: float = 0.0
 	prev_time: float = 0.0
+	# Filtered derivatives (low-pass filtered to reduce noise)
+	filtered_d_x: float = 0.0
+	filtered_d_y: float = 0.0
+	filtered_d_area: float = 0.0
 
 
 def clamp(value, minimum, maximum):
@@ -102,6 +111,7 @@ def to_hsv(color_hex):
 	r, g, b = (int(hex_value[i : i + 2], 16) for i in (0, 2, 4))
 	rgb_array = np.array([[(r, g, b)]], dtype=np.uint8)
 	h, s, v = cv2.cvtColor(rgb_array, cv2.COLOR_RGB2HSV)[0, 0]
+	print(f'HSV RANGES: {int(h)}, {int(s)}, {int(v)}')
 	return int(h), int(s), int(v)
 
 
@@ -284,12 +294,19 @@ def run_tracking():
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
-		model = None #YOLO(YOLO_MODEL_PATH)
+		# YOLO model loading commented out - not currently used for detection
+		# model = YOLO(YOLO_MODEL_PATH)
+		model = None
 		return tello, model
 
 	def compute_control(detection, frame_center, pd_state: PDState) -> Tuple[int, int, int, PDState]:
 		"""
 		Derive forward, vertical, and yaw corrections using PD control.
+		
+		Features:
+		- Soft deadband: smooth ramp from 0-100% gain to avoid discontinuity
+		- Filtered derivatives: low-pass filter to reduce noise amplification
+		- Minimum speed threshold: ignore tiny outputs Tello won't respond to
 		
 		Returns (forward_velocity, up_down_velocity, yaw_velocity, updated_pd_state)
 		"""
@@ -302,37 +319,60 @@ def run_tracking():
 		offset_y = frame_center[1] - detection.center_y
 		area_error = TARGET_AREA - detection.area
 
-		# Derivative of errors (rate of change)
-		d_offset_x = (offset_x - pd_state.prev_offset_x) / dt
-		d_offset_y = (offset_y - pd_state.prev_offset_y) / dt
-		d_area_error = (area_error - pd_state.prev_area_error) / dt
+		# Raw derivative of errors (rate of change)
+		raw_d_x = (offset_x - pd_state.prev_offset_x) / dt
+		raw_d_y = (offset_y - pd_state.prev_offset_y) / dt
+		raw_d_area = (area_error - pd_state.prev_area_error) / dt
 
-		# PD control calculations
-		yaw_velocity = 0.0
-		forward_velocity = 0.0
-		up_down_velocity = 0.0
+		# Low-pass filter on derivatives to reduce noise
+		alpha = DERIVATIVE_FILTER_ALPHA
+		filtered_d_x = alpha * raw_d_x + (1 - alpha) * pd_state.filtered_d_x
+		filtered_d_y = alpha * raw_d_y + (1 - alpha) * pd_state.filtered_d_y
+		filtered_d_area = alpha * raw_d_area + (1 - alpha) * pd_state.filtered_d_area
 
+		# Soft deadband helper: returns 0-1 gain factor
+		def soft_deadband_gain(error, deadband):
+			abs_error = abs(error)
+			if abs_error <= deadband:
+				return 0.0
+			else:
+				# Linear ramp from 0 to 1 between 1x and 2x deadband
+				return min(1.0, (abs_error - deadband) / deadband)
+
+		# PD control with soft deadband
 		# Yaw control (horizontal centering)
-		if abs(offset_x) > CENTER_DEADBAND:
-			yaw_velocity = KP_YAW * offset_x - KD_YAW * d_offset_x
-			yaw_velocity = max(-YAW_SPEED, min(YAW_SPEED, yaw_velocity))
+		yaw_gain = soft_deadband_gain(offset_x, CENTER_DEADBAND)
+		yaw_velocity = yaw_gain * (KP_YAW * offset_x - KD_YAW * filtered_d_x)
+		yaw_velocity = max(-YAW_SPEED, min(YAW_SPEED, yaw_velocity))
 
 		# Vertical control
-		if abs(offset_y) > CENTER_DEADBAND:
-			up_down_velocity = KP_VERTICAL * offset_y - KD_VERTICAL * d_offset_y
-			up_down_velocity = max(-UP_DOWN_SPEED, min(UP_DOWN_SPEED, up_down_velocity))
+		vert_gain = soft_deadband_gain(offset_y, CENTER_DEADBAND)
+		up_down_velocity = vert_gain * (KP_VERTICAL * offset_y - KD_VERTICAL * filtered_d_y)
+		up_down_velocity = max(-UP_DOWN_SPEED, min(UP_DOWN_SPEED, up_down_velocity))
 
 		# Forward/back control (distance via area)
-		if abs(area_error) > TARGET_AREA * AREA_TOLERANCE_RATIO:
-			forward_velocity = KP_FORWARD * area_error - KD_FORWARD * d_area_error
-			forward_velocity = max(-FORWARD_BACK_SPEED, min(FORWARD_BACK_SPEED, forward_velocity))
+		area_deadband = TARGET_AREA * AREA_TOLERANCE_RATIO
+		fwd_gain = soft_deadband_gain(area_error, area_deadband)
+		forward_velocity = fwd_gain * (KP_FORWARD * area_error - KD_FORWARD * filtered_d_area)
+		forward_velocity = max(-FORWARD_BACK_SPEED, min(FORWARD_BACK_SPEED, forward_velocity))
+
+		# Apply minimum speed threshold (Tello won't respond to tiny values)
+		if abs(yaw_velocity) < MIN_COMMAND_SPEED:
+			yaw_velocity = 0.0
+		if abs(up_down_velocity) < MIN_COMMAND_SPEED:
+			up_down_velocity = 0.0
+		if abs(forward_velocity) < MIN_COMMAND_SPEED:
+			forward_velocity = 0.0
 
 		# Update state for next iteration
 		new_state = PDState(
 			prev_offset_x=offset_x,
 			prev_offset_y=offset_y,
 			prev_area_error=area_error,
-			prev_time=current_time
+			prev_time=current_time,
+			filtered_d_x=filtered_d_x,
+			filtered_d_y=filtered_d_y,
+			filtered_d_area=filtered_d_area
 		)
 
 		return int(forward_velocity), int(up_down_velocity), int(yaw_velocity), new_state
@@ -343,9 +383,7 @@ def run_tracking():
 		
 		Returns (new_command_label, detection_timestamp, detection, updated_pd_state)
 		"""
-
-		resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
-		# resized_frame = frame
+		resized_frame = frame
 		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_RGB2HSV)
 
 		detection = detect_with_color(hsv_frame, COLOR_RANGES)
@@ -386,10 +424,9 @@ def run_tracking():
 				continue
 
 			# update distance with glove interrupt
-			instr = str(variables.instruction)
+			instr = cast(str, variables.instruction)
 			if instr in dist_map:
 				# map glove instructions to target distances (cm)
-				print(f'Changing TARGET_DISTANCE to {dist_map[instr]}')
 				TARGET_DISTANCE = dist_map[instr]
 				TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 			else:
@@ -425,7 +462,6 @@ def run_tracking():
 		tello.streamoff()
 		cv2.destroyAllWindows()
 		tello.end()
-		# variables.set_drone_off()
 
 
 def main():
