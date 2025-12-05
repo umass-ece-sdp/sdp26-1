@@ -24,7 +24,7 @@ TARGET_COLOR: str = '#a61919'
 # TARGET_COLOR: str = '#EDED1F'
 # TARGET_COLOR: str = '#F341A0'
 
-TARGET_DISTANCE: float = 100.0 # cm
+TARGET_DISTANCE: float = 50.0 # cm
 
 FRAME_WIDTH = 960
 FRAME_HEIGHT = 720
@@ -48,9 +48,9 @@ YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
 dist_map = {
-	'0000': 100.0,
-	'1000': 50.0,
-	'2000': 200.0,
+	'0000': 50.0,
+	'1000': 25.0,
+	'2000': 100.0,
 }
 
 # ----- Utility Functions -----
