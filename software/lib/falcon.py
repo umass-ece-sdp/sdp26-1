@@ -1,8 +1,7 @@
 import subprocess
 from pathlib import Path
 from djitellopy import Tello
-
-# client_socket: socket.socket
+from software.lib import variables
 
 class FALCON(Tello):
     '''
@@ -33,6 +32,9 @@ class FALCON(Tello):
         # Connect to the drone and set it to SDK mode
         self.connect()
 
+        # # Let the environment know the drone is connected
+        # variables.set_drone_on()
+
     def _connect_wifi(self) -> None:
         '''
         Automatically connects Linux devices to the drone using a bash
@@ -51,6 +53,7 @@ class FALCON(Tello):
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
             print('STDOUT:\n', result.stdout)
             print('Connected successfully.')
+
         except subprocess.CalledProcessError as e:
             print("Command failed with exit", e.returncode)
             print('STDOUT:\n', e.stdout)

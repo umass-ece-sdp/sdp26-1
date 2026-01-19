@@ -3,4 +3,5 @@
 **/sdkconfig*
 **/**.egg-info
 **/build
-**/.venv
+**/*env
+**/__pycache__

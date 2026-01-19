@@ -9,7 +9,7 @@ Falcon Vision logic flow:
 
 import time
 from dataclasses import dataclass
-from typing import Optional, Sequence, Tuple, cast
+from typing import Optional, Sequence, Tuple
 import cv2
 import numpy as np
 from ultralytics import YOLO
@@ -19,12 +19,8 @@ from software.lib.falcon import FALCON
 
 # ----- Parameters -----
 
-TARGET_COLOR: str = '#a61919'
-# TARGET_COLOR: str = '#368327'
-# TARGET_COLOR: str = '#EDED1F'
-# TARGET_COLOR: str = '#F341A0'
-
-TARGET_DISTANCE: float = 50.0 # cm
+TARGET_COLOR: str = "#a61919"
+TARGET_DISTANCE: float = 100.0 # cm
 
 FRAME_WIDTH = 960
 FRAME_HEIGHT = 720
@@ -33,11 +29,24 @@ HSV_TOLERANCE = (12, 90, 110)
 REFERENCE_DISTANCE_CM = 80.0
 REFERENCE_AREA = 20000.0
 
+# Max speeds (caps for PD output)
 YAW_SPEED = 35
 FORWARD_BACK_SPEED = 30
 UP_DOWN_SPEED = 30
+
 CENTER_DEADBAND = 40
 AREA_TOLERANCE_RATIO = 0.12
+
+# ----- PD Control Gains -----
+# Proportional gains: how aggressively to respond to error
+KP_YAW = 0.15          # degrees/sec per pixel offset
+KP_FORWARD = 0.0008    # speed per unit area error (area values are large)
+KP_VERTICAL = 0.12     # speed per pixel offset
+
+# Derivative gains: how much to dampen based on rate of change
+KD_YAW = 0.3
+KD_FORWARD = 0.002
+KD_VERTICAL = 0.25
 
 SEARCH_DURATION = 10.0
 SEARCH_YAW_SPEED = 20
@@ -48,9 +57,9 @@ YOLO_CONFIDENCE = 0.35
 YOLO_IMAGE_SIZE = 640
 
 dist_map = {
-	'0000': 50.0,
-	'1000': 25.0,
-	'2000': 100.0,
+	'2000': 50.0,
+	# '1': 150.0,
+	# '2': 200.0,
 }
 
 # ----- Utility Functions -----
@@ -67,6 +76,15 @@ class Detection:
 	center_y: int
 	area: float
 	source: str
+
+
+@dataclass
+class PDState:
+	"""Tracks previous errors and timestamp for derivative calculation."""
+	prev_offset_x: float = 0.0
+	prev_offset_y: float = 0.0
+	prev_area_error: float = 0.0
+	prev_time: float = 0.0
 
 
 def clamp(value, minimum, maximum):
@@ -229,17 +247,17 @@ def apply_movement(tello, for_back, up_down, yaw, last_command):
 
 	actions = []
 	if yaw > 0:
-		actions.append("Turning right")
+		actions.append(f"Turning right ({yaw})")
 	elif yaw < 0:
-		actions.append("Turning left")
+		actions.append(f"Turning left ({yaw})")
 	if up_down > 0:
-		actions.append("Moving up")
+		actions.append(f"Moving up ({up_down})")
 	elif up_down < 0:
-		actions.append("Moving down")
+		actions.append(f"Moving down ({up_down})")
 	if for_back > 0:
-		actions.append("Moving forward")
+		actions.append(f"Moving forward ({for_back})")
 	elif for_back < 0:
-		actions.append("Moving backward")
+		actions.append(f"Moving backward ({for_back})")
 	if not actions:
 		actions.append("Hovering")
 	command_description = ", ".join(actions)
@@ -247,7 +265,6 @@ def apply_movement(tello, for_back, up_down, yaw, last_command):
 	if command_description != last_command:
 		print(command_description)
 	# Note: No strafing movements in current implementation
-	# Question: Gradual adjustments vs immediate adjustments
 	tello.send_rc_control(0, for_back, up_down, yaw)
 	return command_description
 
@@ -267,54 +284,87 @@ def run_tracking():
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
-		model = YOLO(YOLO_MODEL_PATH)
+		model = None #YOLO(YOLO_MODEL_PATH)
 		return tello, model
 
-	def compute_control(detection, frame_center):
-		"""Derive forward, vertical, and yaw corrections for ``detection`` relative to ``frame_center``."""
+	def compute_control(detection, frame_center, pd_state: PDState) -> Tuple[int, int, int, PDState]:
+		"""
+		Derive forward, vertical, and yaw corrections using PD control.
+		
+		Returns (forward_velocity, up_down_velocity, yaw_velocity, updated_pd_state)
+		"""
+		current_time = time.time()
+		dt = current_time - pd_state.prev_time if pd_state.prev_time > 0 else FRAME_SLEEP
+		dt = max(dt, 0.001)  # Prevent division by zero
 
+		# Current errors
 		offset_x = detection.center_x - frame_center[0]
 		offset_y = frame_center[1] - detection.center_y
-		area_delta = TARGET_AREA - detection.area
+		area_error = TARGET_AREA - detection.area
 
-		yaw_velocity = 0
-		forward_velocity = 0
-		up_down_velocity = 0
+		# Derivative of errors (rate of change)
+		d_offset_x = (offset_x - pd_state.prev_offset_x) / dt
+		d_offset_y = (offset_y - pd_state.prev_offset_y) / dt
+		d_area_error = (area_error - pd_state.prev_area_error) / dt
 
+		# PD control calculations
+		yaw_velocity = 0.0
+		forward_velocity = 0.0
+		up_down_velocity = 0.0
+
+		# Yaw control (horizontal centering)
 		if abs(offset_x) > CENTER_DEADBAND:
-			yaw_velocity = YAW_SPEED if offset_x > 0 else -YAW_SPEED
+			yaw_velocity = KP_YAW * offset_x - KD_YAW * d_offset_x
+			yaw_velocity = max(-YAW_SPEED, min(YAW_SPEED, yaw_velocity))
 
+		# Vertical control
 		if abs(offset_y) > CENTER_DEADBAND:
-			up_down_velocity = UP_DOWN_SPEED if offset_y > 0 else -UP_DOWN_SPEED
+			up_down_velocity = KP_VERTICAL * offset_y - KD_VERTICAL * d_offset_y
+			up_down_velocity = max(-UP_DOWN_SPEED, min(UP_DOWN_SPEED, up_down_velocity))
 
-		if abs(area_delta) > TARGET_AREA * AREA_TOLERANCE_RATIO:
-			forward_velocity = FORWARD_BACK_SPEED if area_delta > 0 else -FORWARD_BACK_SPEED
+		# Forward/back control (distance via area)
+		if abs(area_error) > TARGET_AREA * AREA_TOLERANCE_RATIO:
+			forward_velocity = KP_FORWARD * area_error - KD_FORWARD * d_area_error
+			forward_velocity = max(-FORWARD_BACK_SPEED, min(FORWARD_BACK_SPEED, forward_velocity))
 
-		return int(forward_velocity), int(up_down_velocity), int(yaw_velocity)
+		# Update state for next iteration
+		new_state = PDState(
+			prev_offset_x=offset_x,
+			prev_offset_y=offset_y,
+			prev_area_error=area_error,
+			prev_time=current_time
+		)
 
-	def process_frame(frame, tello, model, frame_center, last_command):
-		"""Process one ``frame`` to update drone control, returning the new command label, timestamp, and detection."""
+		return int(forward_velocity), int(up_down_velocity), int(yaw_velocity), new_state
+
+	def process_frame(frame, tello, model, frame_center, last_command, pd_state: PDState):
+		"""
+		Process one frame to update drone control.
+		
+		Returns (new_command_label, detection_timestamp, detection, updated_pd_state)
+		"""
 
 		resized_frame = cv2.resize(frame, (FRAME_WIDTH, FRAME_HEIGHT))
 		# resized_frame = frame
 		hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_RGB2HSV)
 
 		detection = detect_with_color(hsv_frame, COLOR_RANGES)
-		#detection = detect_with_yolo(resized_frame, hsv_frame, model, TARGET_HSV, HSV_TOLERANCE)
 
 		if detection:
 			draw_annotations(resized_frame, detection, TARGET_AREA, frame_center)
-			for_back, up_down, yaw = compute_control(detection, frame_center)
+			for_back, up_down, yaw, pd_state = compute_control(detection, frame_center, pd_state)
 			last_command = apply_movement(tello, for_back, up_down, yaw, last_command)
 			detection_timestamp = time.time()
 		else:
 			tello.send_rc_control(0, 0, 0, 0)
 			detection_timestamp = None
+			# Reset PD state when target lost to avoid stale derivatives
+			pd_state = PDState(prev_time=time.time())
 
 		# Convert frame HSV->BGR to look like real life
 		real_colors = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB)
 		cv2.imshow("Falcon Vision", real_colors)
-		return last_command, detection_timestamp, detection
+		return last_command, detection_timestamp, detection, pd_state
 	
 	global TARGET_AREA, TARGET_DISTANCE
 
@@ -327,6 +377,7 @@ def run_tracking():
 	frame_center = (FRAME_WIDTH // 2, FRAME_HEIGHT // 2)
 	last_command = None
 	last_detection_time = time.time()
+	pd_state = PDState(prev_time=time.time())
 
 	try:
 		while True:
@@ -335,7 +386,7 @@ def run_tracking():
 				continue
 
 			# update distance with glove interrupt
-			instr = cast(str, variables.instruction)
+			instr = str(variables.instruction)
 			if instr in dist_map:
 				# map glove instructions to target distances (cm)
 				print(f'Changing TARGET_DISTANCE to {dist_map[instr]}')
@@ -344,8 +395,8 @@ def run_tracking():
 			else:
 				print(f'Received {instr}, not in dist_map.')
 
-			last_command, detection_time, detection = process_frame(
-				frame, tello, model, frame_center, last_command
+			last_command, detection_time, detection, pd_state = process_frame(
+				frame, tello, model, frame_center, last_command, pd_state
 			)
 
 			if detection_time is not None:

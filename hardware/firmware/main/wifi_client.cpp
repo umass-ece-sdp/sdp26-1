@@ -2,80 +2,84 @@
 
 WiFiClient client;
 
-void setup_wifi() {
+void setup_wifi()
+{
     Serial.println("[CLIENT] Connecting to WiFi...");
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
-    
+
     int attempts = 0;
-    while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+    while (WiFi.status() != WL_CONNECTED && attempts < 20)
+    {
         delay(500);
         Serial.print(".");
         attempts++;
     }
-    
-    if (WiFi.status() == WL_CONNECTED) {
+
+    if (WiFi.status() == WL_CONNECTED)
+    {
         Serial.println("\n[CLIENT] WiFi connected!");
         Serial.print("[CLIENT] IP address: ");
         Serial.println(WiFi.localIP());
         Serial.print("[CLIENT] Gateway: ");
         Serial.println(WiFi.gatewayIP());
-    } else {
+    }
+    else
+    {
         Serial.println("\n[CLIENT] WiFi connection failed!");
     }
 }
 
-void connect_and_send() {
+void connect_and_send(char *message)
+{
     // Check WiFi connection
-    if (WiFi.status() != WL_CONNECTED) {
+    if (WiFi.status() != WL_CONNECTED)
+    {
         Serial.println("[CLIENT] WiFi disconnected, reconnecting...");
         setup_wifi();
         return;
     }
-    
-    // Try to connect to server
-    Serial.print("[CLIENT] Connecting to server ");
-    Serial.print(HOST_IP);
-    Serial.print(":");
-    Serial.println(PORT);
-    
-    if (!client.connect(HOST_IP, PORT)) {
-        Serial.println("[CLIENT] Connection to server failed!");
-        delay(5000);
-        return;
-    }
-    
-    Serial.println("[CLIENT] Connected to server!");
-    
-    // Send data loop
-    while (client.connected()) {
-        // Prepare a 4-character string to send
-        const char *message = "1001";
-        
-        Serial.print("[CLIENT] Sending message: ");
-        Serial.println(message);
-        
-        // Send the message
-        client.print(message);
-        
-        // Wait for ACK from server
-        unsigned long timeout = millis() + 5000; // 5 second timeout
-        while (client.available() == 0 && millis() < timeout) {
-            delay(10);
+
+    // Try to connect to server if not already connected
+    if (!client.connected())
+    {
+        Serial.print("[CLIENT] Connecting to server ");
+        Serial.print(HOST_IP);
+        Serial.print(":");
+        Serial.println(PORT);
+
+        if (!client.connect(HOST_IP, PORT))
+        {
+            Serial.println("[CLIENT] Connection to server failed!");
+            delay(5000);
+            return;
         }
-        
-        if (client.available()) {
-            String response = client.readStringUntil('\n');
-            Serial.print("[CLIENT] Received: ");
-            Serial.println(response);
-        } else {
-            Serial.println("[CLIENT] Server response timeout");
-        }
-        
-        // Wait before sending next message
-        delay(WAIT_TIME);
+
+        Serial.println("[CLIENT] Connected to server!");
     }
-    
-    Serial.println("[CLIENT] Disconnected from server");
-    client.stop();
+
+    // Send the message
+    Serial.print("[CLIENT] Sending message: ");
+    Serial.println(message);
+    client.print(message);
+
+    // Wait for ACK from server
+    unsigned long timeout = millis() + 5000; // 5 second timeout
+    while (client.available() == 0 && millis() < timeout)
+    {
+        delay(10);
+    }
+
+    if (client.available())
+    {
+        String response = client.readStringUntil('\n');
+        Serial.print("[CLIENT] Received: ");
+        Serial.println(response);
+    }
+    else
+    {
+        Serial.println("[CLIENT] Server response timeout");
+        // Disconnect on timeout
+        client.stop();
+    }
 }

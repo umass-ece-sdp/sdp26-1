@@ -1,10 +1,10 @@
 #include "glove.h"
 
 ThreeStateSwitch switches[] = {
-  {4, 5, 'A', 'D', 0}, // left/right
-  {6, 7, 'W', 'S', 0}, // fwd/back
-  {15, 16, 'N', 'M', 0}, // cw/ccw (heading)
-  {17, 18, '+', '-', 0} // up/down (altitude)
+  {4, 5, '2', '1', 0}, // left/right
+  {6, 7, '2', '1', 0}, // fwd/back
+  {15, 16, '2', '1', 0}, // cw/ccw (heading)
+  {17, 18, '2', '1', 0} // up/down (altitude)
 };
 
 const int numSwitches = sizeof(switches) / sizeof(switches[0]);
