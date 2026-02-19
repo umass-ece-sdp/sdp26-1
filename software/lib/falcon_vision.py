@@ -258,12 +258,12 @@ TARGET_HSV = to_hsv(TARGET_COLOR)
 COLOR_RANGES = build_hsv_ranges(TARGET_HSV, HSV_TOLERANCE)
 TARGET_AREA = compute_target_area(TARGET_DISTANCE)
 
-def run_tracking():
+def run_tracking(tello: FALCON):
 	"""Execute the full tracking loop, handling connection, control, and safety fallbacks."""
 
 	def setup_drone_and_model():
 		"""Connect to drone, setup stream, and load YOLO model."""
-		tello = FALCON()
+		# tello = FALCON()
 		print(f"Battery: {tello.get_battery()}%")
 		tello.streamoff()
 		tello.streamon()
@@ -378,7 +378,8 @@ def run_tracking():
 
 
 def main():
-	run_tracking()
+	tello = FALCON()
+	run_tracking(tello)
 
 if __name__ == "__main__":
 	main()
