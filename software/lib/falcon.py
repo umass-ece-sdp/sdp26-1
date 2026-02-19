@@ -17,9 +17,8 @@ class FALCON(Tello):
             moves when told to move a direction
         degrees (int, default=10): Initial degrees the drone will turn
     '''
-    def __init__(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str=''):
+    def __init__(self, ssid: str='TELLO-AA7B55', password: str=''):
         self.file_path = Path(__file__).parent
-        self.interface = interface
         self.ssid = ssid
         self.password = password
 
@@ -44,22 +43,42 @@ class FALCON(Tello):
         connect manually. Run any scripts containing this function
         from the parent directory of the repository.***
         '''
-        # Call to bash script to connect WiFi
-        path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
-        cmd = ['bash', path_to_script, self.interface, self.ssid, self.password]
+        def get_wifi_interfaces():
+            cmd = ['nmcli', '-t', '-f', 'DEVICE,TYPE', 'device']
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            wifi_interfaces = []
+            for line in result.stdout.strip().split('\n'):
+                device, dev_type = line.split(':')
+                if dev_type == 'wifi':
+                    wifi_interfaces.append(device)
+            if len(wifi_interfaces) < 2:
+                raise RuntimeError('At least two WiFi interfaces are required.')
+            return wifi_interfaces
+
+        # Call to bash script to setup WiFi
+        path_to_script = self.file_path.parent.joinpath('scripts', 'setup.sh').as_posix()
+        interfaces = get_wifi_interfaces()
+        self.ap_interface, self.client_interface = interfaces[0], interfaces[1]
+        ap_ssid = 'jetson_nano_wifi'
+        ap_password = 'team1-falcon'
+        cmd = ['bash', path_to_script, self.ap_interface, ap_ssid, ap_password, self.client_interface, self.ssid, self.password]
 
         # Error checking
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
             print('STDOUT:\n', result.stdout)
             print('Connected successfully.')
-
         except subprocess.CalledProcessError as e:
-            print("Command failed with exit", e.returncode)
+            print('Command failed with exit', e.returncode)
             print('STDOUT:\n', e.stdout)
             print('STDERR:\n', e.stderr)
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
+
+    def wifi_cleanup(self):
+        path_to_script = self.file_path.parent.joinpath('scripts', 'teardown.sh').as_posix()
+        cmd = ['bash', path_to_script, self.ap_interface, self.client_interface]
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
 
 if __name__ == '__main__':
     tello = FALCON()
