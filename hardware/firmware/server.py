@@ -1,5 +1,7 @@
 import socket
 import sys
+import struct
+from typing import Optional
 from software.lib import variables
 
 HOST = '192.168.20.1'
@@ -32,7 +34,7 @@ def server_init() -> tuple[socket.socket, socket.socket]:
     variables.set_glove_on()
     return conn, sock
 
-def receive_instructions(conn: socket.socket):
+def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tuple]]:
     """
     Receive a 4-byte string from the ESP32 client.
     The ESP32 sends the string in network byte order (big-endian).
@@ -45,27 +47,23 @@ def receive_instructions(conn: socket.socket):
     """
     try:
         print('Reading instruction...')
-        # Receive exactly 4 bytes
-        data = conn.recv(4)
+        # Receive exactly 32 bytes
+        packet = conn.recv(32)
         
-        if not data or len(data) < 4:
+        if not packet or len(packet) < 32:
             print("Connection closed or incomplete data")
             return None
         
-        # Convert to string (4 characters)
-        value = data.decode('utf-8')
-        
-        # Verify it's exactly 4 characters
-        if len(value) != 4:
-            print(f"Invalid string length: expected 4, got {len(value)}")
-            return None
-        
-        print(f"Received string: {value}")
+        # Unpack struct
+        data = struct.unpack('ffffffff', packet)
+        fingers = data[0:4]
+        imu = data[4:7]
+        dist = data[7]
         
         # Send ACK back to client
         conn.send(b'ACK')
-        
-        return value
+
+        return fingers, imu, dist
         
     except Exception as e:
         print(f"Error receiving data: {e}")
@@ -82,7 +80,8 @@ def run_server(conn: socket.socket, sock: socket.socket):
             instruction = receive_instructions(conn)
 
             # Write the instruction to shared variable
-            variables.write_instr(instruction)
+            if instruction:
+                variables.write_instr(instruction)
 
             print(instruction)
             

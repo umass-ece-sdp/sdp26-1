@@ -1,13 +1,15 @@
 # Shared instruction string for multiprocessing
-instruction = ''
+instruction = {}
 color = ''
 glove_connected = False
 drone_connected = False
 
-def write_instr(instr: str):
+def write_instr(instr: tuple[tuple, tuple, tuple]):
     '''Write instruction to shared variable'''
     global instruction
-    instruction = instr
+    instruction['fingers'] = instr[0]
+    instruction['imu'] = instr[1]
+    instruction['dist'] = instr[2]
 
 def set_glove_on():
     global glove_connected

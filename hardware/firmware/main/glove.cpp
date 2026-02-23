@@ -110,7 +110,7 @@ void read_IMU(Adafruit_LIS3DH &lis, sensors_event_t &accel, float (&reading)[3])
 	reading[2] = accel.acceleration.z;
 }
 
-void store_data(Packet &packet, const float (&finger_readings)[4], const float (&IMU_readings)[3])
+void store_data(Packet &packet, const float (&finger_readings)[4], const float (&IMU_readings)[3], const float &UWB_distance)
 {
 	packet.finger1 = finger_readings[0];
 	packet.finger2 = finger_readings[1];
@@ -119,4 +119,5 @@ void store_data(Packet &packet, const float (&finger_readings)[4], const float (
 	packet.accel_x = IMU_readings[0];
 	packet.accel_y = IMU_readings[1];
 	packet.accel_z = IMU_readings[2];
+	packet.dist = UWB_distance;
 }

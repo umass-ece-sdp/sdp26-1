@@ -30,6 +30,7 @@ bool lisOK = false; // ensure IMU stays connected
 // Assign repeated variables to improve efficiency
 float finger_readings[4];
 float IMU_readings[3];
+float UWB_distance = 0.0f;  // Eventually have real readings here
 Packet packet;
 WiFiClient client;
 
@@ -55,7 +56,7 @@ void loop()
     }
 
     // Store data in a packet to send to Base
-    store_data(packet, finger_readings, IMU_readings);
+    store_data(packet, finger_readings, IMU_readings, UWB_distance);
 
     // // Try to connect and send data
     connect_and_send(client, packet);

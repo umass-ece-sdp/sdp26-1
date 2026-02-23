@@ -15,7 +15,7 @@ struct Packet
 	float accel_x; // Accelerometer x coordinate
 	float accel_y;
 	float accel_z;
-	// float dist; // distance measured between glove and drone
+	float dist; // distance measured between glove and drone
 };
 
 // Pin Definitions
@@ -31,4 +31,4 @@ void setup_glove();
 void setup_IMU(Adafruit_LIS3DH &lis, bool &lisOK, const int &perfMode, const int &range, const int &dataRate);
 void read_fingers(float (&reading)[4]);
 void read_IMU(Adafruit_LIS3DH &lis, sensors_event_t &accel, float (&reading)[3]);
-void store_data(Packet &packet, const float (&finger_readings)[4], const float (&IMU_readings)[3]);
+void store_data(Packet &packet, const float (&finger_readings)[4], const float (&IMU_readings)[3], const float &UWB_distance);
