@@ -1,21 +1,34 @@
 #pragma once
 
 #include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_LIS3DH.h>
+#include <Adafruit_Sensor.h>
 
-// === Pin Assignments ===
-struct ThreeStateSwitch {
-  int pinA;
-  int pinB;
-  char actionA;  // printed when pinA active
-  char actionB;  // printed when pinB active
-  int lastState; // previous state (-1, 0, +1)
+// Packet to send to Base
+struct Packet
+{
+	float finger1; // Finger x input from the stretch sensors
+	float finger2;
+	float finger3;
+	float finger4;
+	float accel_x; // Accelerometer x coordinate
+	float accel_y;
+	float accel_z;
+	// float dist; // distance measured between glove and drone
 };
 
-// Global switch array
-extern ThreeStateSwitch switches[];
-extern const int numSwitches;
+// Pin Definitions
+#define FINGER_PIN_1 4
+#define FINGER_PIN_2 6
+#define FINGER_PIN_3 15
+#define FINGER_PIN_4 17
+#define IMU_SDA_PIN 38
+#define IMU_SCL_PIN 37
 
 // Function prototypes
-int read3StateSwitch(int pinA, int pinB);
 void setup_glove();
-void read_glove_inputs(char* output, int maxLen);
+void setup_IMU(Adafruit_LIS3DH &lis, bool &lisOK, const int &perfMode, const int &range, const int &dataRate);
+void read_fingers(float (&reading)[4]);
+void read_IMU(Adafruit_LIS3DH &lis, sensors_event_t &accel, float (&reading)[3]);
+void store_data(Packet &packet, const float (&finger_readings)[4], const float (&IMU_readings)[3]);

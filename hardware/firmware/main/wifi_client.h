@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
+#include "glove.h"
 
 // WiFi configuration
 #define WIFI_SSID "jetson_nano_wifi"
@@ -12,4 +13,4 @@
 
 // Function prototypes
 void setup_wifi();
-void connect_and_send(char *message);
+void connect_and_send(WiFiClient &client, const Packet &packet);
