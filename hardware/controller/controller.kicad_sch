@@ -13,15 +13,15 @@
 		(comment 2 "Author: Sasha Shikhanovich")
 	)
 	(lib_symbols
-		(symbol "4328:4328"
+		(symbol "B3F-1000:B3F-1000"
 			(pin_names
 				(offset 1.016)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "J"
-				(at -6.35 11.43 0)
+			(property "Reference" "S"
+				(at -7.6261 7.6261 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -29,8 +29,8 @@
 					(justify left bottom)
 				)
 			)
-			(property "Value" "4328"
-				(at -6.604 -10.414 0)
+			(property "Value" "B3F-1000"
+				(at -7.6316 -8.9035 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -38,7 +38,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Footprint" "4328:ADAFRUIT_4328"
+			(property "Footprint" "B3F-1000:SW_B3F-1000"
 				(at 0 0 0)
 				(effects
 					(font
@@ -66,7 +66,7 @@
 					(hide yes)
 				)
 			)
-			(property "MF" "Adafruit"
+			(property "MANUFACTURER" "Omron"
 				(at 0 0 0)
 				(effects
 					(font
@@ -76,120 +76,56 @@
 					(hide yes)
 				)
 			)
-			(property "MAXIMUM_PACKAGE_HEIGHT" "4.25mm"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Package" "None"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Price" "None"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Check_prices" "https://www.snapeda.com/parts/4328/Adafruit+Industries/view-part/?ref=eda"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "STANDARD" "Manufacturer Recommendations"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "PARTREV" "23/3/21"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "SnapEDA_Link" "https://www.snapeda.com/parts/4328/Adafruit+Industries/view-part/?ref=snap"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "MP" "4328"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Description_1" "Adafruit Accessories JST SH 4-pin Vertical Connector (10-pack) - Qwiic Compatible"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Availability" "In Stock"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "MANUFACTURER" "Adafruit"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(symbol "4328_0_0"
+			(symbol "B3F-1000_0_0"
 				(rectangle
-					(start -6.35 -7.62)
-					(end 6.35 10.16)
+					(start -8.8931 -6.3522)
+					(end -7.62 -3.81)
+					(stroke
+						(width 0.1)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start -8.8912 3.8105)
+					(end -7.62 6.35)
+					(stroke
+						(width 0.1)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy -7.62 5.08) (xy 7.62 5.08)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -7.62 -5.08) (xy 7.62 -5.08)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(rectangle
+					(start -7.62 -7.62)
+					(end 7.62 7.62)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -198,9 +134,67 @@
 						(type background)
 					)
 				)
+				(circle
+					(center 0 5.08)
+					(radius 0.254)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 5.08) (xy 0 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -1.27) (xy 2.54 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -5.08) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 -5.08)
+					(radius 0.254)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 				(rectangle
-					(start -5.715 7.3025)
-					(end -4.1275 7.9375)
+					(start 7.6236 -6.353)
+					(end 8.89 -3.81)
 					(stroke
 						(width 0.1)
 						(type default)
@@ -210,30 +204,8 @@
 					)
 				)
 				(rectangle
-					(start -5.715 4.7625)
-					(end -4.1275 5.3975)
-					(stroke
-						(width 0.1)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start -5.715 2.2225)
-					(end -4.1275 2.8575)
-					(stroke
-						(width 0.1)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start -5.715 -0.3175)
-					(end -4.1275 0.3175)
+					(start 7.6243 3.8121)
+					(end 8.89 6.35)
 					(stroke
 						(width 0.1)
 						(type default)
@@ -243,61 +215,7 @@
 					)
 				)
 				(pin passive line
-					(at -10.16 7.62 0)
-					(length 5.08)
-					(name "1"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 5.08 0)
-					(length 5.08)
-					(name "2"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 2.54 0)
-					(length 5.08)
-					(name "3"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -10.16 0 0)
+					(at -12.7 5.08 0)
 					(length 5.08)
 					(name "4"
 						(effects
@@ -315,16 +233,16 @@
 					)
 				)
 				(pin passive line
-					(at -10.16 -5.08 0)
+					(at -12.7 -5.08 0)
 					(length 5.08)
-					(name "SHIELD"
+					(name "2"
 						(effects
 							(font
 								(size 1.016 1.016)
 							)
 						)
 					)
-					(number "SH1"
+					(number "2"
 						(effects
 							(font
 								(size 1.016 1.016)
@@ -333,17 +251,34 @@
 					)
 				)
 				(pin passive line
-					(at -10.16 -5.08 0)
+					(at 12.7 5.08 180)
 					(length 5.08)
-					(hide yes)
-					(name "SHIELD"
+					(name "3"
 						(effects
 							(font
 								(size 1.016 1.016)
 							)
 						)
 					)
-					(number "SH2"
+					(number "3"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 12.7 -5.08 180)
+					(length 5.08)
+					(name "1"
+						(effects
+							(font
+								(size 1.016 1.016)
+							)
+						)
+					)
+					(number "1"
 						(effects
 							(font
 								(size 1.016 1.016)
@@ -507,6 +442,292 @@
 						)
 					)
 					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "Connector:Conn_01x05_Pin"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Conn_01x05_Pin"
+				(at 0 -7.62 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Generic connector, single row, 01x05, script generated"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_locked" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "connector"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Connector*:*_1x??_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Conn_01x05_Pin_1_1"
+				(rectangle
+					(start 0.8636 5.207)
+					(end 0 4.953)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start 0.8636 2.667)
+					(end 0 2.413)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start 0.8636 0.127)
+					(end 0 -0.127)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start 0.8636 -2.413)
+					(end 0 -2.667)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(rectangle
+					(start 0.8636 -4.953)
+					(end 0 -5.207)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 5.08) (xy 0.8636 5.08)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 2.54) (xy 0.8636 2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 0) (xy 0.8636 0)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -2.54) (xy 0.8636 -2.54)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 -5.08) (xy 0.8636 -5.08)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at 5.08 5.08 180)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 2.54 180)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 0 180)
+					(length 3.81)
+					(name "Pin_3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 3.81)
+					(name "Pin_4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 5.08 -5.08 180)
+					(length 3.81)
+					(name "Pin_5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1031,7 +1252,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description_1" "\n                        \n                            The ESP32-S3-DEVKITC-1-N8R8 from Espressif Systems is a development board designed for RF, RFID, and wireless applications. It supports 802.11 b/g/n Wi-Fi and Bluetooth® 5.x (BLE) connectivity at 2.4GHz, making it ideal for IoT and wireless communication projects. This board is powered by the ESP32-S3-WROOM-1-N8R8 module, which features 8MB Quad SPI Flash and 8MB Octal SPI for efficient memory storage and processing.\n                        \n"
+			(property "Description_1" "The ESP32-S3-DEVKITC-1-N8R8 from Espressif Systems is a development board designed for RF, RFID, and wireless applications. It supports 802.11 b/g/n Wi-Fi and Bluetooth® 5.x (BLE) connectivity at 2.4GHz, making it ideal for IoT and wireless communication projects. This board is powered by the ESP32-S3-WROOM-1-N8R8 module, which features 8MB Quad SPI Flash and 8MB Octal SPI for efficient memory storage and processing."
 				(at 0 0 0)
 				(effects
 					(font
@@ -2066,42 +2287,36 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "TMP36GT9Z:TMP36GT9Z"
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
-				(offset 1.016)
+				(offset 0)
+				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "U"
-				(at -5.08 8.128 0)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left bottom)
-				)
-			)
-			(property "Value" "TMP36GT9Z"
-				(at -5.08 -10.16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-				)
-			)
-			(property "Footprint" "TMP36GT9Z:TO92127P521H733-3"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
 					(hide yes)
 				)
 			)
-			(property "Datasheet" ""
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
 				(at 0 0 0)
 				(effects
 					(font
@@ -2110,7 +2325,7 @@
 					(hide yes)
 				)
 			)
-			(property "Description" ""
+			(property "Datasheet" "~"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2119,185 +2334,80 @@
 					(hide yes)
 				)
 			)
-			(property "MF" "Analog Devices"
+			(property "Description" "Special symbol for telling ERC where power comes from"
 				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify bottom)
 					(hide yes)
 				)
 			)
-			(property "Description_1" "Voltage Output Temperature Sensors"
+			(property "ki_keywords" "flag power"
 				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify bottom)
 					(hide yes)
 				)
 			)
-			(property "Package" "TO-3 Analog Devices"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Price" "None"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Check_prices" "https://www.snapeda.com/parts/TMP36GT9Z/Analog+Devices/view-part/?ref=eda"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "STANDARD" "IPC-7251"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "PARTREV" "H"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "SnapEDA_Link" "https://www.snapeda.com/parts/TMP36GT9Z/Analog+Devices/view-part/?ref=snap"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "MP" "TMP36GT9Z"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Availability" "In Stock"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "MANUFACTURER" "Analog Devices"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(symbol "TMP36GT9Z_0_0"
-				(rectangle
-					(start -5.08 -7.62)
-					(end 5.08 7.62)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(pin power_in line
-					(at 10.16 5.08 180)
-					(length 5.08)
-					(name "+VS"
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
 						(effects
 							(font
-								(size 1.016 1.016)
+								(size 1.27 1.27)
 							)
 						)
 					)
 					(number "1"
 						(effects
 							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin output line
-					(at 10.16 0 180)
-					(length 5.08)
-					(name "VOUT"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at 10.16 -5.08 180)
-					(length 5.08)
-					(name "GND"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.016 1.016)
+								(size 1.27 1.27)
 							)
 						)
 					)
 				)
 			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
 			(embedded_fonts no)
 		)
+	)
+	(text "Resistors for Finger Sensors"
+		(exclude_from_sim no)
+		(at 250.698 156.21 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "85392469-542d-4d79-9268-dc99b8198fb6")
+	)
+	(text "Finger Sensors"
+		(exclude_from_sim no)
+		(at 213.614 175.006 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "f968a584-f89f-4b89-a0e0-8e4245111697")
 	)
 	(junction
 		(at 232.41 193.04)
@@ -2306,28 +2416,22 @@
 		(uuid "032049e9-d2f3-4871-84a0-06f879d86bbb")
 	)
 	(junction
-		(at 346.71 201.93)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "047ca623-187b-409a-8a22-caa90f9e454d")
-	)
-	(junction
 		(at 265.43 160.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0bfe46f4-a990-409d-ba85-9b865bde9bb5")
 	)
 	(junction
-		(at 340.36 163.83)
+		(at 270.51 240.03)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "58a1ad42-d0a4-4d48-80ea-78ca3c62ca9d")
+		(uuid "21b5334c-eff0-4842-9181-7d292dc5c751")
 	)
 	(junction
-		(at 346.71 214.63)
+		(at 270.51 226.06)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "58ebd74e-98e2-4edc-b8f4-fa4fd4721263")
+		(uuid "632bcd50-15fe-4d86-bb3b-e2c2d575e373")
 	)
 	(junction
 		(at 256.54 190.5)
@@ -2378,28 +2482,16 @@
 		(uuid "c5b6cae6-dea5-461a-8bac-2d1a60fae085")
 	)
 	(junction
-		(at 346.71 193.04)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "c7b19462-f5ca-487d-9dcf-554b2d26d919")
-	)
-	(junction
 		(at 256.54 160.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "de0cf9ec-c321-4c7a-9b55-c6057806f548")
 	)
 	(junction
-		(at 340.36 182.88)
+		(at 257.81 238.76)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "e522059a-dc8e-4caf-b4bf-800cfaf2fcc2")
-	)
-	(junction
-		(at 270.51 226.06)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f21737a2-2e40-415f-bc8f-9b24ab9c7d91")
+		(uuid "ee205863-269e-4328-9750-e716228bcb5a")
 	)
 	(no_connect
 		(at 270.51 220.98)
@@ -2428,6 +2520,10 @@
 	(no_connect
 		(at 316.23 215.9)
 		(uuid "18bfb94d-aebc-4154-af46-fa7f212ea92c")
+	)
+	(no_connect
+		(at 316.23 195.58)
+		(uuid "2621fc41-f057-4b1d-b0d8-9ece62d81e30")
 	)
 	(no_connect
 		(at 316.23 205.74)
@@ -2480,6 +2576,14 @@
 	(no_connect
 		(at 270.51 205.74)
 		(uuid "b23f96ac-1337-4ebe-a659-2332179d95d6")
+	)
+	(no_connect
+		(at 316.23 198.12)
+		(uuid "b63e9509-67e9-43ba-9f29-a8aa44731fc3")
+	)
+	(no_connect
+		(at 316.23 180.34)
+		(uuid "ba7b6efe-c0bf-4faa-945c-8a8c16ab6589")
 	)
 	(no_connect
 		(at 316.23 190.5)
@@ -2537,16 +2641,6 @@
 	)
 	(wire
 		(pts
-			(xy 334.01 175.26) (xy 334.01 171.45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "08a3dac4-9c07-4e51-9a8b-726326c3abe9")
-	)
-	(wire
-		(pts
 			(xy 232.41 187.96) (xy 232.41 193.04)
 		)
 		(stroke
@@ -2587,16 +2681,6 @@
 	)
 	(wire
 		(pts
-			(xy 316.23 226.06) (xy 346.71 226.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "21effedb-0e26-4d74-8f5e-1042c30391e2")
-	)
-	(wire
-		(pts
 			(xy 265.43 160.02) (xy 265.43 170.18)
 		)
 		(stroke
@@ -2614,16 +2698,6 @@
 			(type default)
 		)
 		(uuid "27794d6e-f4fb-43ed-9cd4-e594fc653de1")
-	)
-	(wire
-		(pts
-			(xy 346.71 226.06) (xy 346.71 214.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "29f26ae0-faac-4e22-83f9-41e20e23edbc")
 	)
 	(wire
 		(pts
@@ -2667,17 +2741,7 @@
 	)
 	(wire
 		(pts
-			(xy 334.01 171.45) (xy 360.68 171.45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "398a16c7-65db-4521-a9bc-97601ba79de6")
-	)
-	(wire
-		(pts
-			(xy 257.81 243.84) (xy 257.81 223.52)
+			(xy 257.81 243.84) (xy 257.81 238.76)
 		)
 		(stroke
 			(width 0)
@@ -2687,13 +2751,13 @@
 	)
 	(wire
 		(pts
-			(xy 340.36 163.83) (xy 340.36 182.88)
+			(xy 257.81 238.76) (xy 257.81 223.52)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "41d531de-1267-4378-b212-b56ae25b4369")
+		(uuid "3ee874dd-1833-417e-86a2-51745ede3023")
 	)
 	(wire
 		(pts
@@ -2707,26 +2771,6 @@
 	)
 	(wire
 		(pts
-			(xy 340.36 182.88) (xy 353.06 182.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "45c24920-a6d5-4000-bf2b-c45a4ed25edf")
-	)
-	(wire
-		(pts
-			(xy 316.23 177.8) (xy 331.47 177.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4c71d29d-73b2-4a9b-98c5-773453e294c7")
-	)
-	(wire
-		(pts
 			(xy 232.41 226.06) (xy 270.51 226.06)
 		)
 		(stroke
@@ -2737,26 +2781,6 @@
 	)
 	(wire
 		(pts
-			(xy 346.71 193.04) (xy 346.71 176.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4d30d3b4-0ccf-4f91-8fa0-d50f3fc35196")
-	)
-	(wire
-		(pts
-			(xy 331.47 168.91) (xy 360.68 168.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4de0b49e-46cf-4199-a6a4-a1f6fa03b1aa")
-	)
-	(wire
-		(pts
 			(xy 227.33 187.96) (xy 232.41 187.96)
 		)
 		(stroke
@@ -2764,16 +2788,6 @@
 			(type default)
 		)
 		(uuid "5628d378-a725-4bf2-9764-c53360088128")
-	)
-	(wire
-		(pts
-			(xy 340.36 212.09) (xy 354.33 212.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "58063747-fef6-466d-bfa5-3389bb956f66")
 	)
 	(wire
 		(pts
@@ -2807,26 +2821,6 @@
 	)
 	(wire
 		(pts
-			(xy 331.47 207.01) (xy 331.47 195.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "658198d3-1615-4377-bb6c-ed054f082a31")
-	)
-	(wire
-		(pts
-			(xy 346.71 176.53) (xy 360.68 176.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "66d60006-af32-46e1-b783-1dd51ea35f60")
-	)
-	(wire
-		(pts
 			(xy 270.51 172.72) (xy 270.51 160.02)
 		)
 		(stroke
@@ -2834,16 +2828,6 @@
 			(type default)
 		)
 		(uuid "69c2ba40-5c7d-47f1-a31d-3224e6e03243")
-	)
-	(wire
-		(pts
-			(xy 346.71 214.63) (xy 346.71 201.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6a2d26ae-b9eb-4664-b2e0-73dcd536ece7")
 	)
 	(wire
 		(pts
@@ -2867,36 +2851,6 @@
 	)
 	(wire
 		(pts
-			(xy 328.93 198.12) (xy 328.93 209.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7d4569f5-594a-40e9-8b74-173060b26def")
-	)
-	(wire
-		(pts
-			(xy 340.36 182.88) (xy 340.36 212.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7edaf426-c5fc-447e-84ee-714408eeaa3b")
-	)
-	(wire
-		(pts
-			(xy 340.36 163.83) (xy 360.68 163.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "80734a9a-61e6-4ced-b83e-d4b5fff12307")
-	)
-	(wire
-		(pts
 			(xy 256.54 190.5) (xy 270.51 190.5)
 		)
 		(stroke
@@ -2904,26 +2858,6 @@
 			(type default)
 		)
 		(uuid "83e693d8-5798-4d66-92d0-c439d37beca5")
-	)
-	(wire
-		(pts
-			(xy 354.33 207.01) (xy 331.47 207.01)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "85da7036-de0e-4b73-9803-9a3c5bbbd8c8")
-	)
-	(wire
-		(pts
-			(xy 316.23 175.26) (xy 334.01 175.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "86f7ca9c-502f-410e-932f-492e2abc9173")
 	)
 	(wire
 		(pts
@@ -2937,63 +2871,13 @@
 	)
 	(wire
 		(pts
-			(xy 270.51 270.51) (xy 270.51 226.06)
+			(xy 270.51 270.51) (xy 270.51 240.03)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "8b2c54e7-9746-4efb-9907-20faf0cb453c")
-	)
-	(wire
-		(pts
-			(xy 353.06 187.96) (xy 322.58 187.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8cc0b342-a14f-4332-87dd-2f178ef8d6fe")
-	)
-	(wire
-		(pts
-			(xy 322.58 187.96) (xy 322.58 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8d03a932-f65d-4f55-b113-68fab7b21fb9")
-	)
-	(wire
-		(pts
-			(xy 260.35 270.51) (xy 270.51 270.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "916630de-fd2f-44b0-84bc-371a403bdf33")
-	)
-	(wire
-		(pts
-			(xy 322.58 180.34) (xy 316.23 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "93aa306c-de41-4725-b755-abafd3b9eedb")
-	)
-	(wire
-		(pts
-			(xy 331.47 195.58) (xy 316.23 195.58)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9415b8b0-5904-48ef-931e-a91805ee3e83")
 	)
 	(wire
 		(pts
@@ -3004,46 +2888,6 @@
 			(type default)
 		)
 		(uuid "9467a587-096e-451b-b7e6-62dd29cb4245")
-	)
-	(wire
-		(pts
-			(xy 346.71 201.93) (xy 346.71 193.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9a4b6a0c-e8a7-41b0-b346-72e83922635a")
-	)
-	(wire
-		(pts
-			(xy 340.36 160.02) (xy 340.36 163.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9bcc7787-a5b1-41e1-ad92-ec8ad6bdd563")
-	)
-	(wire
-		(pts
-			(xy 346.71 214.63) (xy 354.33 214.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9c343675-f88f-4c0d-8a28-43bc9fc91bdd")
-	)
-	(wire
-		(pts
-			(xy 316.23 198.12) (xy 328.93 198.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d6d6700-d809-4a49-9cd9-fc5af22704bf")
 	)
 	(wire
 		(pts
@@ -3097,16 +2941,6 @@
 	)
 	(wire
 		(pts
-			(xy 346.71 201.93) (xy 354.33 201.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b2f405c6-d6b6-4e9b-820d-3d31ba7f0a2b")
-	)
-	(wire
-		(pts
 			(xy 227.33 182.88) (xy 232.41 182.88)
 		)
 		(stroke
@@ -3127,33 +2961,13 @@
 	)
 	(wire
 		(pts
-			(xy 270.51 160.02) (xy 340.36 160.02)
+			(xy 270.51 240.03) (xy 270.51 226.06)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "bfc4ff2b-a3bd-47f5-9974-8e8a2a0caf81")
-	)
-	(wire
-		(pts
-			(xy 331.47 177.8) (xy 331.47 168.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ccc46bb0-bdf6-4353-a25e-250ea9b536f6")
-	)
-	(wire
-		(pts
-			(xy 328.93 209.55) (xy 354.33 209.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dc37abd3-b20c-4431-8def-bdfa30f06887")
+		(uuid "cbcb6104-8f64-49a6-8612-56dc44da3177")
 	)
 	(wire
 		(pts
@@ -3174,16 +2988,6 @@
 			(type default)
 		)
 		(uuid "e5d274f6-2ff8-4bda-ac50-c4f9c4c361d5")
-	)
-	(wire
-		(pts
-			(xy 346.71 193.04) (xy 353.06 193.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f5f323dd-4106-46a1-a63e-2e2bb920c2c4")
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x02_Pin")
@@ -3253,35 +3057,43 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:Conn_01x02_Pin")
-		(at 257.81 275.59 90)
+		(lib_id "ESP32-S3-DEVKITC-1-N8R8:ESP32-S3-DEVKITC-1-N8R8")
+		(at 293.37 203.2 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "0984194f-e920-4c30-a0cd-247525a2353d")
-		(property "Reference" "BAT1"
-			(at 261.62 273.6849 90)
+		(uuid "0e0b68ff-0011-4812-836a-f99c41fbbd3e")
+		(property "Reference" "U1"
+			(at 293.37 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Value" "Conn_01x02_Pin"
-			(at 261.62 276.2249 90)
+		(property "Value" "ESP32-S3-DEVKITC-1-N8R8"
+			(at 293.37 167.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 257.81 275.59 0)
+		(property "Footprint" "ESP32-S3-DEVKITC-1-N8R8:ESP32-S3-DEVKITC-1-N8R8"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3289,8 +3101,8 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
-			(at 257.81 275.59 0)
+		(property "Description" ""
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3298,60 +3110,257 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 257.81 275.59 0)
+		(property "MF" "Espressif Systems"
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify bottom)
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "c11075ac-c51c-469a-b3ba-0c76fd00970e")
+		(property "Description_1" "The ESP32-S3-DEVKITC-1-N8R8 from Espressif Systems is a development board designed for RF, RFID, and wireless applications. It supports 802.11 b/g/n Wi-Fi and Bluetooth® 5.x (BLE) connectivity at 2.4GHz, making it ideal for IoT and wireless communication projects. This board is powered by the ESP32-S3-WROOM-1-N8R8 module, which features 8MB Quad SPI Flash and 8MB Octal SPI for efficient memory storage and processing."
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
 		)
-		(pin "1"
-			(uuid "34873143-4de0-48c9-8036-b8296c63b159")
+		(property "Package" "None"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Price" "None"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=snap"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "ESP32-S3-DEVKITC-1-N8R8"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=eda"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "J1_16"
+			(uuid "0dfd926b-d8ac-447f-8fc6-a5a2661fe465")
+		)
+		(pin "J1_15"
+			(uuid "a0855c2f-5bf8-4916-bff5-c67d8d525ab5")
+		)
+		(pin "J1_14"
+			(uuid "82ae9e8f-cc46-4aea-9fae-864a36f6fd94")
+		)
+		(pin "J1_13"
+			(uuid "b6c2628a-8989-4daf-bfa9-c5beacf5fbc7")
+		)
+		(pin "J1_12"
+			(uuid "9fee1c65-1d11-4db2-8209-a7472a0cc2b6")
+		)
+		(pin "J1_1"
+			(uuid "315d1b57-864f-4422-a0b3-7c03b9ebf34a")
+		)
+		(pin "J1_2"
+			(uuid "6103efe2-933a-4eb0-b70c-3f8a6ca1feb8")
+		)
+		(pin "J1_3"
+			(uuid "460c6176-a9ce-449d-8247-7a50c3bd28aa")
+		)
+		(pin "J1_18"
+			(uuid "cfa74669-466b-4af1-a2ea-b90d78adcac8")
+		)
+		(pin "J1_17"
+			(uuid "1b804fa0-cfc2-48dd-a330-86f629df75a8")
+		)
+		(pin "J1_8"
+			(uuid "793d40b4-b110-4c43-9a16-8c6505adc6e4")
+		)
+		(pin "J1_9"
+			(uuid "b3adcde2-518c-4500-9d6d-11f5ab4e4849")
+		)
+		(pin "J1_10"
+			(uuid "428f0bdc-1015-4a37-b947-cc56ef56f60b")
+		)
+		(pin "J1_11"
+			(uuid "df4bcc09-182b-40bb-842b-cd7d31784bbe")
+		)
+		(pin "J1_20"
+			(uuid "a1852406-b90c-469d-a547-1855cc9d61a7")
+		)
+		(pin "J1_19"
+			(uuid "27a17641-0a4f-4527-96eb-f448e071ede3")
+		)
+		(pin "J1_7"
+			(uuid "0c8b45cc-566b-491c-9885-6e3d3a69fc20")
+		)
+		(pin "J1_5"
+			(uuid "5f4aad94-de48-4e9a-a193-b59f01366ab1")
+		)
+		(pin "J1_6"
+			(uuid "9f97bc4e-1782-4f4b-a920-62141d6b29c7")
+		)
+		(pin "J1_4"
+			(uuid "98400efe-4d59-41f7-9ef0-ddc0560d8ef2")
+		)
+		(pin "J3_6"
+			(uuid "e4d3e08a-0c7d-4afe-b39d-b762c48314c0")
+		)
+		(pin "J3_5"
+			(uuid "b51b0bf2-caa5-458a-ae7a-384a3621638e")
+		)
+		(pin "J3_3"
+			(uuid "5e69db4d-2f9f-4575-9f16-4138709ce4e0")
+		)
+		(pin "J3_4"
+			(uuid "230a9bbe-1271-4559-8b01-5447997a1105")
+		)
+		(pin "J3_10"
+			(uuid "8c6c6889-29d8-4eb6-92e8-40d8c68a6a4c")
+		)
+		(pin "J3_9"
+			(uuid "60634ebe-5dc1-4fe7-8d0a-6099b4fde676")
+		)
+		(pin "J3_7"
+			(uuid "d3e137d7-e766-421e-8a39-1ae94255be74")
+		)
+		(pin "J3_18"
+			(uuid "83a208e6-2228-4c0b-848e-2002535d9738")
+		)
+		(pin "J3_16"
+			(uuid "114e7f55-d0c0-4e38-8272-8c4c504d235e")
+		)
+		(pin "J3_17"
+			(uuid "0f1ebdae-3995-4d03-b01e-caf1d66aa2a2")
+		)
+		(pin "J3_14"
+			(uuid "4c296635-4e3f-45a0-a9b7-e46f8d063856")
+		)
+		(pin "J3_15"
+			(uuid "e3930ad4-2d92-469c-9f2a-d3f55c003b9c")
+		)
+		(pin "J3_8"
+			(uuid "65e14c84-05d1-4f46-9d7b-4fd222c7396e")
+		)
+		(pin "J3_19"
+			(uuid "9b8c62de-1959-4eff-9bd7-d7c7083e1f45")
+		)
+		(pin "J3_11"
+			(uuid "a18015d4-a2e6-479e-8bd1-24e9423ea66f")
+		)
+		(pin "J3_12"
+			(uuid "ba02bf8b-07dc-4836-85bf-b9ce04679d38")
+		)
+		(pin "J3_13"
+			(uuid "d83c375b-5351-4cdc-97d4-390ecfe111a9")
+		)
+		(pin "J3_1"
+			(uuid "6a5d34b0-123b-441d-a9d1-d82c14facad6")
+		)
+		(pin "J1_22"
+			(uuid "c9787a0c-d912-4a5c-b888-b0f0f4cafb9f")
+		)
+		(pin "J1_21"
+			(uuid "48786247-dad2-4c39-9c97-53386aed702b")
+		)
+		(pin "J3_2"
+			(uuid "a2a23f59-fd33-411f-8fa6-6b3d3920cec1")
+		)
+		(pin "J3_20"
+			(uuid "f7bc950a-2568-42ff-8e50-ad335b29896f")
+		)
+		(pin "J3_22"
+			(uuid "d465add3-dea1-402f-ae61-ccf092f8f420")
+		)
+		(pin "J3_21"
+			(uuid "f04c41e3-a6f3-4570-98ab-295b56fc78fd")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "BAT1")
+					(reference "U1")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "Connector:Conn_01x06_Pin")
-		(at 365.76 171.45 180)
+		(lib_id "power:PWR_FLAG")
+		(at 270.51 240.03 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "504c52a3-e42f-4c29-aad8-9a9714cb2c79")
-		(property "Reference" "RYUW122"
-			(at 367.03 168.9099 0)
+		(uuid "4376f9b1-c9b3-4d1d-9fa8-3f9c9617ffd2")
+		(property "Reference" "#FLG02"
+			(at 272.415 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(hide yes)
 			)
 		)
-		(property "Value" "Conn_01x06_Pin"
-			(at 367.03 171.4499 0)
+		(property "Value" "PWR_FLAG"
+			(at 274.32 240.0299 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinSocket_1.00mm:PinSocket_1x06_P1.00mm_Vertical"
-			(at 365.76 171.45 0)
+		(property "Footprint" ""
+			(at 270.51 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3360,7 +3369,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 365.76 171.45 0)
+			(at 270.51 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3368,37 +3377,22 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Generic connector, single row, 01x06, script generated"
-			(at 365.76 171.45 0)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 270.51 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(pin "2"
-			(uuid "cc5e62ae-6cb2-4eef-8f5d-f1f59452bf1b")
 		)
 		(pin "1"
-			(uuid "46a731af-f2ea-4271-b801-95487c9f3b0a")
-		)
-		(pin "3"
-			(uuid "a92e0d55-daaa-43bb-bbaf-12e29423aa37")
-		)
-		(pin "4"
-			(uuid "a86465eb-1a7a-43ab-abed-5fdafc4abc38")
-		)
-		(pin "5"
-			(uuid "2630d149-c28e-4482-9d5f-b71f7292b844")
-		)
-		(pin "6"
-			(uuid "6818c045-4edf-4bd9-afb7-5ef01c1bccf0")
+			(uuid "e254384a-9abb-4b9e-90dc-8401d8fb9db6")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "RYUW122")
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)
@@ -3539,45 +3533,35 @@
 		)
 	)
 	(symbol
-		(lib_id "4328:4328")
-		(at 364.49 207.01 0)
-		(mirror x)
+		(lib_id "Connector:Conn_01x06_Pin")
+		(at 337.82 219.71 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "821dbc26-0692-45d6-84d2-212b19cee90f")
-		(property "Reference" "IMU1"
-			(at 372.11 209.5501 0)
+		(fields_autoplaced yes)
+		(uuid "75aa763f-9589-4515-83fd-a12e911319a5")
+		(property "Reference" "J7"
+			(at 339.09 217.1699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Value" "4328"
-			(at 372.11 207.0101 0)
+		(property "Value" "IMU (gnd/vdd side)"
+			(at 339.09 219.7099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Footprint" "4328:ADAFRUIT_4328"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 364.49 207.01 0)
+		(property "Footprint" ""
+			(at 337.82 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3585,8 +3569,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 364.49 207.01 0)
+		(property "Datasheet" "~"
+			(at 337.82 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3594,148 +3578,267 @@
 				(hide yes)
 			)
 		)
-		(property "MF" "Adafruit"
-			(at 364.49 207.01 0)
+		(property "Description" "Generic connector, single row, 01x06, script generated"
+			(at 337.82 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify bottom)
 				(hide yes)
 			)
-		)
-		(property "MAXIMUM_PACKAGE_HEIGHT" "4.25mm"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "None"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/4328/Adafruit+Industries/view-part/?ref=eda"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "Manufacturer Recommendations"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "23/3/21"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/4328/Adafruit+Industries/view-part/?ref=snap"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "4328"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "Adafruit Accessories JST SH 4-pin Vertical Connector (10-pack) - Qwiic Compatible"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Adafruit"
-			(at 364.49 207.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "3"
-			(uuid "a25f03e3-078e-4b2a-bcc7-93fdf8359615")
-		)
-		(pin "SH2"
-			(uuid "690b820b-ea7d-47f7-9bfe-d8dbf48b4f8c")
-		)
-		(pin "SH1"
-			(uuid "eff2c5b4-b0b3-4f3f-a2c9-4abaf2352c90")
 		)
 		(pin "2"
-			(uuid "96a541ca-97ef-48df-a3c4-da257c16dd4b")
-		)
-		(pin "4"
-			(uuid "ca00028c-10f6-4693-8b0e-0b35d30a119c")
+			(uuid "06f50ccd-5a65-48bf-a566-004b9cc09f8b")
 		)
 		(pin "1"
-			(uuid "ee6e1174-d959-479b-ba48-071d0423968f")
+			(uuid "7e72ecf9-e3bc-4545-a51b-69d8b3287ddf")
+		)
+		(pin "6"
+			(uuid "8949f98c-38e9-4d87-94e9-ed035f8b65ea")
+		)
+		(pin "3"
+			(uuid "2f0ba808-2c52-4dc0-b2b0-330870950ebd")
+		)
+		(pin "4"
+			(uuid "080ee9d5-f478-41ff-ba2f-aed6ddf1ec09")
+		)
+		(pin "5"
+			(uuid "b1e67cce-20af-4a70-858a-94cd4ca48812")
+		)
+		(instances
+			(project "controller"
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "J7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x06_Pin")
+		(at 339.09 250.19 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "80794ecf-06e8-4a64-8b04-a4584b053109")
+		(property "Reference" "J8"
+			(at 340.36 247.6499 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "UWB"
+			(at 340.36 250.1899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 339.09 250.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 339.09 250.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x06, script generated"
+			(at 339.09 250.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "5"
+			(uuid "858da2e3-11e1-44e9-980a-dc54b7817902")
+		)
+		(pin "4"
+			(uuid "14458ba0-fcb9-47a6-9f52-05f165f19a9a")
+		)
+		(pin "6"
+			(uuid "cb6b95cd-381f-4958-a109-5b2b1590851e")
+		)
+		(pin "3"
+			(uuid "1e211df2-5bff-4808-81ba-5d31aab827bc")
+		)
+		(pin "1"
+			(uuid "4ddc62e9-a79f-449b-80f9-3a4c51c4304e")
+		)
+		(pin "2"
+			(uuid "416596b3-b57d-4560-af48-feb01dc38215")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "IMU1")
+					(reference "J8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 270.51 160.02 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8ff5084d-a910-43ae-bc75-c5832e5b6f5d")
+		(property "Reference" "#FLG04"
+			(at 270.51 158.115 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 270.51 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 270.51 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 270.51 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 270.51 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "f68065a8-4a56-4740-b9f8-6826b9ed8f85")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "#FLG04")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Conn_01x06_Pin")
+		(at 337.82 203.2 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "911edca9-e91c-4119-b5f1-d67933e98cda")
+		(property "Reference" "J6"
+			(at 339.09 200.6599 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "IMU (x/y/z side)"
+			(at 339.09 203.1999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 337.82 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 337.82 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x06, script generated"
+			(at 337.82 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "fa6fe2f1-8b3e-4321-84d9-205eb78d551e")
+		)
+		(pin "1"
+			(uuid "e1076457-125d-41b0-b865-14a327852224")
+		)
+		(pin "6"
+			(uuid "012f3530-477b-4d32-b3a2-53aec820c269")
+		)
+		(pin "3"
+			(uuid "0346e619-f890-499f-8d81-9886057f3ba6")
+		)
+		(pin "4"
+			(uuid "edac8ee2-a240-472f-882d-9ce0cec2207b")
+		)
+		(pin "5"
+			(uuid "e68ab61c-edba-4d76-b3c1-7d11e45ae86f")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "J6")
 					(unit 1)
 				)
 			)
@@ -3876,191 +3979,6 @@
 		)
 	)
 	(symbol
-		(lib_id "TMP36GT9Z:TMP36GT9Z")
-		(at 363.22 187.96 0)
-		(mirror y)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "98194825-1bb1-4332-a280-b18f5fb8c76f")
-		(property "Reference" "TMP1"
-			(at 369.57 186.6899 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "TMP36GT9Z"
-			(at 369.57 189.2299 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" "TMP36GT9Z:TO92127P521H733-3"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MF" "Analog Devices"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "Voltage Output Temperature Sensors"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "TO-3 Analog Devices"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/TMP36GT9Z/Analog+Devices/view-part/?ref=eda"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "IPC-7251"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" "H"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/TMP36GT9Z/Analog+Devices/view-part/?ref=snap"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "TMP36GT9Z"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "Analog Devices"
-			(at 363.22 187.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "1a265c57-ecc8-436a-9fdc-ca957916895e")
-		)
-		(pin "1"
-			(uuid "bfa4065d-a512-4357-9274-548385c208c6")
-		)
-		(pin "3"
-			(uuid "5f60c2fa-b5b8-4c9f-a102-c73f75bb61e6")
-		)
-		(instances
-			(project ""
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "TMP1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Switch:SW_DIP_x01")
 		(at 257.81 251.46 270)
 		(unit 1)
@@ -4079,7 +3997,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SW_DIP_x01"
+		(property "Value" "Power Switch"
 			(at 261.62 252.7299 90)
 			(effects
 				(font
@@ -4125,6 +4043,158 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "SW1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "B3F-1000:B3F-1000")
+		(at 306.07 248.92 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a00724f7-dc22-4279-b89a-ba3d50e80239")
+		(property "Reference" "S1"
+			(at 306.0684 236.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Input Listener Switch"
+			(at 306.0684 238.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "B3F-1000:SW_B3F-1000"
+			(at 306.07 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 306.07 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 306.07 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "Omron"
+			(at 306.07 248.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "a2df1f02-1d33-40e8-a737-e8adc213a53d")
+		)
+		(pin "3"
+			(uuid "cac6a242-eedf-498c-8a5d-e8f91e930e14")
+		)
+		(pin "1"
+			(uuid "291786b9-b9de-4e94-9716-8df0906faddb")
+		)
+		(pin "4"
+			(uuid "fd03d33d-4821-4609-aaf5-df6808427e36")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "S1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 257.81 238.76 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a1c7fd83-0578-48bc-84b5-6882d74f63f6")
+		(property "Reference" "#FLG01"
+			(at 255.905 238.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 254 238.7599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 257.81 238.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 257.81 238.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 257.81 238.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7eed16be-f199-4cb5-abd6-31fa0bb0f3cd")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "#FLG01")
 					(unit 1)
 				)
 			)
@@ -4265,43 +4335,35 @@
 		)
 	)
 	(symbol
-		(lib_id "ESP32-S3-DEVKITC-1-N8R8:ESP32-S3-DEVKITC-1-N8R8")
-		(at 293.37 203.2 0)
+		(lib_id "Connector:Conn_01x05_Pin")
+		(at 336.55 181.61 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "d4699e2c-775e-49cf-8ee5-fd520b9fbc53")
-		(property "Reference" "U1"
-			(at 293.37 165.1 0)
+		(uuid "d3e8e7cd-63ba-483b-b33f-973746af600a")
+		(property "Reference" "J5"
+			(at 337.82 180.3399 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
-		(property "Value" "ESP32-S3-DEVKITC-1-N8R8"
-			(at 293.37 167.64 0)
+		(property "Value" "USB C Lipo Pins"
+			(at 337.82 182.8799 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify right)
 			)
 		)
-		(property "Footprint" "ESP32-S3-DEVKITC-1-N8R8:ESP32-S3-DEVKITC-1-N8R8"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 293.37 203.2 0)
+		(property "Footprint" ""
+			(at 336.55 181.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4309,8 +4371,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 293.37 203.2 0)
+		(property "Datasheet" "~"
+			(at 336.55 181.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4318,222 +4380,34 @@
 				(hide yes)
 			)
 		)
-		(property "MF" "Espressif Systems"
-			(at 293.37 203.2 0)
+		(property "Description" "Generic connector, single row, 01x05, script generated"
+			(at 336.55 181.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify bottom)
 				(hide yes)
 			)
 		)
-		(property "Description_1" "\n                        \n                            The ESP32-S3-DEVKITC-1-N8R8 from Espressif Systems is a development board designed for RF, RFID, and wireless applications. It supports 802.11 b/g/n Wi-Fi and Bluetooth® 5.x (BLE) connectivity at 2.4GHz, making it ideal for IoT and wireless communication projects. This board is powered by the ESP32-S3-WROOM-1-N8R8 module, which features 8MB Quad SPI Flash and 8MB Octal SPI for efficient memory storage and processing.\n                        \n"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "1"
+			(uuid "bc810e62-4173-4916-ad9f-cd5b9849cc93")
 		)
-		(property "Package" "None"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "2"
+			(uuid "5dfc33c6-d8d6-466b-b64d-5e8bbed52a54")
 		)
-		(property "Price" "None"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "3"
+			(uuid "7a494574-e7b0-4e59-a294-0fcb4eba3642")
 		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=snap"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
+		(pin "4"
+			(uuid "082c5df2-fa5b-41ea-9f85-072ed835e8e4")
 		)
-		(property "MP" "ESP32-S3-DEVKITC-1-N8R8"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=eda"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "J3_4"
-			(uuid "6ed29e0d-3af2-42cd-ac79-7dac19b38cfa")
-		)
-		(pin "J3_8"
-			(uuid "3cd6a9ae-9571-4b63-8806-3d41930d6ca5")
-		)
-		(pin "J3_5"
-			(uuid "144344b2-006c-4c6e-bc77-c29da01f8255")
-		)
-		(pin "J3_9"
-			(uuid "caa4fc54-ab00-460d-bea5-11274c82aee6")
-		)
-		(pin "J3_7"
-			(uuid "786c3df7-c12e-419c-99de-331e1b5987c1")
-		)
-		(pin "J3_6"
-			(uuid "e94a8130-9190-4567-8d77-5c17e4e3c95b")
-		)
-		(pin "J3_3"
-			(uuid "84debb16-620a-462a-bfba-e1602be13d23")
-		)
-		(pin "J3_22"
-			(uuid "59a9c389-2a51-4729-a31f-ce9701430eec")
-		)
-		(pin "J3_21"
-			(uuid "1e01fb33-4704-4d52-a2b4-dcc0b80b0d92")
-		)
-		(pin "J3_20"
-			(uuid "7a05000c-8077-4b25-9e9a-bde9f47a16e6")
-		)
-		(pin "J1_1"
-			(uuid "6d57e7f0-088f-427b-ac0f-c11569b1c054")
-		)
-		(pin "J1_10"
-			(uuid "c41c4c10-5b07-40b9-8303-41e5c12afe86")
-		)
-		(pin "J1_11"
-			(uuid "91c0f059-6657-446f-aa74-6d37fa9cbed8")
-		)
-		(pin "J1_12"
-			(uuid "ed01b092-d821-46d3-a848-b4f6d343ed28")
-		)
-		(pin "J1_13"
-			(uuid "45f961b4-78ee-4004-8481-e4e17e64b827")
-		)
-		(pin "J1_14"
-			(uuid "ec81c24b-d6c9-4825-bcac-e02d49f33c60")
-		)
-		(pin "J1_15"
-			(uuid "e1bc16b1-d54f-4276-9d94-9eb5c24ec43b")
-		)
-		(pin "J1_16"
-			(uuid "7963955d-4f6b-44ad-affb-ff341cea2404")
-		)
-		(pin "J1_17"
-			(uuid "b95345ad-dea4-445f-95ac-01a157ea48d7")
-		)
-		(pin "J1_18"
-			(uuid "68c1b10e-c479-4324-8fd6-070abc2f80d3")
-		)
-		(pin "J1_19"
-			(uuid "2e1a8025-b450-49c7-b97f-8693f1df888c")
-		)
-		(pin "J1_2"
-			(uuid "d878d427-0dd0-462b-a46c-75517b1ed8c1")
-		)
-		(pin "J1_20"
-			(uuid "dfc246c9-7c0d-4803-8ef4-1cb572cae106")
-		)
-		(pin "J1_21"
-			(uuid "cb249b3c-6f7b-42ce-9552-0d19fe6fb75f")
-		)
-		(pin "J1_22"
-			(uuid "4529e6f2-788d-484e-be3f-94385e8534b9")
-		)
-		(pin "J1_3"
-			(uuid "98010ed2-a9be-4215-b172-c3aafe12006b")
-		)
-		(pin "J1_4"
-			(uuid "54bd031c-8d70-4b52-af6a-97d6e6ee4c94")
-		)
-		(pin "J1_5"
-			(uuid "d66369cb-63b6-40c6-8d26-8fdee1824ce8")
-		)
-		(pin "J1_6"
-			(uuid "960b2376-e1cd-44f9-8f5e-0948e61168c3")
-		)
-		(pin "J1_7"
-			(uuid "e9dc0e6b-3ee5-48e0-9e6a-57be060299a0")
-		)
-		(pin "J1_8"
-			(uuid "f821a03f-eb03-42cc-be8e-4443cec2f069")
-		)
-		(pin "J3_2"
-			(uuid "e7efa664-6728-4899-a1e8-c7d70c578d15")
-		)
-		(pin "J3_19"
-			(uuid "91f32310-0ea5-46fa-a5fa-09eff62c9802")
-		)
-		(pin "J3_18"
-			(uuid "463c4561-d7cb-4d97-a8c4-7f95f4b87314")
-		)
-		(pin "J3_17"
-			(uuid "ac3f2e76-84a1-41ab-b3f3-cb172db9afec")
-		)
-		(pin "J3_16"
-			(uuid "8e7a8418-13d9-48ab-80ed-c4669cfad1e9")
-		)
-		(pin "J3_15"
-			(uuid "e5cf00bb-2dfd-46d0-a66a-cc9330616f32")
-		)
-		(pin "J3_14"
-			(uuid "453e4b74-54b6-4809-8fa5-ef0a3b9f4d6a")
-		)
-		(pin "J3_13"
-			(uuid "cc48c769-2124-4c94-990c-9798d8fce6ac")
-		)
-		(pin "J3_12"
-			(uuid "35362925-7eec-4f55-a12e-8c5393a9c926")
-		)
-		(pin "J3_11"
-			(uuid "95ab5648-a3f0-48cd-ba63-ed1d985b374c")
-		)
-		(pin "J3_10"
-			(uuid "7f28e7be-0c67-4faf-9e31-feec124d65bc")
-		)
-		(pin "J3_1"
-			(uuid "a4c816e5-70a0-42e9-a57b-4625c1732ddd")
-		)
-		(pin "J1_9"
-			(uuid "2b443c01-a57e-46eb-ae4b-35cba5546a94")
+		(pin "5"
+			(uuid "cfa781e7-aa2f-42c4-84a6-abf4055f6a9a")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "U1")
+					(reference "J5")
 					(unit 1)
 				)
 			)
