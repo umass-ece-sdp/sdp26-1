@@ -32,6 +32,10 @@ class FALCON(Tello):
         # Drone movement commands
         self.move_dist = move_dist  # cm
 
+        # Create the EKF and Fiducial objects
+        self.ekf = EKF()
+        self.fiducial = Fiducial()
+
         # Starting target fiducial
         self.target_id = 0
 
@@ -77,49 +81,42 @@ class FALCON(Tello):
         # Check finger activations
         f_act = [True if f > thresh else False for f, thresh in zip(fingers, self.finger_thresholds)]
 
-        # Check commands — order matters: specific gestures must precede catch-alls
         if f_act[0] and f_act[1] and f_act[2] and f_act[3]:                       # Fist (all active)
             return 'closer'
-        elif not f_act[0] and not f_act[1] and not f_act[2] and not f_act[3]:     # Open hand (all inactive)
+        elif not (f_act[0] and f_act[1] and f_act[2] and f_act[3]):     # Open hand (all inactive)
             return 'farther'
-        elif not f_act[0] and f_act[1] and f_act[2] and f_act[3]:                 # Index finger up
+        elif not (f_act[0]) and f_act[1] and f_act[2] and f_act[3]:                 # Index finger up
             return 'left'
-        elif f_act[0] and f_act[1] and f_act[2] and not f_act[3]:                 # Pinky up
+        elif f_act[0] and f_act[1] and f_act[2] and not (f_act[3]):                 # Pinky up
             return 'right'
-        elif not f_act[0] and not f_act[1] and f_act[2] and f_act[3]:             # Peace sign
+        elif not (f_act[0] and f_act[1]) and f_act[2] and f_act[3]:             # Peace sign
             return 'land'
-        elif f_act[0] and not f_act[1] and not f_act[2] and f_act[3]:             # Rock & roll
+        elif f_act[0] and not (f_act[1] and f_act[2]) and f_act[3]:             # Rock & roll
             return 'takeoff'
 
-        return None  # Ambiguous/partial gesture — no action
+        return None
 
 
     # TODO: Add ability to switch fiducial targeting when moving left/right
         # - left/right commands can be associated to switching the fiducial view
     def track_target(self):
-        # Create the EKF and Fiducial objects
-        ekf = EKF()
-        fiducial = Fiducial()
         frame_reader = self.get_frame_read()
 
-        # Main control loop — try/except/finally wraps the entire loop so that
-        # self.land() is only called once on exit, not after every iteration.
         try:
             while True:
                 frame = frame_reader.frame
                 if frame is None:
                     continue
 
-                # Retrieve glove information (thread-safe snapshot)
                 instructions = variables.read_instr()
 
                 # Autonomous controls
-                ekf.predict_accel(instructions['imu'])
-                z_cam = fiducial.generate_z_cam(frame, self.target_id)
-                if z_cam is not None:   # explicit None check avoids numpy ambiguous truth
-                    ekf.update_camera(z_cam)
-                ekf.update_uwb(instructions['dist'])
-                autonomous_commands = ekf.filter_output()
+                self.ekf.predict_accel(instructions['imu'])
+                z_cam = self.fiducial.generate_z_cam(frame, self.target_id)
+                if z_cam is not None:
+                    self.ekf.update_camera(z_cam)
+                self.ekf.update_uwb(instructions['dist'])
+                autonomous_commands = self.ekf.filter_output()
                 self.send_rc_control(
                     autonomous_commands['left_right_velocity'],
                     autonomous_commands['forward_backward_velocity'],
@@ -130,7 +127,7 @@ class FALCON(Tello):
 
                 # User input
                 command = self.map_fingers(instructions['fingers'])
-                match command:
+                match command:  # CW increases fiducial ID, CCW decreases
                     case 'closer':
                         self.move_forward(self.move_dist)
                     case 'farther':
@@ -146,13 +143,13 @@ class FALCON(Tello):
                         self.land()
                     case 'takeoff':
                         self.takeoff()
-                    case _:         # None or ambiguous gesture — no change to flight state
+                    case _: # No commands == skip
                         pass
 
         except KeyboardInterrupt:
             print('KeyboardInterrupt detected, shutting down.')
 
-        finally:    # Make sure drone receives 'land' as its last instruction
+        finally:
             self.land()
 
 if __name__ == '__main__':
