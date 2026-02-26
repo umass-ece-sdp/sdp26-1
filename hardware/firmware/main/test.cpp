@@ -2,12 +2,12 @@
 // test.cpp — Hardware Bring-Up Test
 // Target : ESP32-S3 (PlatformIO / Arduino framework)
 // Tests  : 4× rubber stretch sensors (ADC),
-//          LIS3DH 3-DoF IMU (I2C)
+//          MPU-6050 6-DoF IMU (I2C, accelerometer + gyroscope)
 // =============================================================================
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_LIS3DH.h>
+#include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 
 // ── Pin Definitions ───────────────────────────────────────────────────────────
@@ -27,8 +27,8 @@ static constexpr float ADC_VREF_V = 3.3f;        // ESP32-S3 ADC reference (V)
 
 // ── Globals ──────────────────────────────────────────────────────────────────
 
-Adafruit_LIS3DH lis;
-bool lisOK = false;
+Adafruit_MPU6050 mpu;
+bool mpuOK = false;
 
 // =============================================================================
 void setup()
@@ -47,24 +47,25 @@ void setup()
     pinMode(STRETCH_PIN_4, INPUT);
     Serial.println("[INIT] Stretch sensor ADC pins configured.");
 
-    // ── LIS3DH (I2C) ──────────────────────────────────────────────────────────
+    // ── MPU-6050 (I2C) ────────────────────────────────────────────────────────
     Wire.begin(IMU_SDA_PIN, IMU_SCL_PIN);
-    if (!lis.begin(0x18))
+    if (!mpu.begin())
     {
-        Serial.println("[ERROR] LIS3DH not found — check wiring and I2C address. IMU reads will be skipped.");
+        Serial.println("[ERROR] MPU-6050 not found — check wiring and I2C address. IMU reads will be skipped.");
     }
     else
     {
-        lisOK = true;
-        Serial.println("[INIT] LIS3DH found.");
+        mpuOK = true;
+        Serial.println("[INIT] MPU-6050 found.");
+
+        mpu.setAccelerometerRange(MPU6050_RANGE_4_G);
+        mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+        mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+
+        Serial.println("[INIT] MPU-6050 configured (±4 G, ±500 deg/s, 21 Hz DLPF).");
     }
 
-    lis.setRange(LIS3DH_RANGE_4_G);
-    lis.setDataRate(LIS3DH_DATARATE_50_HZ);
-
-    Serial.println("[INIT] LIS3DH configured (±4 g, 50 Hz).");
     Serial.println("\n--- Starting sensor loop ---\n");
-
     delay(200);
 }
 
@@ -88,20 +89,25 @@ void loop()
                       i + 1, rawS[i], voltS[i]);
     }
 
-    // ── LIS3DH IMU ────────────────────────────────────────────────────────────
-    if (lisOK)
+    // ── MPU-6050 IMU ──────────────────────────────────────────────────────────
+    if (mpuOK)
     {
-        sensors_event_t accel;
-        lis.getEvent(&accel);
-        Serial.println("\n=== LIS3DH IMU ===");
+        sensors_event_t accel, gyro, temp;
+        mpu.getEvent(&accel, &gyro, &temp);
+        Serial.println("\n=== MPU-6050 IMU ===");
         Serial.printf("  Accel  X: %8.4f  Y: %8.4f  Z: %8.4f  m/s²\n",
                       accel.acceleration.x,
                       accel.acceleration.y,
                       accel.acceleration.z);
+        Serial.printf("  Gyro   X: %8.4f  Y: %8.4f  Z: %8.4f  rad/s\n",
+                      gyro.gyro.x,
+                      gyro.gyro.y,
+                      gyro.gyro.z);
+        Serial.printf("  Temp:  %.2f °C\n", temp.temperature);
     }
     else
     {
-        Serial.println("\n=== LIS3DH IMU === [NOT CONNECTED]");
+        Serial.println("\n=== MPU-6050 IMU === [NOT CONNECTED]");
     }
 
     Serial.println("\n----------------------------------------\n");
