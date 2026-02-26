@@ -111,7 +111,7 @@ class FALCON(Tello):
                 instructions = variables.read_instr()
 
                 # Autonomous controls
-                self.ekf.predict_accel(instructions['imu'])
+                self.ekf.predict_imu(instructions['imu'], instructions['gyro'])
                 z_cam = self.fiducial.generate_z_cam(frame, self.target_id)
                 if z_cam is not None:
                     self.ekf.update_camera(z_cam)
