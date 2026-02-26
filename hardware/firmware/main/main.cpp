@@ -2,34 +2,37 @@
 #include "wifi_client.h"
 #include "glove.h"
 
-// Data Rate for IMU (Hz, uncomment desired rate)
-// const int IMU_dataRate = 400;
-// const int IMU_dataRate = 200;
-// const int IMU_dataRate = 100;
-const int IMU_dataRate = 50;
-// const int IMU_dataRate = 25;
-// const int IMU_dataRate = 10;
-// const int IMU_dataRate = 1;
+// Accelerometer range for IMU (G's, uncomment for desired range)
+// const int IMU_accelRange = 2;
+const int IMU_accelRange = 4;
+// const int IMU_accelRange = 8;
+// const int IMU_accelRange = 16;
 
-// Performance Mode for IMU (uncomment for mode)
-// const int IMU_perfMode = 0;// 0 for low-power - 8bit
-const int IMU_perfMode = 1; // 1 for normal - 10bit
-// const int IMU_perfMode = 2;// 2 for high-resolution - 12bit
+// Gyroscope range for IMU (deg/s, uncomment desired range)
+// const int IMU_gyroRange = 250;
+const int IMU_gyroRange = 500;
+// const int IMU_gyroRange = 1000;
+// const int IMU_gyroRange = 2000;
 
-// Range for IMU (G's, uncomment for desired range)
-// const int IMU_range = 2;
-const int IMU_range = 4;
-// const int IMU_range = 8;
-// const int IMU_range = 16;
+// DLPF bandwidth for IMU (Hz, uncomment desired bandwidth)
+// const int IMU_filterBandwidth = 260;
+// const int IMU_filterBandwidth = 184;
+// const int IMU_filterBandwidth = 94;
+// const int IMU_filterBandwidth = 44;
+const int IMU_filterBandwidth = 21;
+// const int IMU_filterBandwidth = 10;
+// const int IMU_filterBandwidth = 5;
 
 // IMU sensor
-Adafruit_LIS3DH lis = Adafruit_LIS3DH();
+Adafruit_MPU6050 mpu;
 sensors_event_t accel;
-bool lisOK = false; // ensure IMU stays connected
+sensors_event_t gyro;
+bool mpuOK = false; // ensure IMU stays connected
 
 // Assign repeated variables to improve efficiency
 float finger_readings[4];
-float IMU_readings[3];
+float accel_readings[3];
+float gyro_readings[3];
 float UWB_distance = 0.0f;  // Eventually have real readings here
 Packet packet;
 WiFiClient client;
@@ -43,20 +46,20 @@ void setup()
 
     setup_glove();
     setup_wifi();
-    setup_IMU(lis, lisOK, IMU_perfMode, IMU_range, IMU_dataRate);
+    setup_IMU(mpu, mpuOK, IMU_accelRange, IMU_gyroRange, IMU_filterBandwidth);
 }
 
 void loop()
 {
     // Read data from the finger sensors and the IMU
     read_fingers(finger_readings);
-    if (lisOK)
+    if (mpuOK)
     {
-        read_IMU(lis, accel, IMU_readings);
+        read_IMU(mpu, accel, gyro, accel_readings, gyro_readings);
     }
 
     // Store data in a packet to send to Base
-    store_data(packet, finger_readings, IMU_readings, UWB_distance);
+    store_data(packet, finger_readings, accel_readings, gyro_readings, UWB_distance);
 
     // // Try to connect and send data
     connect_and_send(client, packet);
