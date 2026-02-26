@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_LIS3DH.h>
+#include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 
 // Packet to send to Base
@@ -12,9 +12,12 @@ struct Packet
 	float finger2;
 	float finger3;
 	float finger4;
-	float accel_x; // Accelerometer x coordinate
+	float accel_x; // Accelerometer x coordinate (m/s²)
 	float accel_y;
 	float accel_z;
+	float gyro_x;  // Gyroscope x coordinate (rad/s)
+	float gyro_y;
+	float gyro_z;
 	float dist; // distance measured between glove and drone
 };
 
@@ -28,7 +31,7 @@ struct Packet
 
 // Function prototypes
 void setup_glove();
-void setup_IMU(Adafruit_LIS3DH &lis, bool &lisOK, const int &perfMode, const int &range, const int &dataRate);
+void setup_IMU(Adafruit_MPU6050 &mpu, bool &mpuOK, const int &accelRange, const int &gyroRange, const int &filterBandwidth);
 void read_fingers(float (&reading)[4]);
-void read_IMU(Adafruit_LIS3DH &lis, sensors_event_t &accel, float (&reading)[3]);
-void store_data(Packet &packet, const float (&finger_readings)[4], const float (&IMU_readings)[3], const float &UWB_distance);
+void read_IMU(Adafruit_MPU6050 &mpu, sensors_event_t &accel, sensors_event_t &gyro, float (&accel_reading)[3], float (&gyro_reading)[3]);
+void store_data(Packet &packet, const float (&finger_readings)[4], const float (&accel_readings)[3], const float (&gyro_readings)[3], const float &UWB_distance);
