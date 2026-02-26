@@ -2431,6 +2431,16 @@
 		)
 		(uuid "0f1ea641-c4f7-47d2-879b-082c2cf0187e")
 	)
+	(text "Power Switch"
+		(exclude_from_sim no)
+		(at 278.384 256.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "17d11a58-4a71-4a90-8daa-1b99e3a9244a")
+	)
 	(text "VDD"
 		(exclude_from_sim no)
 		(at 339.852 170.18 0)
@@ -2601,6 +2611,16 @@
 		)
 		(uuid "94a05c6a-f52e-4cfb-9623-b15b8e8502a2")
 	)
+	(text "Event Listener Switch"
+		(exclude_from_sim no)
+		(at 392.176 189.484 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "aa790725-d555-4dbb-a03b-89038d38268d")
+	)
 	(text "SDA (Assigned)"
 		(exclude_from_sim no)
 		(at 297.18 211.074 0)
@@ -2712,6 +2732,12 @@
 		(uuid "a3e7e405-7698-46f4-b236-a69dba0112bb")
 	)
 	(junction
+		(at 325.12 223.52)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "aa7cc040-f7b1-4be7-abec-f3fb904dacf3")
+	)
+	(junction
 		(at 236.22 180.34)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2772,8 +2798,16 @@
 		(uuid "2723d11d-d673-4e9f-926c-2717fb110065")
 	)
 	(no_connect
+		(at 266.7 252.73)
+		(uuid "300fdf1b-eeac-46a1-96e3-5b741d005fda")
+	)
+	(no_connect
 		(at 270.51 215.9)
 		(uuid "325a5317-3d88-47eb-9556-fbf06a12452c")
+	)
+	(no_connect
+		(at 330.2 203.2)
+		(uuid "367c46d2-6e1d-42ab-b215-f04e132ff14e")
 	)
 	(no_connect
 		(at 316.23 203.2)
@@ -2794,6 +2828,10 @@
 	(no_connect
 		(at 270.51 203.2)
 		(uuid "5082f5df-3325-493c-a05c-89ac795c8fcc")
+	)
+	(no_connect
+		(at 359.41 205.74)
+		(uuid "7453bb00-fef0-40a0-b3b4-2ca07ecfa981")
 	)
 	(no_connect
 		(at 316.23 187.96)
@@ -2820,8 +2858,16 @@
 		(uuid "b23f96ac-1337-4ebe-a659-2332179d95d6")
 	)
 	(no_connect
+		(at 330.2 213.36)
+		(uuid "b3d6d881-e5d0-429f-9b3e-5cfc0ef4689c")
+	)
+	(no_connect
 		(at 316.23 198.12)
 		(uuid "b63e9509-67e9-43ba-9f29-a8aa44731fc3")
+	)
+	(no_connect
+		(at 316.23 226.06)
+		(uuid "bed70961-537a-42f3-b973-8468a31f250c")
 	)
 	(no_connect
 		(at 316.23 190.5)
@@ -2836,12 +2882,24 @@
 		(uuid "d9eaa3ce-9cb9-45b5-abf8-d6393589fbc7")
 	)
 	(no_connect
+		(at 369.57 180.34)
+		(uuid "db1a9b39-fc6a-47b3-9938-2d974c843ea2")
+	)
+	(no_connect
+		(at 264.16 252.73)
+		(uuid "e0a037a6-c668-4784-8357-895bfae77a44")
+	)
+	(no_connect
 		(at 270.51 213.36)
 		(uuid "e8b56576-a136-4def-95b1-019064f8cafe")
 	)
 	(no_connect
 		(at 316.23 200.66)
 		(uuid "e97e86f6-7534-4900-a265-fa0bdf88530a")
+	)
+	(no_connect
+		(at 259.08 252.73)
+		(uuid "eafa1dde-63a9-4a03-bad2-235fd5de0fe4")
 	)
 	(no_connect
 		(at 270.51 208.28)
@@ -3391,7 +3449,7 @@
 	)
 	(wire
 		(pts
-			(xy 316.23 223.52) (xy 326.39 223.52)
+			(xy 316.23 223.52) (xy 325.12 223.52)
 		)
 		(stroke
 			(width 0)
@@ -3508,6 +3566,16 @@
 			(type default)
 		)
 		(uuid "eba2ce76-6306-4114-8998-24b0bf3b5cc7")
+	)
+	(wire
+		(pts
+			(xy 325.12 223.52) (xy 326.39 223.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ebcb9a2b-23ca-48ef-bd22-51ff74aaf29a")
 	)
 	(wire
 		(pts
@@ -4098,7 +4166,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical"
 			(at 335.28 208.28 0)
 			(effects
 				(font
@@ -4179,7 +4247,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x06_P2.54mm_Vertical"
 			(at 337.82 177.8 0)
 			(effects
 				(font
@@ -4234,6 +4302,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 325.12 223.52 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8370ea7e-3a2f-459f-a7a8-c86800dcd51a")
+		(property "Reference" "#FLG03"
+			(at 325.12 225.425 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 325.12 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 325.12 223.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 325.12 223.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 325.12 223.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6554de4d-bd81-4ce8-aca2-3c72191742fd")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "#FLG03")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "GF-123-0054:GF-123-0054")
 		(at 269.24 242.57 90)
 		(unit 1)
@@ -4250,8 +4384,8 @@
 				)
 			)
 		)
-		(property "Value" "Power Switch"
-			(at 276.606 242.57 90)
+		(property "Value" "GF-123-0054"
+			(at 278.13 242.316 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4560,7 +4694,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "Input Listener Switch"
+		(property "Value" "B3F-1000"
 			(at 373.38 194.3114 90)
 			(effects
 				(font
@@ -4855,7 +4989,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x05_P2.54mm_Vertical"
 			(at 264.16 257.81 0)
 			(effects
 				(font
