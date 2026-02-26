@@ -2,6 +2,8 @@ import subprocess
 from pathlib import Path
 from djitellopy import Tello
 from software.lib import variables
+from software.lib.fiducials import Fiducial
+from software.lib.kalmanfilter import EKF
 
 class FALCON(Tello):
     '''
@@ -11,17 +13,27 @@ class FALCON(Tello):
     attributes needed for this project.
 
     Parameters:
-        speed (int, default=10): Initial speed in cm/s that the drone
-            will fly at
-        distance (int, default=20): Initial distance that the drone
-            moves when told to move a direction
-        degrees (int, default=10): Initial degrees the drone will turn
+        interface (str, default='wlx90de80899a92'): Interface that the drone
+            connects to on the base station.
+        ssid (str, default='TELLO-AA7B55'): Tello's WiFi name.
+        password (str, default=''): Tello's WiFi password.
+        move_dist (int, default=35): Distance that the Tello will move
+            when instructed to by the user.
     '''
-    def __init__(self, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str=''):
+    def __init__(self, *, interface: str='wlx90de80899a92', ssid: str='TELLO-AA7B55', password: str='', move_dist: int=35):
         self.file_path = Path(__file__).parent
         self.interface = interface
         self.ssid = ssid
         self.password = password
+
+        # Thresholds for determining finger on
+        self.finger_thresholds = (2.6, 2.6, 2.6, 2.6)  # V
+
+        # Drone movement commands
+        self.move_dist = move_dist  # cm
+
+        # Starting target fiducial
+        self.target_id = 0
 
         # Connect to WiFi before initializing Tello
         self._connect_wifi()
@@ -60,6 +72,88 @@ class FALCON(Tello):
             print('STDERR:\n', e.stderr)
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
+
+    def map_fingers(self, fingers: tuple[float, float, float, float]) -> str | None:
+        # Check finger activations
+        f_act = [True if f > thresh else False for f, thresh in zip(fingers, self.finger_thresholds)]
+
+        # Check commands — order matters: specific gestures must precede catch-alls
+        if f_act[0] and f_act[1] and f_act[2] and f_act[3]:                       # Fist (all active)
+            return 'closer'
+        elif not f_act[0] and not f_act[1] and not f_act[2] and not f_act[3]:     # Open hand (all inactive)
+            return 'farther'
+        elif not f_act[0] and f_act[1] and f_act[2] and f_act[3]:                 # Index finger up
+            return 'left'
+        elif f_act[0] and f_act[1] and f_act[2] and not f_act[3]:                 # Pinky up
+            return 'right'
+        elif not f_act[0] and not f_act[1] and f_act[2] and f_act[3]:             # Peace sign
+            return 'land'
+        elif f_act[0] and not f_act[1] and not f_act[2] and f_act[3]:             # Rock & roll
+            return 'takeoff'
+
+        return None  # Ambiguous/partial gesture — no action
+
+
+    # TODO: Add ability to switch fiducial targeting when moving left/right
+        # - left/right commands can be associated to switching the fiducial view
+    def track_target(self):
+        # Create the EKF and Fiducial objects
+        ekf = EKF()
+        fiducial = Fiducial()
+        frame_reader = self.get_frame_read()
+
+        # Main control loop — try/except/finally wraps the entire loop so that
+        # self.land() is only called once on exit, not after every iteration.
+        try:
+            while True:
+                frame = frame_reader.frame
+                if frame is None:
+                    continue
+
+                # Retrieve glove information (thread-safe snapshot)
+                instructions = variables.read_instr()
+
+                # Autonomous controls
+                ekf.predict_accel(instructions['imu'])
+                z_cam = fiducial.generate_z_cam(frame, self.target_id)
+                if z_cam is not None:   # explicit None check avoids numpy ambiguous truth
+                    ekf.update_camera(z_cam)
+                ekf.update_uwb(instructions['dist'])
+                autonomous_commands = ekf.filter_output()
+                self.send_rc_control(
+                    autonomous_commands['left_right_velocity'],
+                    autonomous_commands['forward_backward_velocity'],
+                    autonomous_commands['up_down_velocity'],
+                    autonomous_commands['yaw_velocity']
+                )
+                self.set_speed(autonomous_commands['speed'])
+
+                # User input
+                command = self.map_fingers(instructions['fingers'])
+                match command:
+                    case 'closer':
+                        self.move_forward(self.move_dist)
+                    case 'farther':
+                        self.move_back(self.move_dist)
+                    case 'left':    # Move to the side and change fiducial
+                        self.move_left(self.move_dist)
+                        self.target_id = (self.target_id + 1) % 4 # make sure id doesn't hit >= 4
+                    case 'right':   # Move to the side and change fiducial
+                        self.move_right(self.move_dist)
+                        id_adj = self.target_id - 1
+                        self.target_id = id_adj if id_adj > 0 else 3
+                    case 'land':
+                        self.land()
+                    case 'takeoff':
+                        self.takeoff()
+                    case _:         # None or ambiguous gesture — no change to flight state
+                        pass
+
+        except KeyboardInterrupt:
+            print('KeyboardInterrupt detected, shutting down.')
+
+        finally:    # Make sure drone receives 'land' as its last instruction
+            self.land()
 
 if __name__ == '__main__':
     tello = FALCON()
