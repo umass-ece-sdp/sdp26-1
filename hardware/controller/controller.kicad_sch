@@ -2501,6 +2501,16 @@
 		)
 		(uuid "6c680364-f4c4-4df2-a00d-b1fe0277f467")
 	)
+	(text "MISO"
+		(exclude_from_sim no)
+		(at 302.006 213.614 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "6d20b129-3269-40cc-bf28-1054acfe02a3")
+	)
 	(text "SCL"
 		(exclude_from_sim no)
 		(at 338.836 209.55 0)
@@ -2523,7 +2533,7 @@
 	)
 	(text "5v"
 		(exclude_from_sim no)
-		(at 338.074 176.784 0)
+		(at 268.986 259.334 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2533,7 +2543,7 @@
 	)
 	(text "BAT"
 		(exclude_from_sim no)
-		(at 338.582 186.944 0)
+		(at 258.826 259.842 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2543,7 +2553,7 @@
 	)
 	(text "D-"
 		(exclude_from_sim no)
-		(at 338.328 179.324 0)
+		(at 266.446 259.588 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2563,7 +2573,7 @@
 	)
 	(text "GND"
 		(exclude_from_sim no)
-		(at 338.582 184.404 0)
+		(at 261.366 259.842 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2573,13 +2583,23 @@
 	)
 	(text "D+"
 		(exclude_from_sim no)
-		(at 338.328 182.118 0)
+		(at 263.652 259.588 90)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 		)
 		(uuid "94a05c6a-f52e-4cfb-9623-b15b8e8502a2")
+	)
+	(text "MOSI"
+		(exclude_from_sim no)
+		(at 283.972 188.214 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "d168c42a-ccd7-4e61-a4f0-6c2bb1379028")
 	)
 	(text "RXD"
 		(exclude_from_sim no)
@@ -2590,6 +2610,16 @@
 			)
 		)
 		(uuid "d9cb073a-2971-4f2d-b618-bdb94bc1b30c")
+	)
+	(text "CLK"
+		(exclude_from_sim no)
+		(at 302.514 216.154 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "e26fbc8d-5154-4700-9dd8-bf31c19bd35f")
 	)
 	(text "Finger Sensors"
 		(exclude_from_sim no)
@@ -2614,13 +2644,13 @@
 		(uuid "0bfe46f4-a990-409d-ba85-9b865bde9bb5")
 	)
 	(junction
-		(at 270.51 240.03)
+		(at 261.62 231.14)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "21b5334c-eff0-4842-9181-7d292dc5c751")
+		(uuid "5ae1d89b-037f-45b4-a817-ad2bcd2c6896")
 	)
 	(junction
-		(at 270.51 226.06)
+		(at 261.62 226.06)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "632bcd50-15fe-4d86-bb3b-e2c2d575e373")
@@ -2680,10 +2710,10 @@
 		(uuid "de0cf9ec-c321-4c7a-9b55-c6057806f548")
 	)
 	(junction
-		(at 257.81 238.76)
+		(at 269.24 231.14)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "ee205863-269e-4328-9750-e716228bcb5a")
+		(uuid "fa8a79bb-1a62-48a6-a840-16a963e5c0f8")
 	)
 	(no_connect
 		(at 270.51 220.98)
@@ -2833,6 +2863,16 @@
 	)
 	(wire
 		(pts
+			(xy 261.62 226.06) (xy 270.51 226.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "064f712d-8944-47b0-b3d2-182666397c60")
+	)
+	(wire
+		(pts
 			(xy 232.41 187.96) (xy 232.41 193.04)
 		)
 		(stroke
@@ -2913,7 +2953,7 @@
 	)
 	(wire
 		(pts
-			(xy 257.81 259.08) (xy 257.81 270.51)
+			(xy 269.24 250.19) (xy 269.24 252.73)
 		)
 		(stroke
 			(width 0)
@@ -2933,17 +2973,7 @@
 	)
 	(wire
 		(pts
-			(xy 257.81 243.84) (xy 257.81 238.76)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3a7ee009-2c3b-427e-b805-c4789f6a3aa4")
-	)
-	(wire
-		(pts
-			(xy 257.81 238.76) (xy 257.81 223.52)
+			(xy 269.24 223.52) (xy 269.24 231.14)
 		)
 		(stroke
 			(width 0)
@@ -2953,7 +2983,7 @@
 	)
 	(wire
 		(pts
-			(xy 257.81 223.52) (xy 270.51 223.52)
+			(xy 269.24 223.52) (xy 270.51 223.52)
 		)
 		(stroke
 			(width 0)
@@ -2963,7 +2993,7 @@
 	)
 	(wire
 		(pts
-			(xy 232.41 226.06) (xy 270.51 226.06)
+			(xy 232.41 226.06) (xy 261.62 226.06)
 		)
 		(stroke
 			(width 0)
@@ -3053,6 +3083,16 @@
 	)
 	(wire
 		(pts
+			(xy 261.62 231.14) (xy 261.62 252.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "842b174f-a308-4fb9-8618-c34915243980")
+	)
+	(wire
+		(pts
 			(xy 232.41 193.04) (xy 232.41 198.12)
 		)
 		(stroke
@@ -3060,16 +3100,6 @@
 			(type default)
 		)
 		(uuid "8a53547c-d190-4b6e-a4b8-924f7878558e")
-	)
-	(wire
-		(pts
-			(xy 270.51 270.51) (xy 270.51 240.03)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8b2c54e7-9746-4efb-9907-20faf0cb453c")
 	)
 	(wire
 		(pts
@@ -3153,7 +3183,7 @@
 	)
 	(wire
 		(pts
-			(xy 270.51 240.03) (xy 270.51 226.06)
+			(xy 261.62 226.06) (xy 261.62 231.14)
 		)
 		(stroke
 			(width 0)
@@ -3180,6 +3210,16 @@
 			(type default)
 		)
 		(uuid "e5d274f6-2ff8-4bda-ac50-c4f9c4c361d5")
+	)
+	(wire
+		(pts
+			(xy 269.24 231.14) (xy 269.24 234.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e717f32d-60b6-404b-8c51-52a496516c5b")
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x02_Pin")
@@ -3525,16 +3565,15 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 270.51 240.03 270)
+		(at 261.62 231.14 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "4376f9b1-c9b3-4d1d-9fa8-3f9c9617ffd2")
 		(property "Reference" "#FLG02"
-			(at 272.415 240.03 0)
+			(at 259.715 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3543,7 +3582,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 274.32 240.0299 90)
+			(at 259.08 231.14 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3552,7 +3591,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 270.51 240.03 0)
+			(at 261.62 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3561,7 +3600,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 270.51 240.03 0)
+			(at 261.62 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3570,7 +3609,7 @@
 			)
 		)
 		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 270.51 240.03 0)
+			(at 261.62 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3888,7 +3927,7 @@
 	)
 	(symbol
 		(lib_id "GF-123-0054:GF-123-0054")
-		(at 257.81 251.46 90)
+		(at 269.24 242.57 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -3896,7 +3935,7 @@
 		(dnp no)
 		(uuid "8be626a8-bf28-4481-be66-dc74ad9871ea")
 		(property "Reference" "S2"
-			(at 250.19 251.46 90)
+			(at 276.86 240.538 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3904,7 +3943,7 @@
 			)
 		)
 		(property "Value" "Power Switch"
-			(at 250.698 253.492 90)
+			(at 276.606 242.57 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3912,7 +3951,7 @@
 			)
 		)
 		(property "Footprint" "GF-123-0054:SW_GF-123-0054"
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3922,7 +3961,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3931,7 +3970,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3940,7 +3979,7 @@
 			)
 		)
 		(property "PARTREV" "May 20, 2003"
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3950,7 +3989,7 @@
 			)
 		)
 		(property "MANUFACTURER" "CW Industries"
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3960,7 +3999,7 @@
 			)
 		)
 		(property "MAXIMUM_PACKAGE_HIEGHT" "14.96 mm"
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3970,7 +4009,7 @@
 			)
 		)
 		(property "STANDARD" "Manufacturer Recommendations"
-			(at 257.81 251.46 0)
+			(at 269.24 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4281,16 +4320,15 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 257.81 238.76 90)
+		(at 269.24 231.14 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "a1c7fd83-0578-48bc-84b5-6882d74f63f6")
 		(property "Reference" "#FLG01"
-			(at 255.905 238.76 0)
+			(at 271.145 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4299,7 +4337,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 254 238.7599 90)
+			(at 272.034 231.14 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4308,7 +4346,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 257.81 238.76 0)
+			(at 269.24 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4317,7 +4355,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 257.81 238.76 0)
+			(at 269.24 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4326,7 +4364,7 @@
 			)
 		)
 		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 257.81 238.76 0)
+			(at 269.24 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4482,7 +4520,7 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x05_Pin")
-		(at 336.55 181.61 180)
+		(at 264.16 257.81 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4490,7 +4528,7 @@
 		(dnp no)
 		(uuid "d3e8e7cd-63ba-483b-b33f-973746af600a")
 		(property "Reference" "J5"
-			(at 333.248 170.688 0)
+			(at 262.89 263.144 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4499,7 +4537,7 @@
 			)
 		)
 		(property "Value" "USB C Lipo Pins"
-			(at 327.152 172.72 0)
+			(at 256.794 265.176 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4508,7 +4546,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 336.55 181.61 0)
+			(at 264.16 257.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4517,7 +4555,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 336.55 181.61 0)
+			(at 264.16 257.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4526,7 +4564,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x05, script generated"
-			(at 336.55 181.61 0)
+			(at 264.16 257.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
