@@ -51,7 +51,7 @@ class EKF:
         q_pos (float, default=0.1): Process noise variance for position states (m^2)
         q_vel (float, default=0.1): Process noise variance for velocity states ((m/s)^2)
         covar (float, default=5): Initial state covariance scale (higher = more uncertainty)
-        r_desired (float, default=3): Desired distance between target and drone (meters)
+        r_desired (float, default=10): Desired distance between target and drone (meters)
     """
 
     def __init__(
@@ -270,6 +270,13 @@ class EKF:
             # Velocity states do not appear in h(x), so their partials are 0.
             return np.array([[px/r, py/r, pz/r, 0, 0, 0]])
 
+        # Guard: skip update if position estimate is at origin (r ≈ 0) to avoid
+        # division by zero in H_uwb. This can occur on the first iterations before
+        # any measurements have been incorporated.
+        px_c, py_c, pz_c = self.ekf.x[0, 0], self.ekf.x[1, 0], self.ekf.x[2, 0]
+        if np.sqrt(px_c**2 + py_c**2 + pz_c**2) < 1e-6:
+            return
+
         # Linearised measurement matrix at the current state estimate.
         H = H_uwb(self.ekf.x)
 
@@ -353,42 +360,40 @@ class EKF:
         px, py, pz, vx, vy, vz = self.ekf.x.flatten()    # filter outputs
         
         # Distance control (forward/backward)
-        r = np.sqrt(px**2 + py**2 + pz**2)  # distance between drone and target
-        e_d = r - self.r_desired    # error in distance
-        
-        v_r = (px*vx + py*vy + pz*vz) / r   # radial velocity
+        r = np.sqrt(px**2 + py**2 + pz**2)  # distance between drone and target (m)
+        e_d = r - self.r_desired    # error in distance (m)
+
+        # Guard against division by zero when drone and target are co-located
+        v_r = (px*vx + py*vy + pz*vz) / r if r > 1e-6 else 0.0  # radial velocity (m/s)
         Kp_d = 0.8
         Kd_d = 0.4
-        v_forward = Kp_d * e_d + Kd_d * v_r # PD control
-        v_forward = np.clip(v_forward, -2.0, 2.0)   # clamp
+        v_forward = Kp_d * e_d + Kd_d * v_r  # PD control (m/s)
+        v_forward = np.clip(v_forward * 100, -100, 100)   # convert m/s → cm/s, clamp
 
         # Left/Right control
         e_x = px    # set lateral offset to be 0
         Kp_hor = 1.2
         Kd_hor = 0.3
-        v_left_right = Kp_hor * e_x + Kd_hor * vx
-        v_left_right = np.clip(v_left_right, -2.0, 2.0)   # clamp
+        v_left_right = Kp_hor * e_x + Kd_hor * vx  # m/s
+        v_left_right = np.clip(v_left_right * 100, -100, 100)   # convert m/s → cm/s, clamp
 
         # Up/Down control
         e_y = py    # set vertical offset to be 0
         Kp_vert = 1.0
         Kd_vert = 0.3
-        v_up_down = Kp_vert * e_y + Kd_vert * vy
-        v_up_down = np.clip(v_up_down, -2.0, 2.0)   # clamp
+        v_up_down = Kp_vert * e_y + Kd_vert * vy  # m/s
+        v_up_down = np.clip(v_up_down * 100, -100, 100)   # convert m/s → cm/s, clamp
 
         # Yaw control
-        yaw_error = np.arctan2(px, pz)
+        yaw_error = np.arctan2(px, pz)  # radians
         Kp_yaw = 2.0
         Kd_yaw = 0.2
-        yaw_rate = Kp_yaw * yaw_error + Kd_yaw * vx
-        yaw_rate = np.clip(yaw_rate, -1.0, 1.0)   # clamp
+        yaw_rate = Kp_yaw * yaw_error + Kd_yaw * vx  # rad-scale
+        yaw_rate = np.clip(yaw_rate * 100, -100, 100)  # scale to [-100, 100], clamp
 
-        # Match speed
-        target_speed = np.sqrt(vx**2 + vy**2 + vz**2)
-        if target_speed < 10:
-            target_speed = 10
-        elif target_speed > 100:
-            target_speed = 100
+        # Match speed — convert target velocity magnitude from m/s to cm/s
+        target_speed = np.sqrt(vx**2 + vy**2 + vz**2) * 100
+        target_speed = float(np.clip(target_speed, 10, 100))
 
         return {
             'left_right_velocity': int(v_left_right),
