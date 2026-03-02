@@ -113,5 +113,4 @@ Other patterns are logged but ignored for distance changes. The vision loop re-c
 ## Development Notes
 
 - Vision currently uses HSV color masking; YOLO detection code is present but commented out. Tweak target color, tolerances, and speeds near the top of [software/lib/falcon_vision.py](software/lib/falcon_vision.py).
-- Empty doc folders contain `.gitkeep`; populate [docs/design_specs](docs/design_specs) and [docs/final_report](docs/final_report) as artifacts are produced.
 - No automated tests yet; add unit tests under `software/tests/` and leverage PlatformIO monitors for firmware.
