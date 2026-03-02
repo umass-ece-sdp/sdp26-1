@@ -37,7 +37,7 @@ class FALCON(Tello):
         self.fiducial = Fiducial()
 
         # Starting target fiducial
-        self.target_id = 0
+        self.target_id = 0 # Chest marker
 
         # Connect to WiFi before initializing Tello
         self._connect_wifi()
@@ -151,6 +151,8 @@ class FALCON(Tello):
 
         finally:
             self.land()
+
+    def 
 
 if __name__ == '__main__':
     tello = FALCON()
