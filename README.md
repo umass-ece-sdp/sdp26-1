@@ -11,7 +11,7 @@ Autonomous DJI Tello target-tracking platform with a wearable glove controller. 
 - [software/lib/falcon.py](software/lib/falcon.py): DJI Tello wrapper that auto-connects to the drone Wi-Fi using a provided interface/SSID
 - [hardware/firmware](hardware/firmware): ESP32-S3 glove firmware, TCP glove server, and PlatformIO config
 - [software/scripts](software/scripts): Network helper scripts (AP config, Tello Wi-Fi connect) and startup helper for the host
-- [docs](docs): Design docs placeholders (currently empty); fill as deliverables are produced
+- [docs](docs): Design docs placeholders; fill as deliverables are produced
 
 ---
 
