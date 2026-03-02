@@ -152,7 +152,5 @@ class FALCON(Tello):
         finally:
             self.land()
 
-    def 
-
 if __name__ == '__main__':
     tello = FALCON()
