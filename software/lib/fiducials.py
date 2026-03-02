@@ -41,26 +41,26 @@ class Fiducial:
         cv2.imwrite('software\\lib\\fiducials\\right_shoulder_marker.png', right_shoulder_marker)
         cv2.imwrite('software\\lib\\fiducials\\back_marker.png', back_marker)
 
-def detect_marker(self, frame, target_id):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Convert frame to black and white for better detection
-    corners, ids, _ = self.detector.detectMarkers(gray) # Run detection
+    def detect_marker(self, frame, target_id):
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Convert frame to black and white for better detection
+        corners, ids, _ = self.detector.detectMarkers(gray) # Run detection
 
-    if ids is not None:
-        for corner, marker_id in zip(corners, ids.flatten()):
-            if marker_id != target_id:
-                continue
+        if ids is not None:
+            for corner, marker_id in zip(corners, ids.flatten()):
+                if marker_id != target_id:
+                    continue
 
-            # Calculate x y and z coordinates
-            success, rvec, tvec = cv2.solvePnP(
-                self.obj_points, corner.reshape(4, 2),
-                self.camera_matrix, self.dist_coeffs
-            )
-            if not success:
-                continue
+                # Calculate x y and z coordinates
+                success, rvec, tvec = cv2.solvePnP(
+                    self.obj_points, corner.reshape(4, 2),
+                    self.camera_matrix, self.dist_coeffs
+                )
+                if not success:
+                    continue
 
-            return np.array([tvec[0, 0], tvec[1, 0], tvec[2, 0]])
+                return np.array([tvec[0, 0], tvec[1, 0], tvec[2, 0]])
 
-    return None
+        return None
 
 if __name__=='__main__':
     fiducial = Fiducial()

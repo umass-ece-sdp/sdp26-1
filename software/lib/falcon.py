@@ -112,7 +112,7 @@ class FALCON(Tello):
 
                 # Autonomous controls
                 self.ekf.predict_imu(instructions['imu'], instructions['gyro'])
-                z_cam = self.fiducial.generate_z_cam(frame, self.target_id)
+                z_cam = self.fiducial.detect_marker(frame, self.target_id)
                 if z_cam is not None:
                     self.ekf.update_camera(z_cam)
                 self.ekf.update_uwb(instructions['dist'])
