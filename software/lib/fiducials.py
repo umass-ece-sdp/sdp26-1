@@ -1,5 +1,11 @@
 import cv2
 import numpy as np
+from pathlib import Path
+
+fp = Path(__file__)
+fiducial_dir = fp.parent.joinpath('fiducials')
+if not fiducial_dir.exists():
+    fiducial_dir.mkdir()
 
 class Fiducial:
     MARKER_SIZE = 0.08 # Markers are 8cm x 8cm
@@ -36,10 +42,10 @@ class Fiducial:
         back_marker = cv2.aruco.generateImageMarker(self.aruco_dict, id=3, sidePixels=400)
 
         # Save the markers
-        cv2.imwrite('software\\lib\\fiducials\\chest_marker.png', chest_marker)
-        cv2.imwrite('software\\lib\\fiducials\\left_shoulder_marker.png', left_shoulder_marker)
-        cv2.imwrite('software\\lib\\fiducials\\right_shoulder_marker.png', right_shoulder_marker)
-        cv2.imwrite('software\\lib\\fiducials\\back_marker.png', back_marker)
+        cv2.imwrite(fiducial_dir.joinpath('chest_marker.png'), chest_marker)
+        cv2.imwrite(fiducial_dir.joinpath('left_shoulder_marker.png'), left_shoulder_marker)
+        cv2.imwrite(fiducial_dir.joinpath('right_shoulder_marker.png'), right_shoulder_marker)
+        cv2.imwrite(fiducial_dir.joinpath('back_marker.png'), back_marker)
 
     def detect_marker(self, frame, target_id):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Convert frame to black and white for better detection
