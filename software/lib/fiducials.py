@@ -1,118 +1,72 @@
 import cv2
-import cv2.aruco as aruco
-from pathlib import Path
 import numpy as np
-from typing import Literal
+from pathlib import Path
 
 fp = Path(__file__)
-dir = fp.parent
+fiducial_dir = fp.parent.joinpath('fiducials')
+if not fiducial_dir.exists():
+    fiducial_dir.mkdir()
 
 class Fiducial:
-    MARKER_SIZE = 8.5 * 0.0254   # inches * meters conversion, actual size of printed marker
-    ARUCO_DICT = aruco.DICT_4X4_50
+    MARKER_SIZE = 0.08 # Markers are 8cm x 8cm
+    ARUCO_DICT = cv2.aruco.DICT_4X4_50 # 4x4 dictionary to have best tracking
     
-    def __init__(self, *, recalibrate: bool=False, verbose: bool=False, start_id: int=0, sidePixels: int=400):
-        # Define parameters
-        self.verbose = verbose
-        self.parameters = aruco.DetectorParameters()
-        self.aruco_dict = aruco.getPredefinedDictionary(Fiducial.ARUCO_DICT)
-        self.detector = aruco.ArucoDetector(self.aruco_dict, self.parameters)
+    def __init__(self):
+        # Initialize marker dictionary and detector
+        self.parameters = cv2.aruco.DetectorParameters()
+        self.aruco_dict = cv2.aruco.getPredefinedDictionary(Fiducial.ARUCO_DICT)
+        self.detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.parameters)
 
-        # Call startup functions
-        self.generate_marker(start_id, sidePixels)
-        cal_matrix = dir.joinpath('camera_matrix.npy')
-        cal_dist = dir.joinpath('dist_coeffs.npy')
-        if recalibrate or not cal_matrix.exists() or not cal_dist.exists():
-            self.calibrate_camera()
-        else:
-            self.camera_matrix = np.load(cal_matrix)
-            self.dist_coeffs = np.load(cal_dist)
+        # Initialize matrices and vectors
+        half = Fiducial.MARKER_SIZE / 2
+        self.obj_points = np.array([
+            [-half,  half, 0],
+            [ half,  half, 0],
+            [ half, -half, 0],
+            [-half, -half, 0],
+        ], dtype=np.float32) # Matrix for corner coordinates of fiducial
 
-    def generate_marker(self, start_id: int=0, sidePixels: int=400) -> None:
-        """
-        Generates the fiducial marker needed for tracking the user
-        through the drones camera. Generates 4 markers - one per side
-        of the target's body. Only needs to be called once (unless 
-        another marker set is needed).
+        # DJI Tello camera calibration for distance (z) measurement
+        self.camera_matrix = np.array([
+            [921.170702, 0.000000, 459.904354],
+            [0.000000, 919.018377, 351.238301],
+            [0.000000, 0.000000, 1.000000]
+        ], dtype=np.float64) 
+        self.dist_coeffs = np.array([-0.033458, 0.105152, 0.001256, -0.006647, 0.000000], dtype=np.float64)
 
-        Parameters:
-            start_id (int, default=0): The first id used to generate 
-                fiducial markers. Iterates through the next 3 id's.
-            sidePixels (int, default=400): Number of pixels surrounding
-                the fiducial marker in the saved image.
-        """
+    def generate_marker(self):
+        # Generate marker images
+        chest_marker = cv2.aruco.generateImageMarker(self.aruco_dict, id=0, sidePixels=400)
+        left_shoulder_marker = cv2.aruco.generateImageMarker(self.aruco_dict, id=1, sidePixels=400)
+        right_shoulder_marker = cv2.aruco.generateImageMarker(self.aruco_dict, id=2, sidePixels=400)
+        back_marker = cv2.aruco.generateImageMarker(self.aruco_dict, id=3, sidePixels=400)
 
-        # Check to see if the markers have already been generated
-        ids = range(start_id, start_id + 4)
-        existing_stems = {p.stem for p in dir.iterdir()}
-        markers_exist = all(f'marker_{i}' in existing_stems for i in ids)
-        if markers_exist:
-            return
+        # Save the markers
+        cv2.imwrite(fiducial_dir.joinpath('chest_marker.png'), chest_marker)
+        cv2.imwrite(fiducial_dir.joinpath('left_shoulder_marker.png'), left_shoulder_marker)
+        cv2.imwrite(fiducial_dir.joinpath('right_shoulder_marker.png'), right_shoulder_marker)
+        cv2.imwrite(fiducial_dir.joinpath('back_marker.png'), back_marker)
 
-        for id in ids:
-            marker = aruco.generateImageMarker(self.aruco_dict, id=id, sidePixels=sidePixels)
-            cv2.imwrite(dir.joinpath(f'marker_{id}.png'), marker)
-
-    # TODO: Learn how to calibrate camera
-    # TODO: Calibrate for each fiducial, make it smart to know when it hasn't seen one
-    def calibrate_camera(self):
-        pass
-
-    # TODO: Check frame coloring when being passed in to function, may not be BGR
-    def generate_z_cam(self, frame, target_id: int) -> np.ndarray | None:
-        """
-        Detect all visible ArUco markers and return the [x, y, z] position
-        of the marker matching target_id, or None if it is not in frame.
-
-        Parameters:
-            frame: BGR image from the drone camera.
-            target_id (int): The ArUco marker ID to return a pose for.
-
-        Returns:
-            np.ndarray of shape (3,) — [px, py, pz] relative to the camera,
-            or None if target_id is not detected in this frame.
-        """
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        corners, ids, rejected = self.detector.detectMarkers(gray)
+    def detect_marker(self, frame, target_id):
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Convert frame to black and white for better detection
+        corners, ids, _ = self.detector.detectMarkers(gray) # Run detection
 
         if ids is not None:
-            half = Fiducial.MARKER_SIZE / 2
-            obj_points = np.array([
-                [-half,  half, 0],
-                [ half,  half, 0],
-                [ half, -half, 0],
-                [-half, -half, 0],
-            ], dtype=np.float32)
-
             for corner, marker_id in zip(corners, ids.flatten()):
                 if marker_id != target_id:
                     continue
 
-                _, rvec, tvec = cv2.solvePnP(
-                    obj_points, corner.reshape(4, 2),
+                # Calculate x y and z coordinates
+                success, rvec, tvec = cv2.solvePnP(
+                    self.obj_points, corner.reshape(4, 2),
                     self.camera_matrix, self.dist_coeffs
                 )
+                if not success:
+                    continue
 
-                # solvePnP returns tvec as (3, 1); index accordingly
-                x, y, z = float(tvec[0, 0]), float(tvec[1, 0]), float(tvec[2, 0])
-
-                if self.verbose: # Print only when desired
-                    print(
-                        '[FIDUCIAL] Position relative to camera:\n',
-                        'Left/Right (m):' + f'{x:>8,.2}\n',
-                        'Up/Down (m):' + f'{y:>8,.2}\n',
-                        'Forward (m):' + f'{z:>8,.2}\n',
-                    )
-
-                # aruco.drawDetectedMarkers(frame, corners)
-                # cv2.drawFrameAxes(frame, self.camera_matrix, self.dist_coeffs, rvec, tvec, 0.1)
-
-                return np.array([x, y, z])
+                return np.array([tvec[0, 0], tvec[1, 0], tvec[2, 0]])
 
         return None
-
-
-
 
 if __name__=='__main__':
     fiducial = Fiducial()
