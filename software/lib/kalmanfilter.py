@@ -1,6 +1,7 @@
 from filterpy.kalman import ExtendedKalmanFilter
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
 # TODO: Add functionality to change covariance (R) values mid-flight (if needed)
     # - May need to send lots of UWB measurements (~500) to EKF before flight
@@ -174,7 +175,7 @@ class EKF:
                              [sy,  cy, 0],
                              [0,   0,  1]])
 
-        return R_roll @ R_pitch @ R_yaw
+        return R_yaw @ R_pitch @ R_roll
 
     def predict_imu(self, accel: tuple[float, float, float], gyro: tuple[float, float, float]) -> None:
         """
@@ -337,7 +338,12 @@ class EKF:
             R=R_uwb,
         )
 
-    def preflight_sim(self) -> None:
+    def preflight_sim(
+            self,
+            sim_s: float=20,
+            cam_noise: float=0.1,
+            uwb_noise: float=0.1,
+    ) -> None:
         """
         Run a synthetic smoke-test of the filter before flight.
 
@@ -356,44 +362,90 @@ class EKF:
 
         true_pos = []
         est_pos = []
+        meas_pos = []
+        t_values = np.arange(0, sim_s, self.dt)
 
-        for t in np.arange(0, 20, self.dt):
-            # --- Ground-truth circular trajectory ---
-            # Angular frequency = 0.2 rad/s  →  period ≈ 31.4 s
+        for t in t_values:
+            # Angular frequency = 0.2 rad/s
             px = 3 * np.cos(0.2 * t)
             py = 3 * np.sin(0.2 * t)
             pz = 1.0  # constant altitude (meters)
 
-            # --- Simulated noisy camera measurement ---
-            # Gaussian noise with sigma = 0.1 m models fiducial detection error.
+            # Added Gaussian noise with sigma = 0.1 m
             z_cam = np.array([
-                px + np.random.normal(0, 0.1),
-                py + np.random.normal(0, 0.1),
-                pz + np.random.normal(0, 0.1),
+                px + np.random.normal(0, cam_noise),
+                py + np.random.normal(0, cam_noise),
+                pz + np.random.normal(0, cam_noise),
             ])
 
-            # Prediction step: no real IMU in the sim — use zero acceleration and zero gyro.
-            self.predict_imu((0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+            # Added Gaussian noise with sigma = 0.2 m
+            true_range = np.sqrt(px**2 + py**2 + pz**2)
+            z_uwb = true_range + np.random.normal(0, uwb_noise)
 
-            # Measurement update from the simulated camera observation.
+            # No IMU data, put gravity edtimate in
+            self.predict_imu((0.0, 0.0, 10), (0.0, 0.0, 0.0))
+
+            # Update cam and uwb
             self.update_camera(z_cam)
+            self.update_uwb(z_uwb)
 
-            true_pos.append([px, py])
-            est_pos.append([self.ekf.x[0, 0], self.ekf.x[1, 0]])
+            true_pos.append([px, py, pz])
+            est_pos.append([self.ekf.x[0, 0], self.ekf.x[1, 0], self.ekf.x[2, 0]])
+            meas_pos.append([z_cam[0], z_cam[1], z_cam[2]])
 
         true_pos_arr = np.array(true_pos)
         est_pos_arr = np.array(est_pos)
+        meas_pos_arr = np.array(meas_pos)
 
-        # Plot to show overlap (should see close overlap)
-        # TODO: convert graphical information to numerical
-        plt.plot(true_pos_arr[:, 0], true_pos_arr[:, 1], label='True')
-        plt.plot(est_pos_arr[:, 0], est_pos_arr[:, 1], label='EKF')
-        plt.legend()
-        plt.title('Pre-flight EKF Simulation — X/Y Trajectory')
-        plt.xlabel('X position (m)')
-        plt.ylabel('Y position (m)')
-        plt.axis('equal')
-        plt.show()
+        # Plot X/Y trajectory and Z altitude separately
+        fig, (ax_xy, ax_z, ax_err) = plt.subplots(1, 3, figsize=(18, 5))
+
+        ax_xy.plot(meas_pos_arr[:, 0], meas_pos_arr[:, 1], label='Measured')
+        ax_xy.plot(est_pos_arr[:, 0], est_pos_arr[:, 1], label='EKF')
+        ax_xy.plot(true_pos_arr[:, 0], true_pos_arr[:, 1], label='True')
+        ax_xy.legend()
+        ax_xy.set_title('X/Y Trajectory')
+        ax_xy.set_xlabel('X position (m)')
+        ax_xy.set_ylabel('Y position (m)')
+        ax_xy.set_aspect('equal')
+
+        ax_z.plot(t_values, meas_pos_arr[:, 2], label='Measured')
+        ax_z.plot(t_values, est_pos_arr[:, 2], label='EKF')
+        ax_z.plot(t_values, true_pos_arr[:, 2], label='True')
+        ax_z.legend()
+        ax_z.set_title('Z Altitude Over Time')
+        ax_z.set_xlabel('Time (s)')
+        ax_z.set_ylabel('Z position (m)')
+
+        x_err = true_pos_arr[:, 0] - est_pos_arr[:, 0]
+        y_err = true_pos_arr[:, 1] - est_pos_arr[:, 1]
+        ax_err.plot(t_values, x_err, label='X error')
+        ax_err.plot(t_values, y_err, label='Y error')
+        ax_err.axhline(0, color='black', linewidth=0.8, linestyle='--')
+        ax_err.legend()
+        ax_err.set_title('X/Y Error Over Time')
+        ax_err.set_xlabel('Time (s)')
+        ax_err.set_ylabel('Error (m)')
+
+        fig.suptitle('Pre-flight EKF Simulation')
+        fig.tight_layout()
+        plt.savefig('preflight_sim.png', dpi=150, bbox_inches='tight')
+        plt.close()
+
+        # Report statistics
+        x_mse = np.mean([(true - exp)**2 for true, exp in zip(true_pos_arr[:, 0], est_pos_arr[:, 0])])
+        x_mae = np.mean([abs(true - exp) for true, exp in zip(true_pos_arr[:, 0], est_pos_arr[:, 0])])
+        y_mse = np.mean([(true - exp)**2 for true, exp in zip(true_pos_arr[:, 1], est_pos_arr[:, 1])])
+        y_mae = np.mean([abs(true - exp) for true, exp in zip(true_pos_arr[:, 1], est_pos_arr[:, 1])])
+        z_mse = np.mean([(true - exp)**2 for true, exp in zip(true_pos_arr[:, 2], est_pos_arr[:, 2])])
+        z_mae = np.mean([abs(true - exp) for true, exp in zip(true_pos_arr[:, 2], est_pos_arr[:, 2])])
+
+        print(
+            f'X Coordinate MSE | MAE - {x_mse:.6f} | {x_mae:.6f}',
+            f'Y Coordinate MSE | MAE - {y_mse:.6f} | {y_mae:.6f}',
+            f'Z Coordinate MSE | MAE - {z_mse:.6f} | {z_mae:.6f}',
+            sep='\n'
+        )
 
     def filter_output(self) -> dict[str, int]:
         # Get filter output — unpack all 9 states
@@ -443,3 +495,11 @@ class EKF:
             'yaw_velocity': int(yaw_rate),
             'speed': int(target_speed),
         }
+
+if __name__=='__main__':
+    ekf = EKF()
+    ekf.preflight_sim(
+        sim_s=20,
+        # cam_noise=0.5,
+        # uwb_noise=0.5,
+    )
