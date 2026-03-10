@@ -1,15 +1,19 @@
 import socket
 import sys
 import struct
+from multiprocessing.synchronize import Event
+from multiprocessing.connection import Connection
 from typing import Optional
-from software.lib import variables
 
 HOST = '192.168.20.1'
 PORT = 5000
 
-def server_init() -> tuple[socket.socket, socket.socket]:
+def server_init(glove_event: Event) -> tuple[socket.socket, socket.socket]:
     '''
     Create a socket for the glove-controller to bind to.
+
+    Parameters:
+        glove_event (Event): Multiprocessing event set when the glove connects.
 
     Returns:
         tuple (socket, socket):
@@ -31,7 +35,7 @@ def server_init() -> tuple[socket.socket, socket.socket]:
     sock.listen(9)
     conn, addr = sock.accept()
     print(f'Connected with {addr[0]}: {(str(addr[1]))}')
-    variables.set_glove_on()
+    glove_event.set()
     return conn, sock
 
 def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tuple, tuple]]:
@@ -70,7 +74,7 @@ def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tu
         print(f"Error receiving data: {e}")
         return None
 
-def run_server(conn: socket.socket, sock: socket.socket):
+def run_server(conn: socket.socket, sock: socket.socket, pipe_send: Connection):
     """
     Main server loop that continuously receives data from the client.
     """
@@ -80,9 +84,9 @@ def run_server(conn: socket.socket, sock: socket.socket):
             # Receive instruction from ESP32
             instruction = receive_instructions(conn)
 
-            # Write the instruction to shared variable
+            # Send the instruction to the drone process via pipe
             if instruction:
-                variables.write_instr(instruction)
+                pipe_send.send(instruction)
 
             print(instruction)
             
@@ -92,8 +96,13 @@ def run_server(conn: socket.socket, sock: socket.socket):
     finally:
         conn.close()
         sock.close()
-        variables.set_glove_off()
+        pipe_send.close()
+        print('Glove disconnected.')
 
 if __name__ == '__main__':
-    conn, sock = server_init()
-    run_server(conn, sock)
+    import multiprocessing
+    from multiprocessing import Pipe
+    _glove_event = multiprocessing.Event()
+    _pipe_recv, _pipe_send = Pipe(duplex=False)
+    conn, sock = server_init(_glove_event)
+    run_server(conn, sock, _pipe_send)

@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
+from multiprocessing.connection import Connection
 from djitellopy import Tello
-from software.lib import variables
 from software.lib.fiducials import Fiducial
 from software.lib.kalmanfilter import EKF
 
@@ -99,7 +99,7 @@ class FALCON(Tello):
 
     # TODO: Add ability to switch fiducial targeting when moving left/right
         # - left/right commands can be associated to switching the fiducial view
-    def track_target(self):
+    def track_target(self, pipe_recv: Connection):
         frame_reader = self.get_frame_read()
 
         try:
@@ -108,7 +108,7 @@ class FALCON(Tello):
                 if frame is None:
                     continue
 
-                instructions = variables.read_instr()
+                instructions = pipe_recv.recv()
 
                 # Autonomous controls
                 self.ekf.predict_imu(instructions['imu'], instructions['gyro'])
@@ -146,8 +146,8 @@ class FALCON(Tello):
                     case _: # No commands == skip
                         pass
 
-        except KeyboardInterrupt:
-            print('KeyboardInterrupt detected, shutting down.')
+        except (KeyboardInterrupt, EOFError):
+            print('Shutting down drone controller.')
 
         finally:
             self.land()
