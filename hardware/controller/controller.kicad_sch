@@ -4392,7 +4392,7 @@
 				)
 			)
 		)
-		(property "Footprint" "GF-123-0054:SW_GF-123-0054"
+		(property "Footprint" "GF_123_0054:SW_GF-123-0054"
 			(at 269.24 242.57 0)
 			(effects
 				(font
@@ -4703,7 +4703,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "B3F-1000:SW_B3F-1000"
+		(property "Footprint" "B3F_1000:SW_B3F-1000"
 			(at 364.49 193.04 0)
 			(effects
 				(font
