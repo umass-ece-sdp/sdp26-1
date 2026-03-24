@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+from typing import Optional
 from djitellopy import Tello
 from software.lib import variables
 from software.lib.fiducials import Fiducial
@@ -95,6 +96,26 @@ class FALCON(Tello):
             return 'takeoff'
 
         return None
+    
+    def finger_instruction(self, command: Optional[str]):
+        match command:  # CW increases fiducial ID, CCW decreases
+            case 'closer':
+                self.move_forward(self.move_dist)
+            case 'farther':
+                self.move_back(self.move_dist)
+            case 'left':    # Move to the side and change fiducial
+                self.move_left(self.move_dist)
+                self.target_id = (self.target_id + 1) % 4 # make sure id doesn't hit >= 4
+            case 'right':   # Move to the side and change fiducial
+                self.move_right(self.move_dist)
+                id_adj = self.target_id - 1
+                self.target_id = id_adj if id_adj > 0 else 3
+            case 'land':
+                self.land()
+            case 'takeoff':
+                self.takeoff()
+            case _: # No commands == skip
+                pass
 
 
     # TODO: Add ability to switch fiducial targeting when moving left/right
@@ -111,12 +132,8 @@ class FALCON(Tello):
                 instructions = variables.read_instr()
 
                 # Autonomous controls
-                self.ekf.predict_imu(instructions['imu'], instructions['gyro'])
                 z_cam = self.fiducial.detect_marker(frame, self.target_id)
-                if z_cam is not None:
-                    self.ekf.update_camera(z_cam)
-                self.ekf.update_uwb(instructions['dist'])
-                autonomous_commands = self.ekf.filter_output()
+                autonomous_commands = self.ekf.filter_instructions(instructions, z_cam)
                 self.send_rc_control(
                     autonomous_commands['left_right_velocity'],
                     autonomous_commands['forward_backward_velocity'],
@@ -127,24 +144,9 @@ class FALCON(Tello):
 
                 # User input
                 command = self.map_fingers(instructions['fingers'])
-                match command:  # CW increases fiducial ID, CCW decreases
-                    case 'closer':
-                        self.move_forward(self.move_dist)
-                    case 'farther':
-                        self.move_back(self.move_dist)
-                    case 'left':    # Move to the side and change fiducial
-                        self.move_left(self.move_dist)
-                        self.target_id = (self.target_id + 1) % 4 # make sure id doesn't hit >= 4
-                    case 'right':   # Move to the side and change fiducial
-                        self.move_right(self.move_dist)
-                        id_adj = self.target_id - 1
-                        self.target_id = id_adj if id_adj > 0 else 3
-                    case 'land':
-                        self.land()
-                    case 'takeoff':
-                        self.takeoff()
-                    case _: # No commands == skip
-                        pass
+                self.finger_instruction(command)
+
+                
 
         except KeyboardInterrupt:
             print('KeyboardInterrupt detected, shutting down.')

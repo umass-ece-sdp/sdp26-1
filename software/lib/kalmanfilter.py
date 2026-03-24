@@ -1,7 +1,6 @@
 from filterpy.kalman import ExtendedKalmanFilter
 import numpy as np
 import matplotlib.pyplot as plt
-import csv
 
 # TODO: Add functionality to change covariance (R) values mid-flight (if needed)
     # - May need to send lots of UWB measurements (~500) to EKF before flight
@@ -495,6 +494,14 @@ class EKF:
             'yaw_velocity': int(yaw_rate),
             'speed': int(target_speed),
         }
+
+    def filter_instructions(self, instructions: dict, z_cam):
+        self.predict_imu(instructions['imu'], instructions['gyro'])
+        if z_cam is not None:
+            self.update_camera(z_cam)
+        self.update_uwb(instructions['dist'])
+        return self.filter_output()
+
 
 if __name__=='__main__':
     ekf = EKF()
