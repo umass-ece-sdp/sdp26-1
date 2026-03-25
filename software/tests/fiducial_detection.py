@@ -10,7 +10,7 @@ import numpy as np
 import time
 
 # --- Config ---
-MARKER_SIZE = 0.08  # 8 cm in meters
+MARKER_SIZE = 0.105  # 8 cm in meters
 ARUCO_DICT = aruco.DICT_4X4_50
 TARGET_ID = 0
 
