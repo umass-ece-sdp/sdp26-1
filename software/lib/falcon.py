@@ -5,7 +5,10 @@ import time
 import numpy as np
 import cv2
 import cv2.aruco as aruco
+from queue import Queue, Empty
+from threading import Thread
 from dataclasses import dataclass
+import imageio as iio
 
 @dataclass
 class FlightControl:
@@ -91,6 +94,14 @@ class FALCON(Tello):
         self.flight_control = FlightControl()
         self.aruco_data = FiducialData()
 
+        # Video saving variables
+        self.raw_queue = Queue(maxsize=10)
+        self.proc_queue = Queue(maxsize=10)
+        self.annotated_queue = Queue(maxsize=10)
+        self.fourcc = cv2.VideoWriter.fourcc(*'MJPG')
+        # self.fourcc = cv2.VideoWriter.fourcc(*'mp4v')
+        self.stay_active = False
+
         # Connect to WiFi before initializing Tello
         # self._connect_wifi()
         
@@ -149,33 +160,64 @@ class FALCON(Tello):
 
         return None
 
-    # TODO: Add ability to switch fiducial targeting when moving left/right
-        # - left/right commands can be associated to switching the fiducial view
-    def track_target(self):
+    def _video_save_worker(self):
+        """Worker thread for saving drone video footage to file."""
+        video_writer = None
+        while self.stay_active:
+            try:
+                # Use a timeout so the thread can exit cleanly if no frame is received
+                frame = self.raw_queue.get(timeout=0.5)
+                # Initialize writer lazily so we know the frame size
+                if video_writer is None:
+                    h, w = frame.shape[:2]
+                    video_writer = cv2.VideoWriter('flight.avi', self.fourcc, 30.0, (1280, 720))
+                
+                # Resize if necessary and write
+                if frame.shape[:2] != (720, 1280):
+                    frame_to_write = cv2.resize(frame, (1280, 720))
+                else:
+                    frame_to_write = frame
+
+                video_writer.write(frame_to_write)
+            except Empty:
+                continue
+            except Exception as e:
+                print(f"Video writer error: {e}")
+
+        if video_writer is not None:
+            video_writer.release()
+
+    def _target_track_worker(self):
+        """Worker thread to process fiducials, update drone speed, and apply overlays."""
         def clamp(val: int, lo: int, hi: int):
             return max(lo, min(hi, val))
+            
+        dist_history = []
+        lr_history = []
+        vert_history = []
+        last_target_time = time.time()
         
-        def clear_histories():
-            """Reset smoothing buffers when switching targets."""
-            dist_history.clear()
-            lr_history.clear()
-            vert_history.clear()
+        yaw_cmd = 0
+        fb_cmd = 0
+        lr_cmd = 0
+        ud_cmd = 0
         
-        def status_display():
-            """Displays frame and ArUco tracking information."""
-            if frame is None:
-                return
-            dist_str = f"{current_dist:.2f}m" if current_dist else "N/A"
-            line1 = f"TARGET:{self.aruco_data.TARGET_ID}  YAW:{yaw_cmd:+d} FB:{fb_cmd:+d} LR:{lr_cmd:+d} UD:{ud_cmd:+d}"
-            line2 = f"DIST:{dist_str} TARGET:{self.flight_control.TARGET_DIST:.2f}m"
-            lost_str = "" if target_found else " [TARGET LOST]"
-            cv2.putText(frame, line1 + lost_str, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
-            cv2.putText(frame, line2, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 200, 255), 2)
-            cv2.putText(frame, "0-3=Target  E=Up  D=Down  F=Flip  Q=Quit", (10, frame_h - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-            cv2.imshow("Tello ArUco Tracker", frame)
+        while self.stay_active:
+            try:
+                frame = self.proc_queue.get(timeout=0.5)
+            except Empty:
+                continue
 
-        def track_fiducial(yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist):
-            if ids is not None and frame is not None:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            corners, ids, _ = self.aruco_data.detector.detectMarkers(gray)
+
+            frame_h, frame_w = frame.shape[:2]
+            center_x = frame_w // 2
+            center_y = frame_h // 2
+            current_dist = None
+            target_found = False
+
+            if ids is not None:
                 aruco.drawDetectedMarkers(frame, corners, ids)
 
                 for corner, marker_id in zip(corners, ids.flatten()):
@@ -222,6 +264,8 @@ class FALCON(Tello):
                                 self.flight_control.YAW_SPEED * (error_x / (frame_w / 2)),
                                 -100, 100
                             ))
+                        else:
+                            yaw_cmd = 0
 
                         raw_dist = np.sqrt(x**2 + y**2 + z**2)
                         dist_history.append(raw_dist)
@@ -236,6 +280,8 @@ class FALCON(Tello):
                                 -self.flight_control.FB_MAX,
                                 self.flight_control.FB_MAX,
                             ))
+                        else:
+                            fb_cmd = 0
 
                         lr_history.append(x)
                         if len(lr_history) > self.flight_control.SMOOTH_WINDOW:
@@ -249,6 +295,8 @@ class FALCON(Tello):
                                 -self.flight_control.LR_MAX,
                                 self.flight_control.LR_MAX,
                             ))
+                        else:
+                            lr_cmd = 0
 
                         error_y = marker_cy - center_y
                         vert_history.append(error_y)
@@ -262,8 +310,46 @@ class FALCON(Tello):
                                 -self.flight_control.VERT_MAX,
                                 self.flight_control.VERT_MAX
                             ))
+                        else:
+                            ud_cmd = 0
+
+            if not target_found:
+                if (time.time() - last_target_time) > self.flight_control.LOST_TIMEOUT:
+                    yaw_cmd = 0
+                    fb_cmd = 0
+                    lr_cmd = 0
+                    # Preserve manual ud_cmd set by keyboard by not overriding it or reset it, 
+                    # but since this worker doesn't have access to the keyboard event easily, 
+                    # we should send 0s for tracking movement. We'll send it all to be safe.
+                # ud command input processing would be normally decoupled, but we'll manage here since it overrides
             
-            return yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist
+            # Draw UI Overlays
+            dist_str = f"{current_dist:.2f}m" if current_dist else "N/A"
+            line1 = f"TARGET:{self.aruco_data.TARGET_ID}  YAW:{yaw_cmd:+d} FB:{fb_cmd:+d} LR:{lr_cmd:+d} UD:{ud_cmd:+d}"
+            line2 = f"DIST:{dist_str} TARGET:{self.flight_control.TARGET_DIST:.2f}m"
+            lost_str = "" if target_found else " [TARGET LOST]"
+            cv2.putText(frame, line1 + lost_str, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
+            cv2.putText(frame, line2, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 200, 255), 2)
+            cv2.putText(frame, "0-3=Target  F=Flip  Q=Quit", (10, frame_h - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+            
+            # Send movement command (manual UD commands are trickier across threads so we keep it simple for now or process them in main thread)
+            self.send_rc_control(lr_cmd, fb_cmd, ud_cmd, yaw_cmd)
+
+            # Pass the annotated frame to main thread
+            if self.annotated_queue.full():
+                try: self.annotated_queue.get_nowait()
+                except Empty: pass
+            self.annotated_queue.put(frame)
+
+    # TODO: Add ability to switch fiducial targeting when moving left/right
+        # - left/right commands can be associated to switching the fiducial view
+    def track_target(self):
+        def convert_video():
+            reader = iio.v3.imiter('flight.avi')
+            writer = iio.get_writer('flight.mp4', fps=30, codec='libx264')
+            for frame in reader:
+                writer.append_data(frame)
+            writer.close()
 
         self.streamon()
         time.sleep(2)
@@ -273,50 +359,46 @@ class FALCON(Tello):
         self.takeoff()
         time.sleep(3)
 
-        dist_history = []
-        lr_history = []
-        vert_history = []
-
-        last_target_time = time.time()
+        # Flag and setup for threading
+        self.stay_active = True
+        video_thread = Thread(target=self._video_save_worker, daemon=True)
+        track_thread = Thread(target=self._target_track_worker, daemon=True)
+        video_thread.start()
+        track_thread.start()
 
         try:
-            while True:
+            while self.stay_active:
+                # Capture frame
                 frame = frame_reader.frame
                 if frame is None:
                     continue
 
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                corners, ids, _ = self.aruco_data.detector.detectMarkers(gray)
 
-                yaw_cmd = 0
-                fb_cmd = 0
-                lr_cmd = 0
-                ud_cmd = 0
-                frame_h, frame_w = frame.shape[:2]
-                center_x = frame_w // 2
-                center_y = frame_h // 2
-                current_dist = None
-                target_found = False
+                # Feed queues
+                if not self.raw_queue.full():
+                    self.raw_queue.put(frame.copy())
+                
+                # We drop frames on proc_queue if full to prioritize processing the newest frame
+                if self.proc_queue.full():
+                    try: self.proc_queue.get_nowait()
+                    except Empty: pass
+                self.proc_queue.put(frame.copy())
 
-                yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist = track_fiducial(
-                    yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist,
-                )
-
-                if not target_found and (time.time() - last_target_time) > self.flight_control.LOST_TIMEOUT:
-                    yaw_cmd = 0
-                    fb_cmd = 0
-                    lr_cmd = 0
+                # Display Annotated Frame
+                try:
+                    annotated_frame = self.annotated_queue.get(timeout=0.01)
+                    cv2.imshow("Tello ArUco Tracker", annotated_frame)
+                except Empty:
+                    # If we don't have an annotated frame yet, we just wait
+                    pass
 
                 # --- Keyboard input ---
                 key = cv2.waitKey(1) & 0xFF
 
                 if key == ord('q'):
+                    self.stay_active = False
                     break
-                elif key == ord('e'):
-                    ud_cmd = self.flight_control.MANUAL_UD_SPEED
-                elif key == ord('d'):
-                    ud_cmd = -self.flight_control.MANUAL_UD_SPEED
                 elif key == ord('f'):
                     self.send_rc_control(0, 0, 0, 0)
                     time.sleep(0.3)
@@ -330,22 +412,29 @@ class FALCON(Tello):
                     new_target = key - ord('0')
                     if new_target != self.aruco_data.TARGET_ID:
                         self.aruco_data.TARGET_ID = new_target
-                        clear_histories()
                         print(f"Switched to target ID: {self.aruco_data.TARGET_ID}")
-
-                self.send_rc_control(lr_cmd, fb_cmd, ud_cmd, yaw_cmd)
-                status_display()
 
         except KeyboardInterrupt:
             print('KeyboardInterrupt detected, shutting down.')
+            self.stay_active = False
 
         finally:
             print("Landing...")
+            self.stay_active = False # Ensure threads know to stop
+            
+            # Briefly wait for threads to clean up
+            video_thread.join(timeout=2.0)
+            track_thread.join(timeout=2.0)
+            
             self.send_rc_control(0, 0, 0, 0)
             time.sleep(0.5)
             self.land()
             self.streamoff()
             cv2.destroyAllWindows()
 
+            # Convert .avi video to .mp4
+            convert_video()
+
 if __name__ == '__main__':
     tello = FALCON()
+    tello.track_target()
