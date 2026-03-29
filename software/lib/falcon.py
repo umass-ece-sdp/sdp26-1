@@ -5,7 +5,8 @@ import time
 import numpy as np
 import cv2
 import cv2.aruco as aruco
-from dataclasses import dataclass
+from software.lib import variables
+from dataclasses import dataclass, field
 
 @dataclass
 class FlightControl:
@@ -31,13 +32,19 @@ class FlightControl:
 
     LOST_TIMEOUT: float=1.0
 
+    # --- Orbit config ---
+    ORBIT_YAW_SPEED = 35        # Yaw rate during orbit (deg/s-ish, RC units)
+    ORBIT_LATERAL_SPEED = 30    # Lateral strafe to maintain arc
+    ORBIT_CHECK_INTERVAL = 0.5  # Seconds between marker checks during orbit
+    ORBIT_TIMEOUT = 30.0        # Max seconds to orbit before giving up
+
 @dataclass
 class FiducialData:
     # --- Config ---
     MARKER_SIZE: float=0.105
     ARUCO_DICT = aruco.DICT_4X4_50
-    TARGET_ID: int=3
-    VALID_TARGETS: list[int]=[0, 1, 2, 3]
+    TARGET_ID: int=0
+    VALID_TARGETS: list[int]=field(default_factory=lambda: [0, 1, 2, 3])
 
     # --- ArUco Setup ---
     aruco_dict = aruco.getPredefinedDictionary(ARUCO_DICT)
@@ -308,15 +315,15 @@ class FALCON(Tello):
                     fb_cmd = 0
                     lr_cmd = 0
 
-                # --- Keyboard input ---
-                key = cv2.waitKey(1) & 0xFF
+                 # --- Keyboard input ---
+                key = '#' if variables.instructions['fingers'][0] > self.finger_thresholds[0] else cv2.waitKey(1) & 0xFF
 
                 if key == ord('q'):
                     break
                 elif key == ord('e'):
                     ud_cmd = self.flight_control.MANUAL_UD_SPEED
                 elif key == ord('d'):
-                    ud_cmd = -self.flight_control.MANUAL_UD_SPEED
+                    ud_cmd = -self.flight_controlMANUAL_UD_SPEED
                 elif key == ord('f'):
                     self.send_rc_control(0, 0, 0, 0)
                     time.sleep(0.3)
@@ -326,6 +333,30 @@ class FALCON(Tello):
                     except Exception as e:
                         print(f"Flip failed: {e}")
                     continue
+
+                # Shift + 0-3: orbit search for that marker
+                # Shift+0 = ')' Shift+1 = '!' Shift+2 = '@' Shift+3 = '#'
+                elif key in [ord(')'), ord('!'), ord('@'), ord('#')]:
+                    shift_map = {ord(')'): 0, ord('!'): 1, ord('@'): 2, ord('#'): 3}
+                    orbit_target = shift_map[key]
+                    print(f"[INPUT] Shift+{orbit_target} — orbiting to find ID {orbit_target}")
+
+                    self.send_rc_control(0, 0, 0, 0)
+                    time.sleep(0.3)
+
+                    found = self.orbit_until_found(self, frame_reader, orbit_target)
+
+                    if found:
+                        self.aruco_data.TARGET_ID = orbit_target
+                        clear_histories()
+                        print(f"[ORBIT] Now tracking ID {self.aruco_data.TARGET_ID}")
+                    else:
+                        print(f"[ORBIT] ID {orbit_target} not found. Resuming ID {self.aruco_data.TARGET_ID}")
+
+                    last_target_time = time.time()
+                    continue
+
+                # Normal 0-3: instant target switch (no orbiting)
                 elif key in [ord('0'), ord('1'), ord('2'), ord('3')]:
                     new_target = key - ord('0')
                     if new_target != self.aruco_data.TARGET_ID:
@@ -333,7 +364,6 @@ class FALCON(Tello):
                         clear_histories()
                         print(f"Switched to target ID: {self.aruco_data.TARGET_ID}")
 
-                self.send_rc_control(lr_cmd, fb_cmd, ud_cmd, yaw_cmd)
                 status_display()
 
         except KeyboardInterrupt:
@@ -346,6 +376,84 @@ class FALCON(Tello):
             self.land()
             self.streamoff()
             cv2.destroyAllWindows()
+    
+    def check_for_marker(self, frame_reader, target_id):
+        """Grab a frame and check if the target marker is visible."""
+        frame = frame_reader.frame
+        if frame is None:
+            return False, None
+        frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
+        corners, ids, _ = self.aruco_data.detector.detectMarkers(gray)
+        if ids is not None:
+            aruco.drawDetectedMarkers(frame_bgr, corners, ids)
+            for corner, mid in zip(corners, ids.flatten()):
+                if mid == target_id:
+                    return True, frame_bgr
+        return False, frame_bgr
+
+    def orbit_until_found(self, drone, frame_reader, target_id):
+        """
+        Orbit around the operator using simultaneous yaw + lateral strafe.
+
+        The idea: yaw rotates the drone's heading while lateral strafe keeps
+        it moving along an arc. Since the drone is roughly facing the operator,
+        yawing right + strafing right traces a clockwise circle around them.
+
+        After each check interval we grab a frame and look for the target.
+        Returns True if found, False if timeout.
+        """
+        print(f"[ORBIT] Searching for ID {target_id} — orbiting clockwise")
+
+        drone.send_rc_control(0, 0, 0, 0)
+        time.sleep(0.3)
+
+        start_time = time.time()
+        last_check = time.time()
+
+        while True:
+            elapsed = time.time() - start_time
+
+            if elapsed > self.flight_control.ORBIT_TIMEOUT:
+                print(f"[ORBIT] Timeout after {self.flight_control.ORBIT_TIMEOUT}s — ID {target_id} not found")
+                drone.send_rc_control(0, 0, 0, 0)
+                return False
+
+            # Orbit: yaw right + strafe right = clockwise circle around centre
+            # The yaw keeps the drone turning to face new directions while
+            # the lateral movement sweeps it around the arc
+            drone.send_rc_control(-self.flight_control.ORBIT_LATERAL_SPEED, 0, 0, self.flight_control.ORBIT_YAW_SPEED)
+
+            # Check for marker periodically
+            if time.time() - last_check >= self.flight_control.ORBIT_CHECK_INTERVAL:
+                last_check = time.time()
+
+                found, frame = self.check_for_marker(self, frame_reader, target_id)
+
+                # Update display
+                if frame is not None:
+                    h, w = frame.shape[:2]
+                    cv2.putText(frame,
+                                f"ORBITING for ID {target_id} ({elapsed:.1f}s / {self.flight_control.ORBIT_TIMEOUT:.0f}s)",
+                                (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 165, 255), 2)
+                    cv2.putText(frame,
+                                "Yaw+strafe clockwise — looking for marker...",
+                                (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 200, 255), 2)
+                    cv2.imshow("Tello ArUco Tracker", frame)
+
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    print("[ORBIT] Q pressed — aborting orbit")
+                    drone.send_rc_control(0, 0, 0, 0)
+                    return False
+    
+                if found:
+                    print(f"[ORBIT] Found ID {target_id}!")
+                    drone.send_rc_control(0, 0, 0, 0)
+                    time.sleep(0.3)
+                    return True
+
+            time.sleep(0.05)  # ~20Hz RC update rate
 
 if __name__ == '__main__':
     tello = FALCON()
