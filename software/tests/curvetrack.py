@@ -15,7 +15,7 @@ import math
 # --- Config ---
 MARKER_SIZE = 0.105
 ARUCO_DICT = aruco.DICT_4X4_50
-TARGET_ID = 3
+TARGET_ID = 0
 VALID_TARGETS = [0, 1, 2, 3]
 
 # --- Control tuning (BOOSTED) ---
