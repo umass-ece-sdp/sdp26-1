@@ -1,9 +1,64 @@
 import subprocess
 from pathlib import Path
 from djitellopy import Tello
-from software.lib import variables
-from software.lib.fiducials import Fiducial
-from software.lib.kalmanfilter import EKF
+import time
+import numpy as np
+import cv2
+import cv2.aruco as aruco
+from dataclasses import dataclass
+
+@dataclass
+class FlightControl:
+    YAW_SPEED: int=50
+    YAW_DEAD_ZONE: int=25
+
+    TARGET_DIST: float=1.524
+    DIST_DEAD_ZONE: float=0.08
+    FB_SPEED: int=60
+    FB_MAX: int=80
+
+    LR_SPEED: int=50
+    LR_DEAD_ZONE: int=20
+    LR_MAX: int=60
+
+    VERT_SPEED: int=55
+    VERT_DEAD_ZONE: int=20
+    VERT_MAX: int=70
+
+    MANUAL_UD_SPEED: int=50
+
+    SMOOTH_WINDOW: int=3
+
+    LOST_TIMEOUT: float=1.0
+
+@dataclass
+class FiducialData:
+    # --- Config ---
+    MARKER_SIZE: float=0.105
+    ARUCO_DICT = aruco.DICT_4X4_50
+    TARGET_ID: int=3
+    VALID_TARGETS: list[int]=[0, 1, 2, 3]
+
+    # --- ArUco Setup ---
+    aruco_dict = aruco.getPredefinedDictionary(ARUCO_DICT)
+    detector = aruco.ArucoDetector(aruco_dict, aruco.DetectorParameters())
+
+    half = MARKER_SIZE / 2
+    obj_points = np.array([
+        [-half,  half, 0],
+        [ half,  half, 0],
+        [ half, -half, 0],
+        [-half, -half, 0],
+    ], dtype=np.float32)
+
+    # --- Camera calibration ---
+    camera_matrix = np.array([
+        [921.170702, 0.000000, 459.904354],
+        [0.000000, 919.018377, 351.238301],
+        [0.000000, 0.000000, 1.000000]
+    ], dtype=np.float64)
+    dist_coeffs = np.array([-0.033458, 0.105152, 0.001256, -0.006647, 0.000000], dtype=np.float64)
+
 
 class FALCON(Tello):
     '''
@@ -27,20 +82,17 @@ class FALCON(Tello):
         self.password = password
 
         # Thresholds for determining finger on
-        self.finger_thresholds = (2.6, 2.6, 2.6, 2.6)  # V
+        self.finger_thresholds = (0.31, 0.31, 0.31, 0.31)  # V
 
         # Drone movement commands
         self.move_dist = move_dist  # cm
 
-        # Create the EKF and Fiducial objects
-        self.ekf = EKF()
-        self.fiducial = Fiducial()
-
-        # Starting target fiducial
-        self.target_id = 0 # Chest marker
+        # Flight control and fiducial data
+        self.flight_control = FlightControl()
+        self.aruco_data = FiducialData()
 
         # Connect to WiFi before initializing Tello
-        self._connect_wifi()
+        # self._connect_wifi()
         
         # Initialize normal Tello behavior
         super().__init__()
@@ -77,8 +129,9 @@ class FALCON(Tello):
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
 
+    # Currently unused
     def map_fingers(self, fingers: tuple[float, float, float, float]) -> str | None:
-        # Check finger activations
+        """Maps finger sensors to different drone commands."""
         f_act = [True if f > thresh else False for f, thresh in zip(fingers, self.finger_thresholds)]
 
         if f_act[0] and f_act[1] and f_act[2] and f_act[3]:                       # Fist (all active)
@@ -96,11 +149,135 @@ class FALCON(Tello):
 
         return None
 
-
     # TODO: Add ability to switch fiducial targeting when moving left/right
         # - left/right commands can be associated to switching the fiducial view
     def track_target(self):
+        def clamp(val: int, lo: int, hi: int):
+            return max(lo, min(hi, val))
+        
+        def clear_histories():
+            """Reset smoothing buffers when switching targets."""
+            dist_history.clear()
+            lr_history.clear()
+            vert_history.clear()
+        
+        def status_display():
+            """Displays frame and ArUco tracking information."""
+            if frame is None:
+                return
+            dist_str = f"{current_dist:.2f}m" if current_dist else "N/A"
+            line1 = f"TARGET:{self.aruco_data.TARGET_ID}  YAW:{yaw_cmd:+d} FB:{fb_cmd:+d} LR:{lr_cmd:+d} UD:{ud_cmd:+d}"
+            line2 = f"DIST:{dist_str} TARGET:{self.flight_control.TARGET_DIST:.2f}m"
+            lost_str = "" if target_found else " [TARGET LOST]"
+            cv2.putText(frame, line1 + lost_str, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
+            cv2.putText(frame, line2, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 200, 255), 2)
+            cv2.putText(frame, "0-3=Target  E=Up  D=Down  F=Flip  Q=Quit", (10, frame_h - 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+            cv2.imshow("Tello ArUco Tracker", frame)
+
+        def track_fiducial(yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist):
+            if ids is not None and frame is not None:
+                aruco.drawDetectedMarkers(frame, corners, ids)
+
+                for corner, marker_id in zip(corners, ids.flatten()):
+                    success, rvec, tvec = cv2.solvePnP(
+                        self.aruco_data.obj_points,
+                        corner.reshape(4, 2),
+                        self.aruco_data.camera_matrix,
+                        self.aruco_data.dist_coeffs,
+                    )
+                    if not success:
+                        continue
+
+                    x, y, z = tvec[0, 0], tvec[1, 0], tvec[2, 0]
+                    cv2.drawFrameAxes(
+                        frame,
+                        self.aruco_data.camera_matrix,
+                        self.aruco_data.dist_coeffs,
+                        rvec,
+                        tvec,
+                        0.05
+                    )
+
+                    label = f"ID {marker_id}: x={x:.2f} y={y:.2f} z={z:.2f}m"
+                    pos = tuple(corner[0][0].astype(int))
+                    cv2.putText(frame, label, (pos[0], pos[1] - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+                    if marker_id == self.aruco_data.TARGET_ID:
+                        target_found = True
+                        last_target_time = time.time()
+
+                        marker_cx = int(corner[0, :, 0].mean())
+                        marker_cy = int(corner[0, :, 1].mean())
+
+                        cv2.circle(frame, (marker_cx, marker_cy), 8, (0, 0, 255), 2)
+                        cv2.line(frame, (center_x - 15, center_y),
+                                (center_x + 15, center_y), (255, 0, 0), 1)
+                        cv2.line(frame, (center_x, center_y - 15),
+                                (center_x, center_y + 15), (255, 0, 0), 1)
+
+                        error_x = marker_cx - center_x
+                        if abs(error_x) > self.flight_control.YAW_DEAD_ZONE:
+                            yaw_cmd = int(clamp(
+                                self.flight_control.YAW_SPEED * (error_x / (frame_w / 2)),
+                                -100, 100
+                            ))
+
+                        raw_dist = np.sqrt(x**2 + y**2 + z**2)
+                        dist_history.append(raw_dist)
+                        if len(dist_history) > self.flight_control.SMOOTH_WINDOW:
+                            dist_history.pop(0)
+                        current_dist = np.median(dist_history)
+
+                        dist_error = current_dist - self.flight_control.TARGET_DIST
+                        if abs(dist_error) > self.flight_control.DIST_DEAD_ZONE:
+                            fb_cmd = int(clamp(
+                                self.flight_control.FB_SPEED * (dist_error / self.flight_control.TARGET_DIST),
+                                -self.flight_control.FB_MAX,
+                                self.flight_control.FB_MAX,
+                            ))
+
+                        lr_history.append(x)
+                        if len(lr_history) > self.flight_control.SMOOTH_WINDOW:
+                            lr_history.pop(0)
+                        smooth_x = np.median(lr_history)
+
+                        lr_error = smooth_x * (self.aruco_data.camera_matrix[0, 0] / current_dist) if current_dist else 0
+                        if abs(lr_error) > self.flight_control.LR_DEAD_ZONE:
+                            lr_cmd = int(clamp(
+                                self.flight_control.LR_SPEED * (lr_error / (frame_w / 2)),
+                                -self.flight_control.LR_MAX,
+                                self.flight_control.LR_MAX,
+                            ))
+
+                        error_y = marker_cy - center_y
+                        vert_history.append(error_y)
+                        if len(vert_history) > self.flight_control.SMOOTH_WINDOW:
+                            vert_history.pop(0)
+                        smooth_vert = np.median(vert_history)
+
+                        if abs(smooth_vert) > self.flight_control.VERT_DEAD_ZONE:
+                            ud_cmd = int(clamp(
+                                -self.flight_control.VERT_SPEED * (smooth_vert / (frame_h / 2)),
+                                -self.flight_control.VERT_MAX,
+                                self.flight_control.VERT_MAX
+                            ))
+            
+            return yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist
+
+        self.streamon()
+        time.sleep(2)
         frame_reader = self.get_frame_read()
+
+        print("Taking off...")
+        self.takeoff()
+        time.sleep(3)
+
+        dist_history = []
+        lr_history = []
+        vert_history = []
+
+        last_target_time = time.time()
 
         try:
             while True:
@@ -108,49 +285,67 @@ class FALCON(Tello):
                 if frame is None:
                     continue
 
-                instructions = variables.read_instr()
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                corners, ids, _ = self.aruco_data.detector.detectMarkers(gray)
 
-                # Autonomous controls
-                self.ekf.predict_imu(instructions['imu'], instructions['gyro'])
-                z_cam = self.fiducial.detect_marker(frame, self.target_id)
-                if z_cam is not None:
-                    self.ekf.update_camera(z_cam)
-                self.ekf.update_uwb(instructions['dist'])
-                autonomous_commands = self.ekf.filter_output()
-                self.send_rc_control(
-                    autonomous_commands['left_right_velocity'],
-                    autonomous_commands['forward_backward_velocity'],
-                    autonomous_commands['up_down_velocity'],
-                    autonomous_commands['yaw_velocity']
+                yaw_cmd = 0
+                fb_cmd = 0
+                lr_cmd = 0
+                ud_cmd = 0
+                frame_h, frame_w = frame.shape[:2]
+                center_x = frame_w // 2
+                center_y = frame_h // 2
+                current_dist = None
+                target_found = False
+
+                yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist = track_fiducial(
+                    yaw_cmd, fb_cmd, lr_cmd, ud_cmd, target_found, last_target_time, current_dist,
                 )
-                self.set_speed(autonomous_commands['speed'])
 
-                # User input
-                command = self.map_fingers(instructions['fingers'])
-                match command:  # CW increases fiducial ID, CCW decreases
-                    case 'closer':
-                        self.move_forward(self.move_dist)
-                    case 'farther':
-                        self.move_back(self.move_dist)
-                    case 'left':    # Move to the side and change fiducial
-                        self.move_left(self.move_dist)
-                        self.target_id = (self.target_id + 1) % 4 # make sure id doesn't hit >= 4
-                    case 'right':   # Move to the side and change fiducial
-                        self.move_right(self.move_dist)
-                        id_adj = self.target_id - 1
-                        self.target_id = id_adj if id_adj > 0 else 3
-                    case 'land':
-                        self.land()
-                    case 'takeoff':
-                        self.takeoff()
-                    case _: # No commands == skip
-                        pass
+                if not target_found and (time.time() - last_target_time) > self.flight_control.LOST_TIMEOUT:
+                    yaw_cmd = 0
+                    fb_cmd = 0
+                    lr_cmd = 0
+
+                # --- Keyboard input ---
+                key = cv2.waitKey(1) & 0xFF
+
+                if key == ord('q'):
+                    break
+                elif key == ord('e'):
+                    ud_cmd = self.flight_control.MANUAL_UD_SPEED
+                elif key == ord('d'):
+                    ud_cmd = -self.flight_control.MANUAL_UD_SPEED
+                elif key == ord('f'):
+                    self.send_rc_control(0, 0, 0, 0)
+                    time.sleep(0.3)
+                    try:
+                        self.flip("f")
+                        time.sleep(1.5)
+                    except Exception as e:
+                        print(f"Flip failed: {e}")
+                    continue
+                elif key in [ord('0'), ord('1'), ord('2'), ord('3')]:
+                    new_target = key - ord('0')
+                    if new_target != self.aruco_data.TARGET_ID:
+                        self.aruco_data.TARGET_ID = new_target
+                        clear_histories()
+                        print(f"Switched to target ID: {self.aruco_data.TARGET_ID}")
+
+                self.send_rc_control(lr_cmd, fb_cmd, ud_cmd, yaw_cmd)
+                status_display()
 
         except KeyboardInterrupt:
             print('KeyboardInterrupt detected, shutting down.')
 
         finally:
+            print("Landing...")
+            self.send_rc_control(0, 0, 0, 0)
+            time.sleep(0.5)
             self.land()
+            self.streamoff()
+            cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     tello = FALCON()
