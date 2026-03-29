@@ -1,7 +1,8 @@
 import subprocess
+import platform
+from software.lib.wifi_manager import LinuxWifiManager, WindowsWifiManager, MacWifiManager
 from pathlib import Path
 from djitellopy import Tello
-from software.lib import variables
 
 class FALCON(Tello):
     '''
@@ -19,20 +20,47 @@ class FALCON(Tello):
     '''
     def __init__(self, ssid: str='TELLO-AA7B55', password: str=''):
         self.file_path = Path(__file__).parent
-        self.ssid = ssid
-        self.password = password
+        self.tello_ssid = ssid
+        self.tello_password = password
 
         # Connect to WiFi before initializing Tello
-        self._connect_wifi()
+        # self._connect_wifi()
         
         # Initialize normal Tello behavior
         super().__init__()
         
         # Connect to the drone and set it to SDK mode
-        self.connect()
+        # self.connect()
 
         # # Let the environment know the drone is connected
         # variables.set_drone_on()
+    
+    def setup_wifi(self):
+        def get_manager():
+            system = platform.system().lower()
+            match system:
+                case 'linux':
+                    return LinuxWifiManager()
+                case 'windows':
+                    return WindowsWifiManager()
+                case 'darwin':
+                    return MacWifiManager()
+                case _:
+                    raise RuntimeError('Unsupported OS')
+
+        self.manager = get_manager()
+        iface1, iface2 = self.manager.discover_interfaces()
+        ap_ssid = 'jetson_nano_wifi'
+        ap_password = 'team1-falcon'
+        try:
+            print(f"Using interfaces: {iface1}, {iface2}")
+            self.manager.connect(iface1, self.tello_ssid, self.tello_password)
+            self.manager.set_ap_mode(iface2, ap_ssid, ap_password)
+        except Exception as error:
+            print(error)
+    
+    def teardown_wifi(self):
+        self.manager.restore()
 
     def _connect_wifi(self) -> None:
         '''
@@ -61,7 +89,7 @@ class FALCON(Tello):
         self.ap_interface, self.client_interface = interfaces[0], interfaces[1]
         ap_ssid = 'jetson_nano_wifi'
         ap_password = 'team1-falcon'
-        cmd = ['bash', path_to_script, self.ap_interface, ap_ssid, ap_password, self.client_interface, self.ssid, self.password]
+        cmd = ['bash', path_to_script, self.ap_interface, ap_ssid, ap_password, self.client_interface, self.tello_ssid, self.tello_password]
 
         # Error checking
         try:
@@ -82,3 +110,7 @@ class FALCON(Tello):
 
 if __name__ == '__main__':
     tello = FALCON()
+    tello.setup_wifi()
+    import time
+    time.sleep(5)
+    tello.teardown_wifi()
