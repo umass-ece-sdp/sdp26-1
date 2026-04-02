@@ -12,10 +12,15 @@
 
 // ── Pin Definitions ───────────────────────────────────────────────────────────
 
-#define STRETCH_PIN_1 4  // ADC input — stretch sensor 1
-#define STRETCH_PIN_2 6  // ADC input — stretch sensor 2
-#define STRETCH_PIN_3 15 // ADC input — stretch sensor 3
-#define STRETCH_PIN_4 17 // ADC input — stretch sensor 4
+// #define STRETCH_PIN_1 4  // ADC input — stretch sensor 1
+// #define STRETCH_PIN_2 6  // ADC input — stretch sensor 2
+// #define STRETCH_PIN_3 15 // ADC input — stretch sensor 3
+// #define STRETCH_PIN_4 17 // ADC input — stretch sensor 4
+
+#define STRETCH_PIN_4 4  // ADC input — stretch sensor 1
+#define STRETCH_PIN_3 6  // ADC input — stretch sensor 2
+#define STRETCH_PIN_2 15 // ADC input — stretch sensor 3
+#define STRETCH_PIN_1 17 // ADC input — stretch sensor 4
 
 #define IMU_SDA_PIN 38 // I2C SDA — MPU-6050
 #define IMU_SCL_PIN 37 // I2C SCL — MPU-6050
