@@ -13,7 +13,7 @@ import time
 import math
 
 # --- Config ---
-MARKER_SIZE = 0.105
+MARKER_SIZE = 0.213
 ARUCO_DICT = aruco.DICT_4X4_50
 TARGET_ID = 0
 VALID_TARGETS = [0, 1, 2, 3]
@@ -22,7 +22,7 @@ VALID_TARGETS = [0, 1, 2, 3]
 YAW_SPEED = 50
 YAW_DEAD_ZONE = 25
 
-TARGET_DIST = 1.524
+TARGET_DIST = 3.048
 DIST_DEAD_ZONE = 0.08
 FB_SPEED = 60
 FB_MAX = 80
@@ -41,7 +41,7 @@ SMOOTH_WINDOW = 3
 
 # --- Orbit config ---
 ORBIT_YAW_SPEED = 35        # Yaw rate during orbit (deg/s-ish, RC units)
-ORBIT_LATERAL_SPEED = 30    # Lateral strafe to maintain arc
+ORBIT_LATERAL_SPEED = 45      # Lateral strafe to maintain arc
 ORBIT_CHECK_INTERVAL = 0.5  # Seconds between marker checks during orbit
 ORBIT_TIMEOUT = 30.0        # Max seconds to orbit before giving up
 
@@ -96,13 +96,11 @@ def check_for_marker(frame_reader, target_id):
 def orbit_until_found(drone, frame_reader, target_id):
     """
     Orbit around the operator using simultaneous yaw + lateral strafe.
-
-    The idea: yaw rotates the drone's heading while lateral strafe keeps
-    it moving along an arc. Since the drone is roughly facing the operator,
-    yawing right + strafing right traces a clockwise circle around them.
-
-    After each check interval we grab a frame and look for the target.
-    Returns True if found, False if timeout.
+    
+    Lateral speed is dynamically adjusted based on the distance to ANY
+    visible marker — this keeps the orbit radius close to TARGET_DIST.
+    If no marker is visible, falls back to a speed derived from the
+    last known distance.
     """
     print(f"[ORBIT] Searching for ID {target_id} — orbiting clockwise")
 
@@ -111,6 +109,7 @@ def orbit_until_found(drone, frame_reader, target_id):
 
     start_time = time.time()
     last_check = time.time()
+    last_known_dist = TARGET_DIST  # metres, start with desired distance
 
     while True:
         elapsed = time.time() - start_time
@@ -120,27 +119,64 @@ def orbit_until_found(drone, frame_reader, target_id):
             drone.send_rc_control(0, 0, 0, 0)
             return False
 
-        # Orbit: yaw right + strafe right = clockwise circle around centre
-        # The yaw keeps the drone turning to face new directions while
-        # the lateral movement sweeps it around the arc
-        drone.send_rc_control(-ORBIT_LATERAL_SPEED, 0, 0, ORBIT_YAW_SPEED)
-
-        # Check for marker periodically
+        # Check for markers and measure distance every interval
         if time.time() - last_check >= ORBIT_CHECK_INTERVAL:
             last_check = time.time()
 
-            found, frame = check_for_marker(frame_reader, target_id)
+            found = False
+            frame = frame_reader.frame
+            frame_bgr = None
+            current_dist = None
+
+            if frame is not None:
+                frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
+                corners, ids, _ = detector.detectMarkers(gray)
+
+                if ids is not None:
+                    aruco.drawDetectedMarkers(frame_bgr, corners, ids)
+
+                    for corner, mid in zip(corners, ids.flatten()):
+                        success, rvec, tvec = cv2.solvePnP(
+                            obj_points, corner.reshape(4, 2),
+                            camera_matrix, dist_coeffs
+                        )
+                        if not success:
+                            continue
+
+                        x, y, z = tvec[0, 0], tvec[1, 0], tvec[2, 0]
+                        d = np.sqrt(x**2 + y**2 + z**2)
+
+                        # Use distance from ANY visible marker to gauge radius
+                        if current_dist is None or d < current_dist:
+                            current_dist = d
+
+                        if mid == target_id:
+                            found = True
+
+                if current_dist is not None:
+                    last_known_dist = current_dist
+
+            # Compute lateral speed to maintain TARGET_DIST orbit radius
+            # If too close, strafe faster to widen the arc
+            # If too far, strafe slower to tighten the arc
+            ratio = TARGET_DIST / max(last_known_dist, 0.3)
+            adjusted_lateral = int(clamp(
+                ORBIT_LATERAL_SPEED * ratio,
+                15, 80
+            ))
 
             # Update display
-            if frame is not None:
-                h, w = frame.shape[:2]
-                cv2.putText(frame,
+            if frame_bgr is not None:
+                h, w = frame_bgr.shape[:2]
+                dist_str = f"{last_known_dist:.2f}m" if last_known_dist else "?"
+                cv2.putText(frame_bgr,
                             f"ORBITING for ID {target_id} ({elapsed:.1f}s / {ORBIT_TIMEOUT:.0f}s)",
                             (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 165, 255), 2)
-                cv2.putText(frame,
-                            "Yaw+strafe clockwise — looking for marker...",
+                cv2.putText(frame_bgr,
+                            f"Dist:{dist_str}  Target:{TARGET_DIST:.2f}m  Lateral:{adjusted_lateral}",
                             (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 200, 255), 2)
-                cv2.imshow("Tello ArUco Tracker", frame)
+                cv2.imshow("Tello ArUco Tracker", frame_bgr)
 
             key = cv2.waitKey(1) & 0xFF
             if key == ord('q'):
@@ -154,7 +190,13 @@ def orbit_until_found(drone, frame_reader, target_id):
                 time.sleep(0.3)
                 return True
 
-        time.sleep(0.05)  # ~20Hz RC update rate
+        # Orbit: yaw right + strafe left = pivot around the camera face
+        # Lateral speed is dynamically scaled to hold the target radius
+        ratio = TARGET_DIST / max(last_known_dist, 0.3)
+        lr = int(clamp(ORBIT_LATERAL_SPEED * ratio, 15, 80))
+        drone.send_rc_control(-lr, 0, 0, ORBIT_YAW_SPEED)
+
+        time.sleep(0.05)
 
 
 # --- Connect and takeoff ---
