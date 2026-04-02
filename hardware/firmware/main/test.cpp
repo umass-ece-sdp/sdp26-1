@@ -1,5 +1,5 @@
 // =============================================================================
-// test.cpp — Hardware Bring-Up Test
+// test.cpp - Hardware Bring-Up Test
 // Target : ESP32-S3 (PlatformIO / Arduino framework)
 // Tests  : 4× rubber stretch sensors (ADC),
 //          MPU-6050 6-DoF IMU (I2C, accelerometer + gyroscope)
@@ -9,16 +9,16 @@
 #include <Wire.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include "glove.h"
 
 // ── Pin Definitions ───────────────────────────────────────────────────────────
 
-#define STRETCH_PIN_1 4  // ADC input — stretch sensor 1
-#define STRETCH_PIN_2 6  // ADC input — stretch sensor 2
-#define STRETCH_PIN_3 15 // ADC input — stretch sensor 3
-#define STRETCH_PIN_4 17 // ADC input — stretch sensor 4
-
-#define IMU_SDA_PIN 38 // I2C SDA — MPU-6050
-#define IMU_SCL_PIN 37 // I2C SCL — MPU-6050
+#define STRETCH_PIN_1 4  // ADC input - stretch sensor 1
+#define STRETCH_PIN_2 6  // ADC input - stretch sensor 2
+#define STRETCH_PIN_3 15 // ADC input - stretch sensor 3
+#define STRETCH_PIN_4 17 // ADC input - stretch sensor 4
+#define IMU_SDA_PIN 38   // I2C SDA - MPU-6050
+#define IMU_SCL_PIN 37   // I2C SCL - MPU-6050
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -51,7 +51,7 @@ void setup()
     Wire.begin(IMU_SDA_PIN, IMU_SCL_PIN);
     if (!mpu.begin())
     {
-        Serial.println("[ERROR] MPU-6050 not found — check wiring and I2C address. IMU reads will be skipped.");
+        Serial.println("[ERROR] MPU-6050 not found - check wiring and I2C address. IMU reads will be skipped.");
     }
     else
     {
@@ -62,8 +62,12 @@ void setup()
         mpu.setGyroRange(MPU6050_RANGE_500_DEG);
         mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
 
-        Serial.println("[INIT] MPU-6050 configured (±4 G, ±500 deg/s, 21 Hz DLPF).");
+        Serial.println("[INIT] MPU-6050 configured (+/- 4 G, +/- 500 deg/s, 21 Hz DLPF).");
     }
+
+    // ── UWB Module ────────────────────────────────────────────────────────────
+    Serial1.begin(115200, SERIAL_8N1, UWB_RX_PIN, UWB_TX_PIN);
+    Serial.println("[INIT] UWB Module initialized on Serial1.");
 
     Serial.println("\n--- Starting sensor loop ---\n");
     delay(200);
@@ -73,18 +77,20 @@ void setup()
 void loop()
 {
     // ── Stretch Sensors ───────────────────────────────────────────────────────
-    int   rawS[4];
+    int rawS[4];
     float voltS[4];
-    int   stretchPins[4] = { STRETCH_PIN_1, STRETCH_PIN_2,
-                             STRETCH_PIN_3, STRETCH_PIN_4 };
+    int stretchPins[4] = {STRETCH_PIN_1, STRETCH_PIN_2,
+                          STRETCH_PIN_3, STRETCH_PIN_4};
 
-    for (int i = 0; i < 4; i++) {
-        rawS[i]  = analogRead(stretchPins[i]);
+    for (int i = 0; i < 4; i++)
+    {
+        rawS[i] = analogRead(stretchPins[i]);
         voltS[i] = (rawS[i] / ADC_RESOLUTION) * ADC_VREF_V;
     }
 
     Serial.println("=== Stretch Sensors ===");
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
+    {
         Serial.printf("  Sensor %d  |  raw: %4d  |  voltage: %.3f V\n",
                       i + 1, rawS[i], voltS[i]);
     }
@@ -108,6 +114,20 @@ void loop()
     else
     {
         Serial.println("\n=== MPU-6050 IMU === [NOT CONNECTED]");
+    }
+
+    // ── UWB Module ────────────────────────────────────────────────────────────
+    Serial.println("\n=== UWB Module ===");
+    // Poll the anchor for the distance to TAG12345 (the ID you found on your Tag)
+    float distance = get_UWB_distance(Serial1, "TAG12345");
+
+    if (distance >= 0.0f)
+    {
+        Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
+    }
+    else
+    {
+        Serial.println("  Distance: [TIMEOUT or NO TAG RESPONSE]");
     }
 
     Serial.println("\n----------------------------------------\n");
