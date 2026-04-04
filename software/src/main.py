@@ -1,6 +1,6 @@
 from hardware.firmware import server
 import threading, socket
-from software.lib import falcon_vision as fv
+from software.lib.falcon import FALCON
 from software.lib import variables
 import subprocess
 from pathlib import Path
@@ -22,8 +22,9 @@ def drone_thread():
     # Wait for glove to be connected before starting drone
     while not variables.glove_connected:
         continue
-    
-    fv.run_tracking()
+
+    tello = FALCON()
+    tello.track_target()
 
 def main():
     '''Main entry point for the application'''

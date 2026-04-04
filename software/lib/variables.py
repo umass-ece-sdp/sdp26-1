@@ -1,13 +1,25 @@
+import threading
+
 # Shared instruction string for multiprocessing
-instruction = ''
+_lock = threading.Lock()
+instruction = {}
 color = ''
 glove_connected = False
 drone_connected = False
 
-def write_instr(instr: str):
+def write_instr(instr: tuple[tuple, tuple, tuple, tuple]):
     '''Write instruction to shared variable'''
     global instruction
-    instruction = instr
+    with _lock:
+        instruction['fingers'] = instr[0]
+        instruction['imu'] = instr[1]
+        instruction['gyro'] = instr[2]
+        instruction['dist'] = instr[3]
+
+def read_instr() -> dict:
+    '''Read a snapshot of the current instruction (thread-safe)'''
+    with _lock:
+        return dict(instruction)
 
 def set_glove_on():
     global glove_connected

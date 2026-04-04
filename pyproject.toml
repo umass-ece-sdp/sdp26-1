@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "falcon"
-version = "0.1.0"
+version = "0.1.3"
 description = "Filming Autonomous Learning and Cinematic Optic Navigator"
 authors = [
     {name = "Team FALCON", email = "thocmurphy@umass.edu"}
@@ -16,6 +16,10 @@ dependencies = [
     "opencv-python",
     "numpy",
     "ultralytics",
+    "filterpy",
+    "matplotlib",
+    "imageio",
+    "imageio-ffmpeg",
 ]
 
 [tool.setuptools.packages.find]

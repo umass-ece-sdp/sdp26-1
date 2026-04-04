@@ -11,7 +11,7 @@ Autonomous DJI Tello target-tracking platform with a wearable glove controller. 
 - [software/lib/falcon.py](software/lib/falcon.py): DJI Tello wrapper that auto-connects to the drone Wi-Fi using a provided interface/SSID
 - [hardware/firmware](hardware/firmware): ESP32-S3 glove firmware, TCP glove server, and PlatformIO config
 - [software/scripts](software/scripts): Network helper scripts (AP config, Tello Wi-Fi connect) and startup helper for the host
-- [docs](docs): Design docs placeholders; fill as deliverables are produced
+- [docs](docs): Design docs placeholders (currently empty); fill as deliverables are produced
 
 ---
 
@@ -113,4 +113,5 @@ Other patterns are logged but ignored for distance changes. The vision loop re-c
 ## Development Notes
 
 - Vision currently uses HSV color masking; YOLO detection code is present but commented out. Tweak target color, tolerances, and speeds near the top of [software/lib/falcon_vision.py](software/lib/falcon_vision.py).
+- Empty doc folders contain `.gitkeep`; populate [docs/design_specs](docs/design_specs) and [docs/final_report](docs/final_report) as artifacts are produced.
 - No automated tests yet; add unit tests under `software/tests/` and leverage PlatformIO monitors for firmware.

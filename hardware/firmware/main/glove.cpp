@@ -1,51 +1,170 @@
 #include "glove.h"
 
-ThreeStateSwitch switches[] = {
-  {4, 5, '2', '1', 0}, // left/right
-  {6, 7, '2', '1', 0}, // fwd/back
-  {15, 16, '2', '1', 0}, // cw/ccw (heading)
-  {17, 18, '2', '1', 0} // up/down (altitude)
-};
+// Constants
+static constexpr float ADC_RESOLUTION = 4096.0f; // 12-bit ADC (0–4095)
+static constexpr float ADC_VREF_V = 3.3f;		 // ESP32-S3 ADC reference (V)
 
-const int numSwitches = sizeof(switches) / sizeof(switches[0]);
-
-// Read 3-state switch: +1, 0, -1
-int read3StateSwitch(int pinA, int pinB) {
-  // With INPUT_PULLUP, LOW means switch is active
-  bool a = digitalRead(pinA) == LOW;
-  bool b = digitalRead(pinB) == LOW;
-  if (a && !b) return +1;
-  if (!a && b) return -1;
-  return 0;
+void setup_glove()
+{
+	Serial.println("[GLOVE] Initializing pins...");
+	pinMode(FINGER_PIN_1, INPUT);
+	pinMode(FINGER_PIN_2, INPUT);
+	pinMode(FINGER_PIN_3, INPUT);
+	pinMode(FINGER_PIN_4, INPUT);
+	Serial.println("[GLOVE] Finger pins initialized");
+	pinMode(IMU_SCL_PIN, INPUT);
+	pinMode(IMU_SDA_PIN, INPUT);
+	Serial.println("[GLOVE] IMU pins initialized");
 }
 
-void setup_glove() {
-  Serial.println("[GLOVE] Initializing switches...");
-  
-  for (int i = 0; i < numSwitches; i++) {
-    pinMode(switches[i].pinA, INPUT_PULLUP);
-    pinMode(switches[i].pinB, INPUT_PULLUP);
-  }
-  
-  Serial.println("[GLOVE] Switches initialized");
+void setup_IMU(Adafruit_MPU6050 &mpu, bool &mpuOK, const int &accelRange, const int &gyroRange, const int &filterBandwidth)
+{
+	Wire.begin(IMU_SDA_PIN, IMU_SCL_PIN);
+	if (!mpu.begin())
+	{
+		Serial.println("[IMU] MPU-6050 not found - check wiring and I2C address. IMU reads will be skipped.");
+		mpuOK = false;
+		return;
+	}
+
+	mpuOK = true;
+	Serial.println("[IMU] MPU-6050 successfully connected.");
+
+	// Set accelerometer range
+	switch (accelRange)
+	{
+	case 2:
+		mpu.setAccelerometerRange(MPU6050_RANGE_2_G);
+		break;
+	case 4:
+		mpu.setAccelerometerRange(MPU6050_RANGE_4_G);
+		break;
+	case 8:
+		mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+		break;
+	case 16:
+		mpu.setAccelerometerRange(MPU6050_RANGE_16_G);
+		break;
+	}
+	Serial.printf("[IMU] MPU-6050 accelerometer range set to ±%d G\n", accelRange);
+
+	// Set gyroscope range
+	switch (gyroRange)
+	{
+	case 250:
+		mpu.setGyroRange(MPU6050_RANGE_250_DEG);
+		break;
+	case 500:
+		mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+		break;
+	case 1000:
+		mpu.setGyroRange(MPU6050_RANGE_1000_DEG);
+		break;
+	case 2000:
+		mpu.setGyroRange(MPU6050_RANGE_2000_DEG);
+		break;
+	}
+	Serial.printf("[IMU] MPU-6050 gyroscope range set to ±%d deg/s\n", gyroRange);
+
+	// Set DLPF (digital low-pass filter) bandwidth
+	switch (filterBandwidth)
+	{
+	case 260:
+		mpu.setFilterBandwidth(MPU6050_BAND_260_HZ);
+		break;
+	case 184:
+		mpu.setFilterBandwidth(MPU6050_BAND_184_HZ);
+		break;
+	case 94:
+		mpu.setFilterBandwidth(MPU6050_BAND_94_HZ);
+		break;
+	case 44:
+		mpu.setFilterBandwidth(MPU6050_BAND_44_HZ);
+		break;
+	case 21:
+		mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+		break;
+	case 10:
+		mpu.setFilterBandwidth(MPU6050_BAND_10_HZ);
+		break;
+	case 5:
+		mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+		break;
+	}
+	Serial.printf("[IMU] MPU-6050 filter bandwidth set to %d Hz\n", filterBandwidth);
 }
 
-void read_glove_inputs(char* output, int maxLen) {
-  // Read all switches and build a command string
-  int idx = 0;
-  
-  for (int i = 0; i < numSwitches && idx < maxLen - 1; i++) {
-    int state = read3StateSwitch(switches[i].pinA, switches[i].pinB);
-    switches[i].lastState = state;
-    
-    if (state == +1) {
-      output[idx++] = switches[i].actionA;
-    } else if (state == -1) {
-      output[idx++] = switches[i].actionB;
-    } else {
-      output[idx++] = '0'; // neutral state
-    }
-  }
-  
-  output[idx] = '\0'; // null terminate
+void read_fingers(float (&reading)[4])
+{
+	reading[0] = (analogRead(FINGER_PIN_1) / ADC_RESOLUTION) * ADC_VREF_V;
+	reading[1] = (analogRead(FINGER_PIN_2) / ADC_RESOLUTION) * ADC_VREF_V;
+	reading[2] = (analogRead(FINGER_PIN_3) / ADC_RESOLUTION) * ADC_VREF_V;
+	reading[3] = (analogRead(FINGER_PIN_4) / ADC_RESOLUTION) * ADC_VREF_V;
+}
+
+void read_IMU(Adafruit_MPU6050 &mpu, sensors_event_t &accel, sensors_event_t &gyro, float (&accel_reading)[3], float (&gyro_reading)[3])
+{
+	sensors_event_t temp;
+	mpu.getEvent(&accel, &gyro, &temp);
+	accel_reading[0] = accel.acceleration.x;
+	accel_reading[1] = accel.acceleration.y;
+	accel_reading[2] = accel.acceleration.z;
+	gyro_reading[0] = gyro.gyro.x;
+	gyro_reading[1] = gyro.gyro.y;
+	gyro_reading[2] = gyro.gyro.z;
+}
+
+float get_UWB_distance(HardwareSerial &uwbSerial, const char *targetTag)
+{
+	// Clear out any old garbage in the Serial buffer
+	while (uwbSerial.available())
+	{
+		uwbSerial.read();
+	}
+
+	// Send the "AT+ANCHOR_SEND" command
+	uwbSerial.print("AT+ANCHOR_SEND=");
+	uwbSerial.print(targetTag);
+	uwbSerial.print(",4,Ping\r\n");
+
+	// Wait for the response
+	unsigned long start_time = millis();
+	while (millis() - start_time < 500) // 500ms timeout
+	{
+		if (uwbSerial.available())
+		{
+			String response = uwbSerial.readStringUntil('\n');
+			response.trim();
+
+			// Expected response: +RCV=TAG12345,4,Ping,-80,2.34
+			if (response.startsWith("+RCV="))
+			{
+				int lastComma = response.lastIndexOf(',');
+				if (lastComma != -1)
+				{
+					// Parse the distance (last component) as a float
+					String distanceStr = response.substring(lastComma + 1);
+					return distanceStr.toFloat();
+				}
+			}
+		}
+	}
+
+	// Return a negative value to indicate a timeout or failed reading
+	return -1.0f;
+}
+
+void store_data(Packet &packet, const float (&finger_readings)[4], const float (&accel_readings)[3], const float (&gyro_readings)[3], const float &UWB_distance)
+{
+	packet.finger1 = finger_readings[0];
+	packet.finger2 = finger_readings[1];
+	packet.finger3 = finger_readings[2];
+	packet.finger4 = finger_readings[3];
+	packet.accel_x = accel_readings[0];
+	packet.accel_y = accel_readings[1];
+	packet.accel_z = accel_readings[2];
+	packet.gyro_x = gyro_readings[0];
+	packet.gyro_y = gyro_readings[1];
+	packet.gyro_z = gyro_readings[2];
+	packet.dist = UWB_distance;
 }
