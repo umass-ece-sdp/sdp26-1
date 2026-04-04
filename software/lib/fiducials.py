@@ -8,7 +8,7 @@ if not fiducial_dir.exists():
     fiducial_dir.mkdir()
 
 class Fiducial:
-    MARKER_SIZE = 0.08 # Markers are 8cm x 8cm
+    MARKER_SIZE = 0.105 # Markers are 8cm x 8cm
     ARUCO_DICT = cv2.aruco.DICT_4X4_50 # 4x4 dictionary to have best tracking
     
     def __init__(self):
