@@ -114,6 +114,46 @@ void read_IMU(Adafruit_MPU6050 &mpu, sensors_event_t &accel, sensors_event_t &gy
 	gyro_reading[2] = gyro.gyro.z;
 }
 
+float get_UWB_distance(HardwareSerial &uwbSerial, const char *targetTag)
+{
+	// Clear out any old garbage in the Serial buffer
+	while (uwbSerial.available())
+	{
+		uwbSerial.read();
+	}
+
+	// Send the "AT+ANCHOR_SEND" command
+	uwbSerial.print("AT+ANCHOR_SEND=");
+	uwbSerial.print(targetTag);
+	uwbSerial.print(",4,Ping\r\n");
+
+	// Wait for the response
+	unsigned long start_time = millis();
+	while (millis() - start_time < 500) // 500ms timeout
+	{
+		if (uwbSerial.available())
+		{
+			String response = uwbSerial.readStringUntil('\n');
+			response.trim();
+
+			// Expected response: +RCV=TAG12345,4,Ping,-80,2.34
+			if (response.startsWith("+RCV="))
+			{
+				int lastComma = response.lastIndexOf(',');
+				if (lastComma != -1)
+				{
+					// Parse the distance (last component) as a float
+					String distanceStr = response.substring(lastComma + 1);
+					return distanceStr.toFloat();
+				}
+			}
+		}
+	}
+
+	// Return a negative value to indicate a timeout or failed reading
+	return -1.0f;
+}
+
 void store_data(Packet &packet, const float (&finger_readings)[4], const float (&accel_readings)[3], const float (&gyro_readings)[3], const float &UWB_distance)
 {
 	packet.finger1 = finger_readings[0];
@@ -123,8 +163,8 @@ void store_data(Packet &packet, const float (&finger_readings)[4], const float (
 	packet.accel_x = accel_readings[0];
 	packet.accel_y = accel_readings[1];
 	packet.accel_z = accel_readings[2];
-	packet.gyro_x  = gyro_readings[0];
-	packet.gyro_y  = gyro_readings[1];
-	packet.gyro_z  = gyro_readings[2];
+	packet.gyro_x = gyro_readings[0];
+	packet.gyro_y = gyro_readings[1];
+	packet.gyro_z = gyro_readings[2];
 	packet.dist = UWB_distance;
 }
