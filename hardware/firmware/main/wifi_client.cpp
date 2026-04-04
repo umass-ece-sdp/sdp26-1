@@ -1,7 +1,5 @@
 #include "wifi_client.h"
 
-WiFiClient client;
-
 void setup_wifi()
 {
     Serial.println("[CLIENT] Connecting to WiFi...");
@@ -30,7 +28,7 @@ void setup_wifi()
     }
 }
 
-void connect_and_send(char *message)
+void connect_and_send(WiFiClient &client, const Packet &packet)
 {
     // Check WiFi connection
     if (WiFi.status() != WL_CONNECTED)
@@ -59,9 +57,8 @@ void connect_and_send(char *message)
     }
 
     // Send the message
-    Serial.print("[CLIENT] Sending message: ");
-    Serial.println(message);
-    client.print(message);
+    Serial.print("[CLIENT] Sending message");
+    client.write((uint8_t *)&packet, sizeof(packet));
 
     // Wait for ACK from server
     unsigned long timeout = millis() + 5000; // 5 second timeout
