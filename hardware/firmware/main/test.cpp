@@ -104,6 +104,7 @@ void loop()
     float voltS[4];
     int stretchPins[4] = {STRETCH_PIN_1, STRETCH_PIN_2,
                           STRETCH_PIN_3, STRETCH_PIN_4};
+    const bool listenerPressed = (digitalRead(EVENT_LISTENER_PIN) == HIGH);
 
     for (int i = 0; i < 4; i++)
     {
@@ -111,7 +112,16 @@ void loop()
         voltS[i] = (rawS[i] / ADC_RESOLUTION) * ADC_VREF_V;
     }
 
+    if (!listenerPressed)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            voltS[i] = 0.0f;
+        }
+    }
+
     Serial.println("=== Stretch Sensors ===");
+    Serial.printf("  Listener button: %s\n", listenerPressed ? "PRESSED" : "NOT PRESSED (GATED)");
     for (int i = 0; i < 4; i++)
     {
         Serial.printf("  Sensor %d  |  raw: %4d  |  voltage: %.3f V\n",
