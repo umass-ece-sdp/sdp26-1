@@ -48,22 +48,22 @@ def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tu
     try:
         print('Reading instruction...')
         # Receive exactly 32 bytes
-        packet = conn.recv(32)
+        packet = conn.recv(24)
         
-        if not packet or len(packet) < 32:
+        if not packet or len(packet) < 24:
             print("Connection closed or incomplete data")
             return None
         
         # Unpack struct
-        data = struct.unpack('ffffffff', packet)
+        data = struct.unpack('ffffff', packet)
         fingers = data[0:4]
-        imu = data[4:7]
-        dist = data[7]
+        speed = data[4]
+        dist = data[5]
         
         # Send ACK back to client
         conn.send(b'ACK')
 
-        return fingers, imu, dist
+        return fingers, speed, dist
         
     except Exception as e:
         print(f"Error receiving data: {e}")

@@ -12,7 +12,7 @@ def write_instr(instr: tuple[tuple, tuple, tuple]):
     global instruction
     with _lock:
         instruction['fingers'] = instr[0]
-        instruction['imu'] = instr[1]
+        instruction['speed'] = instr[1]
         instruction['dist'] = instr[2]
 
 def read_instr() -> dict:
