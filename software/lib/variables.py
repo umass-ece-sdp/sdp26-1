@@ -1,9 +1,8 @@
 import threading
 
-# Shared instruction string for multiprocessing
+# Shared instruction string for multithreading
 _lock = threading.Lock()
 instruction = {}
-color = ''
 glove_connected = False
 drone_connected = False
 

@@ -1,69 +1,61 @@
-#include <Arduino.h>
-#include "wifi_client.h"
 #include "glove.h"
+#include "wifi_client.h"
 
-// Accelerometer range for IMU (G's, uncomment for desired range)
-// const int IMU_accelRange = 2;
-const int IMU_accelRange = 4;
-// const int IMU_accelRange = 8;
-// const int IMU_accelRange = 16;
-
-// Gyroscope range for IMU (deg/s, uncomment desired range)
-// const int IMU_gyroRange = 250;
-const int IMU_gyroRange = 500;
-// const int IMU_gyroRange = 1000;
-// const int IMU_gyroRange = 2000;
-
-// DLPF bandwidth for IMU (Hz, uncomment desired bandwidth)
-// const int IMU_filterBandwidth = 260;
-// const int IMU_filterBandwidth = 184;
-// const int IMU_filterBandwidth = 94;
-// const int IMU_filterBandwidth = 44;
-const int IMU_filterBandwidth = 21;
-// const int IMU_filterBandwidth = 10;
-// const int IMU_filterBandwidth = 5;
-
-// IMU sensor
-Adafruit_MPU6050 mpu;
+// Globals
+Adafruit_LIS3DH lis;
 sensors_event_t accel;
-sensors_event_t gyro;
-bool mpuOK = false; // ensure IMU stays connected
-
-// Assign repeated variables to improve efficiency
-float finger_readings[4];
-float accel_readings[3];
-float gyro_readings[3];
-float UWB_distance = 0.0f;  // Eventually have real readings here
-Packet packet;
 WiFiClient client;
+float finger_reading[4];
+float speed;
+bool imuOK = false;
+float accel_reading[3] = {0.0f, 0.0f, 0.0f};
+float gravity_est[3] = {0.0f, 0.0f, 0.0f};
+float accel_bias[3] = {0.0f, 0.0f, 0.0f};
+float linear_accel[3] = {0.0f, 0.0f, 0.0f};
+float velocity[3] = {0.0f, 0.0f, 0.0f};
+uint32_t lastIMUus = 0;
+bool imuFilterReady = false;
+Packet packet;
 
 void setup()
 {
     Serial.begin(115200);
-    delay(3000); // delay to allow serial monitor to connect for debugging
+    delay(500);
 
-    Serial.println("\n[MAIN] Starting ESP32 Client...");
-
+    // Initialize pins for finger sensors, IMU, UWB, setup WiFi
     setup_glove();
+    setup_IMU(lis, imuOK, 4, 50);
+    // setup_UWB();
     setup_wifi();
-    setup_IMU(mpu, mpuOK, IMU_accelRange, IMU_gyroRange, IMU_filterBandwidth);
+
+    Serial.println("[Glove] Initialization complete");
+
+    delay(200);
 }
 
 void loop()
 {
-    // Read data from the finger sensors and the IMU
-    read_fingers(finger_readings);
-    if (mpuOK)
+    // Read stretch sensors
+    read_fingers(finger_reading);
+
+    // Read IMU data
+    if (imuOK)
     {
-        read_IMU(mpu, accel, gyro, accel_readings, gyro_readings);
+        read_IMU(lis, accel, accel_reading);
+        filter_IMU(accel_reading, lastIMUus, imuFilterReady, gravity_est, accel_bias, velocity, linear_accel);
+        calc_speed(speed, velocity, linear_accel);
     }
 
-    // Store data in a packet to send to Base
-    store_data(packet, finger_readings, accel_readings, gyro_readings, UWB_distance);
+    // Read UWB
+    float distance = get_UWB_distance(Serial1, "TAG12345");
+    // if (distance >= 0.0f)
+    // {
+    //     Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
+    // }
 
-    // // Try to connect and send data
+    // Package data and send it to the glove
+    store_data(packet, finger_reading, speed, distance);
     connect_and_send(client, packet);
 
-    // Wait before reading and sending next update
-    delay(1000);
+    delay(50);
 }

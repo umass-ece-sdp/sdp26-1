@@ -57,7 +57,7 @@ void connect_and_send(WiFiClient &client, const Packet &packet)
     }
 
     // Send the message
-    Serial.print("[CLIENT] Sending message");
+    Serial.println("[CLIENT] Sending message");
     client.write((uint8_t *)&packet, sizeof(packet));
 
     // Wait for ACK from server

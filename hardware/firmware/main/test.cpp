@@ -7,7 +7,6 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <math.h>
 #include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
 #include "glove.h"

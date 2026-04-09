@@ -193,7 +193,7 @@ void filter_IMU(const float (&accel_reading)[3], uint32_t &lastIMUus, bool &imuF
 	gravity_est[1] = (GRAVITY_ALPHA * gravity_est[1]) + ((1.0f - GRAVITY_ALPHA) * accel_reading[1]);
 	gravity_est[2] = (GRAVITY_ALPHA * gravity_est[2]) + ((1.0f - GRAVITY_ALPHA) * accel_reading[2]);
 
-	// Linearize
+	// Normalize accel reading with gravity estimation
 	linear_accel[0] = accel_reading[0] - gravity_est[0];
 	linear_accel[1] = accel_reading[1] - gravity_est[1];
 	linear_accel[2] = accel_reading[2] - gravity_est[2];
