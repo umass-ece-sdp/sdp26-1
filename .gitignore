@@ -5,3 +5,5 @@
 **/build
 **/*env
 **/__pycache__
+hardware/firmware/.vscode/c_cpp_properties.json
+hardware/firmware/.vscode/launch.json
