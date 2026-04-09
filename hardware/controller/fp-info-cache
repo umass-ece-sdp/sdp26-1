@@ -1,4 +1,4 @@
-27257106478498898
+27258882169089640
 Adafruit Display Adapter RA8875
 1590BB
 
@@ -98713,6 +98713,13 @@ rotary encoder illuminated switch vertical
 0
 9
 8
+SANXIXING ESP32-S3
+SANXIXING-ESP32-S3
+
+
+0
+44
+44
 Sensor
 ASAIR_AM2302_P2.54mm_Lead2.75mm_TabDown
 Temperature and humidity module, http://akizukidenshi.com/download/ds/aosong/AM2302.pdf
