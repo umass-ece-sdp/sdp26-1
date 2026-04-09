@@ -13,169 +13,6 @@
 		(comment 2 "Author: Sasha Shikhanovich")
 	)
 	(lib_symbols
-		(symbol "Connector:Conn_01x02_Pin"
-			(pin_names
-				(offset 1.016)
-				(hide yes)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "J"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Conn_01x02_Pin"
-				(at 0 -5.08 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" "~"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Generic connector, single row, 01x02, script generated"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_locked" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "connector"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_fp_filters" "Connector*:*_1x??_*"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Conn_01x02_Pin_1_1"
-				(rectangle
-					(start 0.8636 0.127)
-					(end 0 -0.127)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 0.8636 -2.413)
-					(end 0 -2.667)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 0) (xy 0.8636 0)
-					)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 -2.54) (xy 0.8636 -2.54)
-					)
-					(stroke
-						(width 0.1524)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(pin passive line
-					(at 5.08 0 180)
-					(length 3.81)
-					(name "Pin_1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5.08 -2.54 180)
-					(length 3.81)
-					(name "Pin_2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "Connector:Conn_01x05_Pin"
 			(pin_names
 				(offset 1.016)
@@ -789,6 +626,196 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Connector:Screw_Terminal_01x02"
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "J"
+				(at 0 2.54 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "Screw_Terminal_01x02"
+				(at 0 -5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "screw terminal"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "TerminalBlock*:*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "Screw_Terminal_01x02_1_1"
+				(rectangle
+					(start -1.27 1.27)
+					(end 1.27 -3.81)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.5334 0.3302) (xy 0.3302 -0.508)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.5334 -2.2098) (xy 0.3302 -3.048)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.3556 0.508) (xy 0.508 -0.3302)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.3556 -2.032) (xy 0.508 -2.8702)
+					)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 0)
+					(radius 0.635)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0 -2.54)
+					(radius 0.635)
+					(stroke
+						(width 0.1524)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(pin passive line
+					(at -5.08 0 0)
+					(length 3.81)
+					(name "Pin_1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 3.81)
+					(name "Pin_2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:R"
 			(pin_numbers
 				(hide yes)
@@ -996,282 +1023,6 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Omron Tactile Button Small:B3F-1000"
-			(pin_names
-				(offset 1.016)
-			)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "S"
-				(at -7.6261 7.6261 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-				)
-			)
-			(property "Value" "B3F-1000"
-				(at -7.6316 -8.9035 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left bottom)
-				)
-			)
-			(property "Footprint" "B3F-1000:SW_B3F-1000"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "MANUFACTURER" "Omron"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify bottom)
-					(hide yes)
-				)
-			)
-			(symbol "B3F-1000_0_0"
-				(rectangle
-					(start -8.8931 -6.3522)
-					(end -7.62 -3.81)
-					(stroke
-						(width 0.1)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start -8.8912 3.8105)
-					(end -7.62 6.35)
-					(stroke
-						(width 0.1)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy -7.62 5.08) (xy 7.62 5.08)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -7.62 -5.08) (xy 7.62 -5.08)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start -7.62 -7.62)
-					(end 7.62 7.62)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(circle
-					(center 0 5.08)
-					(radius 0.254)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 5.08) (xy 0 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -1.27) (xy 2.54 1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -5.08) (xy 0 -1.27)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 -5.08)
-					(radius 0.254)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 7.6236 -6.353)
-					(end 8.89 -3.81)
-					(stroke
-						(width 0.1)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(rectangle
-					(start 7.6243 3.8121)
-					(end 8.89 6.35)
-					(stroke
-						(width 0.1)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(pin passive line
-					(at -12.7 5.08 0)
-					(length 5.08)
-					(name "4"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -12.7 -5.08 0)
-					(length 5.08)
-					(name "2"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 12.7 5.08 180)
-					(length 5.08)
-					(name "3"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 12.7 -5.08 180)
-					(length 5.08)
-					(name "1"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.016 1.016)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
 		(symbol "On/Off Switch GF-123-0054:GF-123-0054"
 			(pin_names
 				(offset 1.016)
@@ -1468,7 +1219,7 @@
 					(justify left top)
 				)
 			)
-			(property "Value" "ESP32-S3-DEVKITC-1-N8R8"
+			(property "Value" "SANXIXING ESP32-S3"
 				(at -17.78 -27.94 0)
 				(effects
 					(font
@@ -1477,7 +1228,7 @@
 					(justify left bottom)
 				)
 			)
-			(property "Footprint" "ESP32-S3-DEVKITC-1-N8R8:ESP32-S3-DEVKITC-1-N8R8"
+			(property "Footprint" "SANXIXING ESP32-S3:SANXIXING-ESP32-S3"
 				(at 0 0 0)
 				(effects
 					(font
@@ -2698,7 +2449,7 @@
 	)
 	(text "Event Listener Switch"
 		(exclude_from_sim no)
-		(at 392.176 189.484 0)
+		(at 366.776 170.688 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2949,10 +2700,6 @@
 		(uuid "6f48b52b-9988-4359-aead-03748619c03e")
 	)
 	(no_connect
-		(at 359.41 208.28)
-		(uuid "7453bb00-fef0-40a0-b3b4-2ca07ecfa981")
-	)
-	(no_connect
 		(at 269.24 252.73)
 		(uuid "79aa0dbf-0bf0-4592-93e0-abe26114586d")
 	)
@@ -3009,10 +2756,6 @@
 		(uuid "d9eaa3ce-9cb9-45b5-abf8-d6393589fbc7")
 	)
 	(no_connect
-		(at 369.57 182.88)
-		(uuid "db1a9b39-fc6a-47b3-9938-2d974c843ea2")
-	)
-	(no_connect
 		(at 264.16 252.73)
 		(uuid "e0a037a6-c668-4784-8357-895bfae77a44")
 	)
@@ -3039,16 +2782,6 @@
 	(no_connect
 		(at 316.23 172.72)
 		(uuid "ffbd1f8d-8129-4376-8b89-4f5a50e0b3cb")
-	)
-	(wire
-		(pts
-			(xy 373.38 209.55) (xy 369.57 209.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "01907853-7a1b-43ab-989c-ce94016f971b")
 	)
 	(wire
 		(pts
@@ -3212,6 +2945,16 @@
 	)
 	(wire
 		(pts
+			(xy 353.06 173.99) (xy 351.79 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f65afc9-406a-4a29-9d85-d0094cf2fb6c")
+	)
+	(wire
+		(pts
 			(xy 323.85 200.66) (xy 330.2 200.66)
 		)
 		(stroke
@@ -3279,6 +3022,16 @@
 			(type default)
 		)
 		(uuid "5d0a1248-b054-4447-8a85-97cf1897d5fb")
+	)
+	(wire
+		(pts
+			(xy 351.79 176.53) (xy 351.79 234.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5dbcc0fb-e9e1-4756-91eb-c4c5acd75688")
 	)
 	(wire
 		(pts
@@ -3379,6 +3132,16 @@
 			(type default)
 		)
 		(uuid "842b174f-a308-4fb9-8618-c34915243980")
+	)
+	(wire
+		(pts
+			(xy 351.79 176.53) (xy 353.06 176.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "852be9e8-aac5-417d-b762-323b58f8d38f")
 	)
 	(wire
 		(pts
@@ -3542,16 +3305,6 @@
 	)
 	(wire
 		(pts
-			(xy 351.79 234.95) (xy 351.79 182.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b945b1a3-36e3-48e7-a1e2-89f7ebd15612")
-	)
-	(wire
-		(pts
 			(xy 227.33 182.88) (xy 232.41 182.88)
 		)
 		(stroke
@@ -3569,16 +3322,6 @@
 			(type default)
 		)
 		(uuid "bae466ac-6e64-4265-90ad-4c88dc0e4e6f")
-	)
-	(wire
-		(pts
-			(xy 369.57 209.55) (xy 369.57 208.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bbf7ecf1-0bba-4b13-b5b4-d56b353c9284")
 	)
 	(wire
 		(pts
@@ -3612,6 +3355,16 @@
 	)
 	(wire
 		(pts
+			(xy 351.79 163.83) (xy 351.79 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cbea48e0-241d-4286-9796-21e9aadc9f24")
+	)
+	(wire
+		(pts
 			(xy 270.51 168.91) (xy 323.85 168.91)
 		)
 		(stroke
@@ -3632,7 +3385,7 @@
 	)
 	(wire
 		(pts
-			(xy 323.85 163.83) (xy 373.38 163.83)
+			(xy 323.85 163.83) (xy 351.79 163.83)
 		)
 		(stroke
 			(width 0)
@@ -3669,16 +3422,6 @@
 			(type default)
 		)
 		(uuid "d917e8b8-f3fa-4b53-a629-7a2ece087d6f")
-	)
-	(wire
-		(pts
-			(xy 373.38 163.83) (xy 373.38 209.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e431e8d2-b35a-484d-9a8d-40d53c822dbb")
 	)
 	(wire
 		(pts
@@ -3732,16 +3475,6 @@
 	)
 	(wire
 		(pts
-			(xy 351.79 182.88) (xy 359.41 182.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ff49121e-df60-4d43-87f5-b2691233d9f2")
-	)
-	(wire
-		(pts
 			(xy 267.97 234.95) (xy 351.79 234.95)
 		)
 		(stroke
@@ -3749,73 +3482,6 @@
 			(type default)
 		)
 		(uuid "ff6bf42e-db96-489e-bc48-dc971fbc3e01")
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x02_Pin")
-		(at 222.25 190.5 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "02a51d78-afac-4cda-81ee-5ac67c13383d")
-		(property "Reference" "F3"
-			(at 213.36 190.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Conn_01x02_Pin"
-			(at 213.614 192.532 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 222.25 190.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 222.25 190.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 222.25 190.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "f8ed4925-7c85-4276-ac7e-0d80cbf5c9e2")
-		)
-		(pin "1"
-			(uuid "fe931b45-19a6-47f2-9ca4-7ed5b7e2a69e")
-		)
-		(instances
-			(project "handheld_controller"
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "F3")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Mechanical:MountingHole")
@@ -4012,35 +3678,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Omron Tactile Button Small:B3F-1000")
-		(at 364.49 195.58 90)
+		(lib_id "SANXIXING-ESP32-S3:ESP32-S3-DEVKITC-1-N8R8")
+		(at 293.37 203.2 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "5346cab7-b893-4d55-a7e0-c5d948e8ad65")
-		(property "Reference" "Listener Switch1"
-			(at 373.38 194.3114 90)
+		(uuid "5169b0b1-b070-4bd9-899a-66370441ce31")
+		(property "Reference" "U1"
+			(at 293.37 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Value" "B3F-1000"
-			(at 373.38 196.8514 90)
+		(property "Value" "SANXIXING ESP32-S3"
+			(at 293.37 167.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
 			)
 		)
-		(property "Footprint" "Omron Tactile Button Small B3f-1000:SW_B3F-1000"
-			(at 364.49 195.58 0)
+		(property "Footprint" "SANXIXING ESP32-S3:SANXIXING-ESP32-S3"
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4050,7 +3714,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 364.49 195.58 0)
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4059,7 +3723,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 364.49 195.58 0)
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4067,8 +3731,8 @@
 				(hide yes)
 			)
 		)
-		(property "MANUFACTURER" "Omron"
-			(at 364.49 195.58 0)
+		(property "MF" "Espressif Systems"
+			(at 293.37 203.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4077,22 +3741,279 @@
 				(hide yes)
 			)
 		)
-		(pin "2"
-			(uuid "76007730-a63f-477a-88c9-b3b5589dc6e1")
+		(property "Description_1" "The ESP32-S3-DEVKITC-1-N8R8 from Espressif Systems is a development board designed for RF, RFID, and wireless applications. It supports 802.11 b/g/n Wi-Fi and Bluetooth® 5.x (BLE) connectivity at 2.4GHz, making it ideal for IoT and wireless communication projects. This board is powered by the ESP32-S3-WROOM-1-N8R8 module, which features 8MB Quad SPI Flash and 8MB Octal SPI for efficient memory storage and processing."
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
 		)
-		(pin "1"
-			(uuid "8cbbbe7d-341e-4003-b8fd-b7bebd6be365")
+		(property "Package" "None"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
 		)
-		(pin "3"
-			(uuid "2699c1dd-df7a-4600-aeff-bc8b8bbfe03e")
+		(property "Price" "None"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
 		)
-		(pin "4"
-			(uuid "f125b282-e3d0-4526-a510-9e536aeb4123")
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=snap"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "ESP32-S3-DEVKITC-1-N8R8"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=eda"
+			(at 293.37 203.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "J1_5"
+			(uuid "dcbcca23-a8f1-46df-9e4f-0ad1e2891405")
+		)
+		(pin "J3_20"
+			(uuid "f7ebacb0-2674-4dc2-b86e-7bcb91ffa8d3")
+		)
+		(pin "J3_19"
+			(uuid "44a88522-670f-4607-8b1c-b2bbf6fb248e")
+		)
+		(pin "J3_22"
+			(uuid "dbc80716-2045-4c32-925c-565bb863207e")
+		)
+		(pin "J3_16"
+			(uuid "0da41aad-e2de-445d-b87d-0815f334eb4f")
+		)
+		(pin "J3_21"
+			(uuid "10757d37-dd00-475c-abb9-fa0d5eafc81e")
+		)
+		(pin "J3_15"
+			(uuid "9b63362e-efdc-47bb-9509-85eb91c262e3")
+		)
+		(pin "J3_18"
+			(uuid "391bd6eb-9b5d-4fe1-89b1-5b17bfd42513")
+		)
+		(pin "J3_12"
+			(uuid "10c5bc4e-bdf5-4fff-830c-29a653a6d381")
+		)
+		(pin "J3_17"
+			(uuid "f5fd885d-a96e-4148-977f-f4e4bd95b69c")
+		)
+		(pin "J3_11"
+			(uuid "0043cf2a-5df0-431d-9d9d-688333c64608")
+		)
+		(pin "J3_14"
+			(uuid "4c07f3c5-1068-44ac-8227-d1b4529b54f6")
+		)
+		(pin "J3_13"
+			(uuid "fed89dbf-04a3-41af-aaf2-0eb029f9a899")
+		)
+		(pin "J3_9"
+			(uuid "415ee6ab-97a8-44ce-b02a-0b7fd1e396cf")
+		)
+		(pin "J3_10"
+			(uuid "1009d5c3-1adc-422a-8c60-a307cf7f12d9")
+		)
+		(pin "J3_8"
+			(uuid "cad476a2-73d6-45df-b334-0713fe310811")
+		)
+		(pin "J3_3"
+			(uuid "5615733e-4401-4c43-8e7c-44c6e53f9d06")
+		)
+		(pin "J3_6"
+			(uuid "093dee45-a5a2-4520-81b5-ee142ff3a0f6")
+		)
+		(pin "J3_2"
+			(uuid "4b085b53-aee4-4b2d-9617-6ada8d425a33")
+		)
+		(pin "J3_5"
+			(uuid "1c1c4edf-5294-4433-b308-a178fcecedfd")
+		)
+		(pin "J1_21"
+			(uuid "90333083-43d5-402e-9236-0adc0243b638")
+		)
+		(pin "J3_4"
+			(uuid "b1761a8d-9cc2-48a0-9291-e7aff4809549")
+		)
+		(pin "J1_20"
+			(uuid "9936f204-67c8-41d6-b386-ec5ef3554d75")
+		)
+		(pin "J3_1"
+			(uuid "ed4cc682-def6-4aa1-9cef-389fbf8cb84e")
+		)
+		(pin "J1_17"
+			(uuid "819b52c8-c751-40e1-a1da-8f071cbd2e75")
+		)
+		(pin "J1_22"
+			(uuid "993cd05a-a680-4037-85e8-325ddd68cef7")
+		)
+		(pin "J1_16"
+			(uuid "eea8620f-14dc-4d62-a1ee-394b7ddd5f61")
+		)
+		(pin "J1_19"
+			(uuid "1ff7264d-f6b0-4d8e-aec3-02546e877922")
+		)
+		(pin "J1_13"
+			(uuid "aaa960e0-76df-4931-b7cd-406af755aadf")
+		)
+		(pin "J1_18"
+			(uuid "550d933f-42c1-4780-a39d-c4635dd834b0")
+		)
+		(pin "J1_12"
+			(uuid "78f367f8-af8b-4ea8-84fb-6baa8b730963")
+		)
+		(pin "J1_15"
+			(uuid "fbbcc2fa-d74d-4234-ac1c-a7feb2f42d9d")
+		)
+		(pin "J1_9"
+			(uuid "9f27f949-35ae-4be1-9b6a-5290b05bc7a7")
+		)
+		(pin "J1_14"
+			(uuid "2e656c38-1c01-4442-b006-594afe29831c")
+		)
+		(pin "J1_8"
+			(uuid "7b2e2d33-239d-4a05-841b-0032ccf439b5")
+		)
+		(pin "J1_11"
+			(uuid "18d8bded-bc46-40d1-b1eb-73e3c1bd89c7")
+		)
+		(pin "J1_10"
+			(uuid "532516e5-b95c-408a-b844-4c984e415e2d")
+		)
+		(pin "J1_6"
+			(uuid "66c1953a-1303-4f96-a404-7bd5b7a0808a")
+		)
+		(pin "J1_7"
+			(uuid "b85e4224-671a-4ba0-9cd7-f3577ab05dc1")
+		)
+		(pin "J1_1"
+			(uuid "ffa553b5-466a-4884-8893-b8207d16d261")
+		)
+		(pin "J1_2"
+			(uuid "fbd86d56-9666-46f0-9a0f-036ea02de8f1")
+		)
+		(pin "J1_3"
+			(uuid "8b33a528-6c56-464e-b841-ae6f0804fd1b")
+		)
+		(pin "J1_4"
+			(uuid "2d0452e8-826d-4e2f-9436-f2c54b971aac")
+		)
+		(pin "J3_7"
+			(uuid "43579a5d-8531-4fa1-b392-4ddafe3937b8")
 		)
 		(instances
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "Listener Switch1")
+					(reference "U1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Screw_Terminal_01x02")
+		(at 222.25 198.12 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "53944dad-3447-4daa-b0a2-16c382203787")
+		(property "Reference" "F4"
+			(at 210.058 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Screw_Terminal_01x02"
+			(at 210.058 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+			(at 222.25 198.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 222.25 198.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 222.25 198.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "121ef3ec-6c14-436d-940a-1d8ad788ca47")
+		)
+		(pin "2"
+			(uuid "52cccd49-17ac-4922-a67f-055c8288d990")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "F4")
 					(unit 1)
 				)
 			)
@@ -4163,6 +4084,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Screw_Terminal_01x02")
+		(at 222.25 187.96 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "616bccc3-4e04-4822-9d72-cb0f0b568593")
+		(property "Reference" "F2"
+			(at 210.058 183.896 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Screw_Terminal_01x02"
+			(at 210.058 186.436 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+			(at 222.25 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 222.25 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 222.25 187.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "121ef3ec-6c14-436d-940a-1d8ad788ca47")
+		)
+		(pin "2"
+			(uuid "52cccd49-17ac-4922-a67f-055c8288d990")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "F2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 236.22 173.99 180)
 		(unit 1)
@@ -4224,73 +4212,6 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "R1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x02_Pin")
-		(at 222.25 185.42 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "6fcef8a7-d702-41d8-875a-97c342e77832")
-		(property "Reference" "F2"
-			(at 213.614 184.658 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Conn_01x02_Pin"
-			(at 213.868 186.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 222.25 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 222.25 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 222.25 185.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "e4fa9fcd-b0bc-4680-879d-c69d31550055")
-		)
-		(pin "1"
-			(uuid "a698d773-aa54-498e-a203-06ee4f5bac1b")
-		)
-		(instances
-			(project "handheld_controller"
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "F2")
 					(unit 1)
 				)
 			)
@@ -4635,6 +4556,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Screw_Terminal_01x02")
+		(at 222.25 193.04 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8d5c6ab7-acd5-481c-b293-476d8dabe36e")
+		(property "Reference" "F3"
+			(at 209.55 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Screw_Terminal_01x02"
+			(at 209.55 191.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+			(at 222.25 193.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 222.25 193.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 222.25 193.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "121ef3ec-6c14-436d-940a-1d8ad788ca47")
+		)
+		(pin "2"
+			(uuid "52cccd49-17ac-4922-a67f-055c8288d990")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "F3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Mechanical:MountingHole")
 		(at 402.59 264.16 0)
 		(unit 1)
@@ -4759,140 +4747,6 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "#FLG04")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x02_Pin")
-		(at 222.25 195.58 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "94136011-8abc-4341-b0fe-d32ab922cbd0")
-		(property "Reference" "F4"
-			(at 214.122 195.072 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Conn_01x02_Pin"
-			(at 214.122 197.612 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 222.25 195.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 222.25 195.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 222.25 195.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "b5d84c80-98d1-497a-a1a3-1d92c3f88022")
-		)
-		(pin "1"
-			(uuid "3a1022f6-c8b7-431c-ac4f-7901232c9d0b")
-		)
-		(instances
-			(project "handheld_controller"
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "F4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x02_Pin")
-		(at 222.25 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "97dc4a98-d9e7-45d5-8aa7-bda5f98e63b1")
-		(property "Reference" "F1"
-			(at 213.36 179.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Conn_01x02_Pin"
-			(at 213.614 182.118 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical"
-			(at 222.25 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 222.25 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Generic connector, single row, 01x02, script generated"
-			(at 222.25 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "dc854fa8-30ce-48a7-aa15-66fd80bb0685")
-		)
-		(pin "1"
-			(uuid "9966158d-64b2-48e8-b1e0-5c78f5684923")
-		)
-		(instances
-			(project ""
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "F1")
 					(unit 1)
 				)
 			)
@@ -5032,6 +4886,73 @@
 		)
 	)
 	(symbol
+		(lib_id "Connector:Screw_Terminal_01x02")
+		(at 222.25 182.88 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c29c2b78-fcec-491a-a8d8-e991feedd45a")
+		(property "Reference" "F1"
+			(at 210.058 179.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Screw_Terminal_01x02"
+			(at 210.058 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+			(at 222.25 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 222.25 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 222.25 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "121ef3ec-6c14-436d-940a-1d8ad788ca47")
+		)
+		(pin "2"
+			(uuid "52cccd49-17ac-4922-a67f-055c8288d990")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "F1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 265.43 173.99 180)
 		(unit 1)
@@ -5093,281 +5014,6 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "R4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "SANXIXING-ESP32-S3:ESP32-S3-DEVKITC-1-N8R8")
-		(at 293.37 203.2 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d30b35fe-e816-4e0c-ace6-e7022e60639e")
-		(property "Reference" "U1"
-			(at 293.37 165.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "ESP32-S3-DEVKITC-1-N8R8"
-			(at 293.37 167.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "SANXIXING ESP32-S3:ESP32-S3-DEVKITC-1-N8R8"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MF" "Espressif Systems"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "The ESP32-S3-DEVKITC-1-N8R8 from Espressif Systems is a development board designed for RF, RFID, and wireless applications. It supports 802.11 b/g/n Wi-Fi and Bluetooth® 5.x (BLE) connectivity at 2.4GHz, making it ideal for IoT and wireless communication projects. This board is powered by the ESP32-S3-WROOM-1-N8R8 module, which features 8MB Quad SPI Flash and 8MB Octal SPI for efficient memory storage and processing."
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "None"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=snap"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "ESP32-S3-DEVKITC-1-N8R8"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/ESP32-S3-DEVKITC-1-N8R8/Espressif+Systems/view-part/?ref=eda"
-			(at 293.37 203.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "J3_13"
-			(uuid "2bff28c2-d07f-4617-981a-3ec3bcf03dec")
-		)
-		(pin "J3_14"
-			(uuid "433e4d40-eb72-4943-a903-e7396da12bae")
-		)
-		(pin "J3_11"
-			(uuid "7b551b9f-88b4-48b8-89df-a1da9b34aeef")
-		)
-		(pin "J3_12"
-			(uuid "bacc9681-3b84-463b-a7fd-27fd19fe4ce3")
-		)
-		(pin "J3_10"
-			(uuid "3ae9ae1f-836d-482f-b76a-bf00ed14c729")
-		)
-		(pin "J3_15"
-			(uuid "8848475c-2099-4f8b-9ee0-d5c05cb5059b")
-		)
-		(pin "J3_16"
-			(uuid "545e43ed-5565-4b8a-875c-c5a2b3bfdb7b")
-		)
-		(pin "J3_17"
-			(uuid "4067078d-c060-4a4c-8d6e-6d27d616a8e1")
-		)
-		(pin "J3_18"
-			(uuid "7ff77cbb-e388-4b77-afe0-f055007268b5")
-		)
-		(pin "J3_9"
-			(uuid "3b913488-1a89-41b8-839b-770bc2582c43")
-		)
-		(pin "J3_20"
-			(uuid "751529db-76fd-4629-a401-cfb6b8656075")
-		)
-		(pin "J3_19"
-			(uuid "14087e9e-287f-4d96-9fb9-fc0bfc66b120")
-		)
-		(pin "J3_22"
-			(uuid "3162631a-92de-4144-b0f7-5d24f729241a")
-		)
-		(pin "J1_20"
-			(uuid "3acf75ad-5254-425f-a9bf-adf199e4d620")
-		)
-		(pin "J1_14"
-			(uuid "9d193d77-6d36-4dec-ab96-a1b5d6120815")
-		)
-		(pin "J1_21"
-			(uuid "25e73d08-fba4-490a-91e2-e5c1a58638db")
-		)
-		(pin "J1_16"
-			(uuid "7198a77e-2737-43f5-b02f-9b166b452483")
-		)
-		(pin "J1_19"
-			(uuid "871237f2-7727-481b-a3fb-559f109b9e5c")
-		)
-		(pin "J1_17"
-			(uuid "893b8c99-0b67-488d-9f27-2bd1230e6557")
-		)
-		(pin "J1_15"
-			(uuid "524cb476-3281-483d-80f4-5f002a9ebdde")
-		)
-		(pin "J1_18"
-			(uuid "aa24a72b-0d32-4f86-8944-7abedf3a1d70")
-		)
-		(pin "J3_6"
-			(uuid "b63949d0-1f47-418d-ae12-495376f778e1")
-		)
-		(pin "J3_7"
-			(uuid "55ef0f16-02ae-427a-9271-3f39ec08bad5")
-		)
-		(pin "J3_4"
-			(uuid "84d38e70-7f7f-47c9-8833-166abd6592b6")
-		)
-		(pin "J3_3"
-			(uuid "70b10c43-ffb7-4325-829e-b71aa7e7518c")
-		)
-		(pin "J3_1"
-			(uuid "83b4c992-0048-483b-ae67-8a8b1944c6d3")
-		)
-		(pin "J1_22"
-			(uuid "f94a4022-d9ba-45c0-ace9-c09844ee46fe")
-		)
-		(pin "J3_5"
-			(uuid "8feef7bc-759a-46b2-a27d-6e4cda2b0fbe")
-		)
-		(pin "J3_8"
-			(uuid "4bdeee0a-fdeb-4c1c-8d85-ae3823ba71c0")
-		)
-		(pin "J3_2"
-			(uuid "b4867dd6-1736-487f-ac92-9c7061a87fde")
-		)
-		(pin "J1_12"
-			(uuid "e5bc0e8e-5bf8-4bce-8d6d-c82fd2f5e676")
-		)
-		(pin "J1_3"
-			(uuid "699899e7-9221-4578-9809-bad6b7465c15")
-		)
-		(pin "J1_1"
-			(uuid "2ee5b962-e8a5-4792-9922-5c199ece7bb4")
-		)
-		(pin "J1_8"
-			(uuid "ead07d37-f19a-4363-a944-7c10d6e87ad3")
-		)
-		(pin "J1_11"
-			(uuid "20ef2d8e-833d-4ba4-91bd-753e9ff4793d")
-		)
-		(pin "J1_6"
-			(uuid "7bd254df-a24b-49c6-85c1-a498275bb46a")
-		)
-		(pin "J1_13"
-			(uuid "fe5e1b71-49c9-4cfb-981a-5f9a36ba793d")
-		)
-		(pin "J1_7"
-			(uuid "48e0dff1-953e-4701-a294-ab4ca4d3f676")
-		)
-		(pin "J1_4"
-			(uuid "3413953b-fa2a-470b-9fc7-16b89e209a05")
-		)
-		(pin "J1_2"
-			(uuid "7798fb22-8e97-4202-84d3-fd1b978b3615")
-		)
-		(pin "J1_10"
-			(uuid "77295260-ee22-4d58-af9f-f02016276f2f")
-		)
-		(pin "J1_5"
-			(uuid "ce2e4e49-3eaa-4d96-8d55-9b37146acd4d")
-		)
-		(pin "J1_9"
-			(uuid "ddb774cf-874b-4df0-86e8-7e003fa28d95")
-		)
-		(pin "J3_21"
-			(uuid "e2123ebd-8f1d-45c5-924a-fc7e661d308e")
-		)
-		(instances
-			(project ""
-				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
-					(reference "U1")
 					(unit 1)
 				)
 			)
@@ -5513,6 +5159,75 @@
 			(project ""
 				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
 					(reference "R2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:Screw_Terminal_01x02")
+		(at 358.14 173.99 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e8d30bd1-c05e-4746-8eab-978f831c15ed")
+		(property "Reference" "ListenerSwitch1"
+			(at 360.68 173.9899 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Screw_Terminal_01x02"
+			(at 360.68 176.5299 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TerminalBlock:TerminalBlock_MaiXu_MX126-5.0-02P_1x02_P5.00mm"
+			(at 358.14 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 358.14 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Generic screw terminal, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 358.14 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "4cce289e-b10b-4f1f-9ff8-64bde967111a")
+		)
+		(pin "1"
+			(uuid "1d73d48d-33c1-41bd-abd5-32fa28179413")
+		)
+		(instances
+			(project ""
+				(path "/50de191a-06b5-4968-8f0c-17f7744c4812"
+					(reference "ListenerSwitch1")
 					(unit 1)
 				)
 			)
