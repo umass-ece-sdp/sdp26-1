@@ -7,7 +7,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_MPU6050.h>
+#include <Adafruit_LIS3DH.h>
 #include <Adafruit_Sensor.h>
 #include "glove.h"
 
@@ -18,13 +18,13 @@
 // #define STRETCH_PIN_3 15 // ADC input — stretch sensor 3
 // #define STRETCH_PIN_4 17 // ADC input — stretch sensor 4
 
-#define STRETCH_PIN_4 4  // ADC input — stretch sensor 1
-#define STRETCH_PIN_3 6  // ADC input — stretch sensor 2
-#define STRETCH_PIN_2 15 // ADC input — stretch sensor 3
-#define STRETCH_PIN_1 17 // ADC input — stretch sensor 4
+// #define STRETCH_PIN_4 4  // ADC input — stretch sensor 1
+// #define STRETCH_PIN_3 6  // ADC input — stretch sensor 2
+// #define STRETCH_PIN_2 15 // ADC input — stretch sensor 3
+// #define STRETCH_PIN_1 17 // ADC input — stretch sensor 4
 
-#define IMU_SDA_PIN 38 // I2C SDA — MPU-6050
-#define IMU_SCL_PIN 37 // I2C SCL — MPU-6050
+// #define IMU_SDA_PIN 38 // I2C SDA — MPU-6050
+// #define IMU_SCL_PIN 37 // I2C SCL — MPU-6050
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -33,8 +33,8 @@ static constexpr float ADC_VREF_V = 3.3f;        // ESP32-S3 ADC reference (V)
 
 // ── Globals ──────────────────────────────────────────────────────────────────
 
-Adafruit_MPU6050 mpu;
-bool mpuOK = false;
+Adafruit_LIS3DH lis;
+bool imuOK = false;
 
 // =============================================================================
 void setup()
@@ -51,24 +51,24 @@ void setup()
     pinMode(STRETCH_PIN_2, INPUT);
     pinMode(STRETCH_PIN_3, INPUT);
     pinMode(STRETCH_PIN_4, INPUT);
+    pinMode(EVENT_LISTENER_PIN, INPUT);
     Serial.println("[INIT] Stretch sensor ADC pins configured.");
 
-    // ── MPU-6050 (I2C) ────────────────────────────────────────────────────────
+    // ── LIS3DH (I2C) ────────────────────────────────────────────────────────
     Wire.begin(IMU_SDA_PIN, IMU_SCL_PIN);
-    if (!mpu.begin())
+    if (!lis.begin(0x18))
     {
-        Serial.println("[ERROR] MPU-6050 not found - check wiring and I2C address. IMU reads will be skipped.");
+        Serial.println("[ERROR] LIS3DH not found - check wiring and I2C address. IMU reads will be skipped.");
     }
     else
     {
-        mpuOK = true;
-        Serial.println("[INIT] MPU-6050 found.");
+        imuOK = true;
+        Serial.println("[INIT] LIS3DH found.");
 
-        mpu.setAccelerometerRange(MPU6050_RANGE_4_G);
-        mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-        mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+        lis.setRange(LIS3DH_RANGE_4_G);
+        lis.setDataRate(LIS3DH_DATARATE_50_HZ);
 
-        Serial.println("[INIT] MPU-6050 configured (+/- 4 G, +/- 500 deg/s, 21 Hz DLPF).");
+        Serial.println("[INIT] LIS3DH configured (+/- 4 G, 50 Hz).");
     }
 
     // ── UWB Module ────────────────────────────────────────────────────────────
@@ -101,40 +101,37 @@ void loop()
                       i + 1, rawS[i], voltS[i]);
     }
 
-    // ── MPU-6050 IMU ──────────────────────────────────────────────────────────
-    if (mpuOK)
+    // ── LIS3DH IMU ──────────────────────────────────────────────────────────
+    if (imuOK)
     {
-        sensors_event_t accel, gyro, temp;
-        mpu.getEvent(&accel, &gyro, &temp);
-        Serial.println("\n=== MPU-6050 IMU ===");
+        sensors_event_t accel;
+        lis.getEvent(&accel);
+        Serial.println("\n=== LIS3DH IMU ===");
         Serial.printf("  Accel  X: %8.4f  Y: %8.4f  Z: %8.4f  m/s²\n",
                       accel.acceleration.x,
                       accel.acceleration.y,
                       accel.acceleration.z);
-        Serial.printf("  Gyro   X: %8.4f  Y: %8.4f  Z: %8.4f  rad/s\n",
-                      gyro.gyro.x,
-                      gyro.gyro.y,
-                      gyro.gyro.z);
-        Serial.printf("  Temp:  %.2f °C\n", temp.temperature);
     }
     else
     {
-        Serial.println("\n=== MPU-6050 IMU === [NOT CONNECTED]");
+        Serial.println("\n=== LIS3DH IMU === [NOT CONNECTED]");
     }
 
     // ── UWB Module ────────────────────────────────────────────────────────────
-    Serial.println("\n=== UWB Module ===");
+    // Serial.println("\n=== UWB Module ===");
     // Poll the anchor for the distance to TAG12345 (the ID you found on your Tag)
-    float distance = get_UWB_distance(Serial1, "TAG12345");
+    // float distance = get_UWB_distance(Serial1, "TAG12345");
 
-    if (distance >= 0.0f)
-    {
-        Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
-    }
-    else
-    {
-        Serial.println("  Distance: [TIMEOUT or NO TAG RESPONSE]");
-    }
+    // if (distance >= 0.0f)
+    // {
+    //     Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
+    // }
+    // else
+    // {
+    //     Serial.println("  Distance: [TIMEOUT or NO TAG RESPONSE]");
+    // }
+
+
 
     Serial.println("\n----------------------------------------\n");
 
