@@ -7,14 +7,13 @@ color = ''
 glove_connected = False
 drone_connected = False
 
-def write_instr(instr: tuple[tuple, tuple, tuple, tuple]):
+def write_instr(instr: tuple[tuple, tuple, tuple]):
     '''Write instruction to shared variable'''
     global instruction
     with _lock:
         instruction['fingers'] = instr[0]
         instruction['imu'] = instr[1]
-        instruction['gyro'] = instr[2]
-        instruction['dist'] = instr[3]
+        instruction['dist'] = instr[2]
 
 def read_instr() -> dict:
     '''Read a snapshot of the current instruction (thread-safe)'''

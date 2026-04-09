@@ -8,14 +8,14 @@
 // Packet to send to Base
 struct Packet
 {
-	float finger1; // Finger x input from the stretch sensors
-	float finger2;
-	float finger3;
-	float finger4;
-	float accel_x; // Accelerometer x coordinate (m/s²)
-	float accel_y;
-	float accel_z;
-	float dist; // distance measured between glove and drone
+	float finger1; // Finger 1 input from the stretch sensors
+	float finger2; // Finger 2 input from the stretch sensors
+	float finger3; // Finger 3 input from the stretch sensors
+	float finger4; // Finger 4 input from the stretch sensors
+	float accel_x; // Accelerometer x coordinate (m/s^2)
+	float accel_y; // Accelerometer y coordinate (m/s^2)
+	float accel_z; // Accelerometer z coordinate (m/s^2)
+	float dist;	   // distance measured between glove and drone
 };
 
 // Pin Definitions
@@ -34,5 +34,5 @@ void setup_glove();
 void setup_IMU(Adafruit_LIS3DH &imu, bool &imuOK, const int &accelRange, const int &dataRate);
 void read_fingers(float (&reading)[4]);
 void read_IMU(Adafruit_LIS3DH &imu, sensors_event_t &accel, float (&accel_reading)[3]);
-float get_UWB_distance(HardwareSerial &uwbSerial, const char* tagAddress);
+float get_UWB_distance(HardwareSerial &uwbSerial, const char *tagAddress);
 void store_data(Packet &packet, const float (&finger_readings)[4], const float (&accel_readings)[3], const float &UWB_distance);

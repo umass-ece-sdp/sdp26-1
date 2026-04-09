@@ -12,30 +12,15 @@
 #include <Adafruit_Sensor.h>
 #include "glove.h"
 
-// ── Pin Definitions ───────────────────────────────────────────────────────────
-
-// #define STRETCH_PIN_1 4  // ADC input — stretch sensor 1
-// #define STRETCH_PIN_2 6  // ADC input — stretch sensor 2
-// #define STRETCH_PIN_3 15 // ADC input — stretch sensor 3
-// #define STRETCH_PIN_4 17 // ADC input — stretch sensor 4
-
-// #define STRETCH_PIN_4 4  // ADC input — stretch sensor 1
-// #define STRETCH_PIN_3 6  // ADC input — stretch sensor 2
-// #define STRETCH_PIN_2 15 // ADC input — stretch sensor 3
-// #define STRETCH_PIN_1 17 // ADC input — stretch sensor 4
-
-// #define IMU_SDA_PIN 38 // I2C SDA — MPU-6050
-// #define IMU_SCL_PIN 37 // I2C SCL — MPU-6050
-
 // ── Constants ────────────────────────────────────────────────────────────────
 
-static constexpr float ADC_RESOLUTION = 4096.0f; // 12-bit ADC (0–4095)
-static constexpr float ADC_VREF_V = 3.3f;        // ESP32-S3 ADC reference (V)
-static constexpr float GRAVITY_ALPHA = 0.96f;    // LPF for gravity estimate
-static constexpr float BIAS_ALPHA = 0.02f;       // Bias update rate at rest
-static constexpr float ACCEL_DEADBAND = 0.08f;   // Ignore tiny accel noise (m/s^2)
-static constexpr float STATIONARY_THRESH = 0.18f; // Near-rest accel magnitude (m/s^2)
-static constexpr float VELOCITY_DAMPING = 1.8f;  // Leak factor (1/s) to limit drift
+static constexpr float ADC_RESOLUTION = 4096.0f;     // 12-bit ADC (0–4095)
+static constexpr float ADC_VREF_V = 3.3f;            // ESP32-S3 ADC reference (V)
+static constexpr float GRAVITY_ALPHA = 0.96f;        // LPF for gravity estimate
+static constexpr float BIAS_ALPHA = 0.02f;           // Bias update rate at rest
+static constexpr float ACCEL_DEADBAND = 0.08f;       // Ignore tiny accel noise (m/s^2)
+static constexpr float STATIONARY_THRESH = 0.18f;    // Near-rest accel magnitude (m/s^2)
+static constexpr float VELOCITY_DAMPING = 1.8f;      // Leak factor (1/s) to limit drift
 static constexpr float VELOCITY_ZERO_THRESH = 0.04f; // Snap near-zero speed to zero (m/s)
 
 // ── Globals ──────────────────────────────────────────────────────────────────
@@ -162,8 +147,7 @@ void loop()
         float linear_accel[3] = {
             accel.acceleration.x - gravity_est[0],
             accel.acceleration.y - gravity_est[1],
-            accel.acceleration.z - gravity_est[2]
-        };
+            accel.acceleration.z - gravity_est[2]};
 
         const float linMag = magnitude3(linear_accel[0], linear_accel[1], linear_accel[2]);
         if (linMag < STATIONARY_THRESH)
@@ -211,7 +195,7 @@ void loop()
                       linear_accel[1],
                       linear_accel[2]);
         Serial.printf("  Speed (magnitude): %.4f m/s\n", speed);
-                    }
+    }
     else
     {
         Serial.println("\n=== LIS3DH IMU === [NOT CONNECTED]");
@@ -230,8 +214,6 @@ void loop()
     // {
     //     Serial.println("  Distance: [TIMEOUT or NO TAG RESPONSE]");
     // }
-
-
 
     Serial.println("\n----------------------------------------\n");
 
