@@ -3,6 +3,7 @@ import sys
 import struct
 from typing import Optional
 from software.lib import variables
+from time import time
 
 HOST = '192.168.20.1'
 PORT = 5000
@@ -19,6 +20,7 @@ def server_init() -> tuple[socket.socket, socket.socket]:
 
     # Create a socket and try binding
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
         sock.bind((HOST, PORT))
     except socket.error as message:
@@ -69,10 +71,15 @@ def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tu
         print(f"Error receiving data: {e}")
         return None
 
-def run_server(conn: socket.socket, sock: socket.socket):
+def run_server(conn: socket.socket, sock: socket.socket, debug: bool=False):
     """
     Main server loop that continuously receives data from the client.
     """
+    
+    # Start tracking time if in 'debug' mode
+    if debug:
+        t0 = time()
+    
     try:
         print('Waiting for instructions...')
         while True:
@@ -82,8 +89,20 @@ def run_server(conn: socket.socket, sock: socket.socket):
             # Write the instruction to shared variable
             if instruction:
                 variables.write_instr(instruction)
-
-            print(instruction)
+            
+            # Print received instructions + time if in debug mode
+            if debug:
+                instr = variables.read_instr()
+                t = time()
+                print(
+                    '----- Glove Data -----',
+                    f'\tFinger sensors: {instr['fingers'][0]:.3f}, {instr['fingers'][1]:.3f}, {instr['fingers'][2]:.3f}, {instr['fingers'][3]:.3f} V',
+                    f'\tSpeed: {instr['speed']:.3f} m/s',
+                    f'\tDistance: {instr['dist']:.3f} m',
+                    f'\tTime between instructions: {t - t0:.3f} s',
+                    sep='\n',
+                )
+                t0 = t
             
     except KeyboardInterrupt:
         print("\nServer shutting down...")
@@ -95,4 +114,4 @@ def run_server(conn: socket.socket, sock: socket.socket):
 
 if __name__ == '__main__':
     conn, sock = server_init()
-    run_server(conn, sock)
+    run_server(conn, sock, debug=True)
