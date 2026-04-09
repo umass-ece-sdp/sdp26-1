@@ -1,9 +1,5 @@
 #include "glove.h"
 
-// Constants
-static constexpr float ADC_RESOLUTION = 4096.0f; // 12-bit ADC (0–4095)
-static constexpr float ADC_VREF_V = 3.3f;		 // ESP32-S3 ADC reference (V)
-
 void setup_glove()
 {
 	Serial.println("[GLOVE] Initializing pins...");
@@ -11,10 +7,12 @@ void setup_glove()
 	pinMode(STRETCH_PIN_2, INPUT);
 	pinMode(STRETCH_PIN_3, INPUT);
 	pinMode(STRETCH_PIN_4, INPUT);
-	Serial.println("[GLOVE] Finger pins initialized");
+	Serial.println("[GLOVE] Stretch pins initialized");
 	pinMode(IMU_SCL_PIN, INPUT);
 	pinMode(IMU_SDA_PIN, INPUT);
 	Serial.println("[GLOVE] IMU pins initialized");
+	pinMode(EVENT_LISTENER_PIN, INPUT);
+	Serial.println("[GLOVE] Event Listener pin initialized");
 }
 
 void setup_IMU(Adafruit_LIS3DH &imu, bool &imuOK, const int &accelRange, const int &dataRate)
@@ -76,12 +74,33 @@ void setup_IMU(Adafruit_LIS3DH &imu, bool &imuOK, const int &accelRange, const i
 	Serial.printf("[IMU] LIS3DH data rate set to %d Hz\n", dataRate);
 }
 
+void setup_UWB()
+{
+	Serial1.begin(115200, SERIAL_8N1, UWB_RX_PIN, UWB_TX_PIN);
+	Serial.println("[INIT] UWB Module initialized on Serial1.");
+}
+
+bool read_listener()
+{
+	return (digitalRead(EVENT_LISTENER_PIN) == HIGH);
+}
+
 void read_fingers(float (&reading)[4])
 {
-	reading[0] = (analogRead(STRETCH_PIN_1) / ADC_RESOLUTION) * ADC_VREF_V;
-	reading[1] = (analogRead(STRETCH_PIN_2) / ADC_RESOLUTION) * ADC_VREF_V;
-	reading[2] = (analogRead(STRETCH_PIN_3) / ADC_RESOLUTION) * ADC_VREF_V;
-	reading[3] = (analogRead(STRETCH_PIN_4) / ADC_RESOLUTION) * ADC_VREF_V;
+	if (read_listener())
+	{
+		reading[0] = (analogRead(STRETCH_PIN_1) / ADC_RESOLUTION) * ADC_VREF_V;
+		reading[1] = (analogRead(STRETCH_PIN_2) / ADC_RESOLUTION) * ADC_VREF_V;
+		reading[2] = (analogRead(STRETCH_PIN_3) / ADC_RESOLUTION) * ADC_VREF_V;
+		reading[3] = (analogRead(STRETCH_PIN_4) / ADC_RESOLUTION) * ADC_VREF_V;
+	}
+	else
+	{
+		reading[0] = -1.0f;
+		reading[1] = -1.0f;
+		reading[2] = -1.0f;
+		reading[3] = -1.0f;
+	}
 }
 
 void read_IMU(Adafruit_LIS3DH &imu, sensors_event_t &accel, float (&accel_reading)[3])
@@ -132,14 +151,87 @@ float get_UWB_distance(HardwareSerial &uwbSerial, const char *targetTag)
 	return -1.0f;
 }
 
-void store_data(Packet &packet, const float (&finger_readings)[4], const float (&accel_readings)[3], const float &UWB_distance)
+void store_data(Packet &packet, const float (&finger_readings)[4], const float &speed, const float &UWB_distance)
 {
 	packet.finger1 = finger_readings[0];
 	packet.finger2 = finger_readings[1];
 	packet.finger3 = finger_readings[2];
 	packet.finger4 = finger_readings[3];
-	packet.accel_x = accel_readings[0];
-	packet.accel_y = accel_readings[1];
-	packet.accel_z = accel_readings[2];
+	packet.speed = speed;
 	packet.dist = UWB_distance;
+}
+
+static float magnitude(const float x, const float y, const float z)
+{
+	return sqrtf((x * x) + (y * y) + (z * z));
+}
+
+void filter_IMU(const float (&accel_reading)[3], uint32_t &lastIMUus, bool &imuFilterReady, float (&gravity_est)[3], float (&accel_bias)[3], float (&velocity)[3], float (&linear_accel)[3])
+{
+	// Prepare filter
+	const uint32_t nowUs = micros();
+	float dt = 0.2f;
+	if (!imuFilterReady)
+	{
+		gravity_est[0] = accel_reading[0];
+		gravity_est[1] = accel_reading[1];
+		gravity_est[2] = accel_reading[2];
+		imuFilterReady = true;
+	}
+	else
+	{
+		dt = (nowUs - lastIMUus) * 1e-6f;
+		if (dt <= 0.0f || dt > 0.2f)
+		{
+			dt = 0.02f;
+		}
+	}
+	lastIMUus = nowUs;
+
+	// Estimate gravity
+	gravity_est[0] = (GRAVITY_ALPHA * gravity_est[0]) + ((1.0f - GRAVITY_ALPHA) * accel_reading[0]);
+	gravity_est[1] = (GRAVITY_ALPHA * gravity_est[1]) + ((1.0f - GRAVITY_ALPHA) * accel_reading[1]);
+	gravity_est[2] = (GRAVITY_ALPHA * gravity_est[2]) + ((1.0f - GRAVITY_ALPHA) * accel_reading[2]);
+
+	// Linearize
+	linear_accel[0] = accel_reading[0] - gravity_est[0];
+	linear_accel[1] = accel_reading[1] - gravity_est[1];
+	linear_accel[2] = accel_reading[2] - gravity_est[2];
+
+	// Calculate bias + apply filter
+	const float linMag = magnitude(linear_accel[0], linear_accel[1], linear_accel[2]);
+	if (linMag < STATIONARY_THRESH)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			accel_bias[i] = ((1.0f - BIAS_ALPHA) * accel_bias[i]) + (BIAS_ALPHA * linear_accel[i]);
+		}
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		linear_accel[i] -= accel_bias[i];
+		if (fabsf(linear_accel[i]) < ACCEL_DEADBAND)
+		{
+			linear_accel[i] = 0.0f;
+		}
+	}
+	const float damping = expf(-VELOCITY_DAMPING * dt);
+	for (int i = 0; i < 3; i++)
+	{
+		velocity[i] += linear_accel[i] * dt;
+		velocity[i] *= damping;
+	}
+}
+
+void calc_speed(float &speed, float (&velocity)[3], const float (&linear_accel)[3])
+{
+	// Calculate speed
+	speed = magnitude(velocity[0], velocity[1], velocity[2]);
+	if ((magnitude(linear_accel[0], linear_accel[1], linear_accel[2]) < STATIONARY_THRESH) && (speed < VELOCITY_ZERO_THRESH))
+	{
+		velocity[0] = 0.0f;
+		velocity[1] = 0.0f;
+		velocity[2] = 0.0f;
+		speed = 0.0f;
+	}
 }

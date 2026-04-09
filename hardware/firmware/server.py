@@ -34,7 +34,7 @@ def server_init() -> tuple[socket.socket, socket.socket]:
     variables.set_glove_on()
     return conn, sock
 
-def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tuple, tuple]]:
+def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tuple]]:
     """
     Receive a 4-byte string from the ESP32 client.
     The ESP32 sends the string in network byte order (big-endian).
@@ -48,23 +48,22 @@ def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tu
     try:
         print('Reading instruction...')
         # Receive exactly 32 bytes
-        packet = conn.recv(32)
+        packet = conn.recv(24)
         
-        if not packet or len(packet) < 32:
+        if not packet or len(packet) < 24:
             print("Connection closed or incomplete data")
             return None
         
         # Unpack struct
-        data = struct.unpack('fffffffffff', packet)
+        data = struct.unpack('ffffff', packet)
         fingers = data[0:4]
-        imu = data[4:7]
-        gyro = data[7:10]
-        dist = data[10]
+        speed = data[4]
+        dist = data[5]
         
         # Send ACK back to client
         conn.send(b'ACK')
 
-        return fingers, imu, gyro, dist
+        return fingers, speed, dist
         
     except Exception as e:
         print(f"Error receiving data: {e}")
