@@ -1,0 +1,15 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "1ba3feb2-80dd-4f48-9a02-c7e1ad337543")
+	(paper "A4")
+	(title_block
+		(title "Project F.A.L.C.O.N. Handheld Controller")
+		(rev "2")
+		(company "UMass Amherst, ECE Dept.")
+		(comment 1 "SDP Team 1 2025/26")
+		(comment 2 "Author: Sasha Shikhanovich")
+	)
+	(lib_symbols)
+)
