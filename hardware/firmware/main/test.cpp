@@ -67,18 +67,19 @@ void loop()
         read_IMU(lis, accel, accel_reading);
         filter_IMU(accel_reading, lastIMUus, imuFilterReady, gravity_est, accel_bias, velocity, linear_accel);
         calc_speed(speed, velocity, linear_accel);
+        // speed = magnitude(accel_reading[0], accel_reading[1], accel_reading[2] - 10.0f);
 
         Serial.println("\n=== LIS3DH IMU ===");
-        Serial.printf("  Accel  X: %8.4f  Y: %8.4f  Z: %8.4f  m/s^2\n",
+        Serial.printf("\tAccel  X: %8.4f  Y: %8.4f  Z: %8.4f  m/s^2\n",
                       accel_reading[0],
                       accel_reading[1],
                       accel_reading[2]);
 
-        Serial.printf("  Linear accel X: %8.4f  Y: %8.4f  Z: %8.4f  m/s^2\n",
+        Serial.printf("\tLinear accel X: %8.4f  Y: %8.4f  Z: %8.4f  m/s^2\n",
                       linear_accel[0],
                       linear_accel[1],
                       linear_accel[2]);
-        Serial.printf("  Speed (magnitude): %.4f m/s\n", speed);
+        Serial.printf("\tSpeed: %.4f m/s\n", speed);
     }
     else
     {

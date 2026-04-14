@@ -31,7 +31,8 @@ struct Packet
 // Constants
 #define ADC_RESOLUTION 4096.0f	   // 12-bit ADC (0–4095)
 #define ADC_VREF_V 3.3f			   // ESP32-S3 ADC reference (V)
-#define GRAVITY_ALPHA 0.96f		   // LPF for gravity estimate
+#define GRAVITY_ALPHA 0.48f		   // LPF for gravity estimate
+// #define GRAVITY_ALPHA 0.96f		   // LPF for gravity estimate
 #define BIAS_ALPHA 0.02f		   // Bias update rate at rest
 #define ACCEL_DEADBAND 0.08f	   // Ignore tiny accel noise (m/s^2)
 #define STATIONARY_THRESH 0.18f	   // Near-rest accel magnitude (m/s^2)
@@ -47,6 +48,6 @@ void read_fingers(float (&reading)[4]);
 void read_IMU(Adafruit_LIS3DH &imu, sensors_event_t &accel, float (&accel_reading)[3]);
 float get_UWB_distance(HardwareSerial &uwbSerial, const char *tagAddress);
 void store_data(Packet &packet, const float (&finger_readings)[4], const float &speed, const float &UWB_distance);
-static float magnitude(const float x, const float y, const float z);
+float magnitude(const float x, const float y, const float z);
 void filter_IMU(const float (&accel_reading)[3], uint32_t &lastIMUus, bool &imuFilterReady, float (&gravity_est)[3], float (&accel_bias)[3], float (&velocity)[3], float (&linear_accel)[3]);
 void calc_speed(float &speed, float (&velocity)[3], const float (&linear_accel)[3]);

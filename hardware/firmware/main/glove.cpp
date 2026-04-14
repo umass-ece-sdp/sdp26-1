@@ -161,7 +161,7 @@ void store_data(Packet &packet, const float (&finger_readings)[4], const float &
 	packet.dist = UWB_distance;
 }
 
-static float magnitude(const float x, const float y, const float z)
+float magnitude(const float x, const float y, const float z)
 {
 	return sqrtf((x * x) + (y * y) + (z * z));
 }
