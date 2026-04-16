@@ -57,5 +57,5 @@ void loop()
     store_data(packet, finger_reading, speed, distance);
     connect_and_send(client, packet);
 
-    delay(50);
+    // delay(WAIT_TIME);
 }

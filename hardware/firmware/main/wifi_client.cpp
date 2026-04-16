@@ -49,9 +49,11 @@ void connect_and_send(WiFiClient &client, const Packet &packet)
         if (!client.connect(HOST_IP, PORT))
         {
             Serial.println("[CLIENT] Connection to server failed!");
-            delay(5000);
+            // delay(5000);
+            delay(500);
             return;
         }
+        client.setNoDelay(true);
 
         Serial.println("[CLIENT] Connected to server!");
     }
