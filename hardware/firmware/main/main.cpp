@@ -7,6 +7,7 @@ sensors_event_t accel;
 WiFiClient client;
 float finger_reading[4];
 float speed;
+float distance;
 bool imuOK = false;
 float accel_reading[3] = {0.0f, 0.0f, 0.0f};
 float gravity_est[3] = {0.0f, 0.0f, 0.0f};
@@ -47,7 +48,7 @@ void loop()
     }
 
     // Read UWB
-    float distance = get_UWB_distance(Serial1, "TAG12345");
+    distance = get_UWB_distance(Serial1, "TAG12345");
     // if (distance >= 0.0f)
     // {
     //     Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
