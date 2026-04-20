@@ -1,3 +1,10 @@
+"""
+Refactor summary:
+- Centralized ArUco and camera calibration constants in this module so they are
+  the single source of truth shared by both Fiducial and FALCON.
+- Updated marker size to 0.213 m and derived object corner points from it.
+"""
+
 import cv2
 import numpy as np
 from pathlib import Path
@@ -7,10 +14,20 @@ fiducial_dir = fp.parent.joinpath('fiducials')
 if not fiducial_dir.exists():
     fiducial_dir.mkdir()
 
+MARKER_SIZE_METERS = 0.213
+ARUCO_DICT_ID = cv2.aruco.DICT_4X4_50
+CAMERA_MATRIX = np.array([
+    [921.170702, 0.000000, 459.904354],
+    [0.000000, 919.018377, 351.238301],
+    [0.000000, 0.000000, 1.000000]
+], dtype=np.float64)
+DIST_COEFFS = np.array([-0.033458, 0.105152, 0.001256, -0.006647, 0.000000], dtype=np.float64)
+
+
 class Fiducial:
-    MARKER_SIZE = 0.105 # Markers are 8cm x 8cm
-    ARUCO_DICT = cv2.aruco.DICT_4X4_50 # 4x4 dictionary to have best tracking
-    
+    MARKER_SIZE = MARKER_SIZE_METERS
+    ARUCO_DICT = ARUCO_DICT_ID
+
     def __init__(self):
         # Initialize marker dictionary and detector
         self.parameters = cv2.aruco.DetectorParameters()
@@ -21,18 +38,14 @@ class Fiducial:
         half = Fiducial.MARKER_SIZE / 2
         self.obj_points = np.array([
             [-half,  half, 0],
-            [ half,  half, 0],
-            [ half, -half, 0],
+            [half,  half, 0],
+            [half, -half, 0],
             [-half, -half, 0],
-        ], dtype=np.float32) # Matrix for corner coordinates of fiducial
+        ], dtype=np.float32)  # Matrix for corner coordinates of fiducial
 
         # DJI Tello camera calibration for distance (z) measurement
-        self.camera_matrix = np.array([
-            [921.170702, 0.000000, 459.904354],
-            [0.000000, 919.018377, 351.238301],
-            [0.000000, 0.000000, 1.000000]
-        ], dtype=np.float64) 
-        self.dist_coeffs = np.array([-0.033458, 0.105152, 0.001256, -0.006647, 0.000000], dtype=np.float64)
+        self.camera_matrix = CAMERA_MATRIX.copy()
+        self.dist_coeffs = DIST_COEFFS.copy()
 
     def generate_marker(self):
         # Generate marker images
@@ -42,14 +55,14 @@ class Fiducial:
         back_marker = cv2.aruco.generateImageMarker(self.aruco_dict, id=3, sidePixels=400)
 
         # Save the markers
-        cv2.imwrite(fiducial_dir.joinpath('chest_marker.png'), chest_marker)
-        cv2.imwrite(fiducial_dir.joinpath('left_shoulder_marker.png'), left_shoulder_marker)
-        cv2.imwrite(fiducial_dir.joinpath('right_shoulder_marker.png'), right_shoulder_marker)
-        cv2.imwrite(fiducial_dir.joinpath('back_marker.png'), back_marker)
+        cv2.imwrite(str(fiducial_dir.joinpath('chest_marker.png')), chest_marker)
+        cv2.imwrite(str(fiducial_dir.joinpath('left_shoulder_marker.png')), left_shoulder_marker)
+        cv2.imwrite(str(fiducial_dir.joinpath('right_shoulder_marker.png')), right_shoulder_marker)
+        cv2.imwrite(str(fiducial_dir.joinpath('back_marker.png')), back_marker)
 
     def detect_marker(self, frame, target_id):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Convert frame to black and white for better detection
-        corners, ids, _ = self.detector.detectMarkers(gray) # Run detection
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert frame to black and white for better detection
+        corners, ids, _ = self.detector.detectMarkers(gray)  # Run detection
 
         if ids is not None:
             for corner, marker_id in zip(corners, ids.flatten()):
@@ -58,8 +71,10 @@ class Fiducial:
 
                 # Calculate x y and z coordinates
                 success, rvec, tvec = cv2.solvePnP(
-                    self.obj_points, corner.reshape(4, 2),
-                    self.camera_matrix, self.dist_coeffs
+                    self.obj_points,
+                    corner.reshape(4, 2),
+                    self.camera_matrix,
+                    self.dist_coeffs,
                 )
                 if not success:
                     continue
@@ -68,5 +83,6 @@ class Fiducial:
 
         return None
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     fiducial = Fiducial()
