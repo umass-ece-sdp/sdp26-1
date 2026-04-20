@@ -520,25 +520,6 @@ def arc_to_next_fiducial(drone, frame_reader, current_target_id, direction):
         time.sleep(0.03)
 
 
-def send_rc_throttled(lr, fb, ud, yaw):
-    """Only send if command changed or heartbeat interval elapsed."""
-    global last_rc, last_rc_send
-    now = time.time()
-    new_rc = (lr, fb, ud, yaw)
-    elapsed = now - last_rc_send
-    if should_send_rc(new_rc, last_rc, elapsed, RC_HEARTBEAT, RC_MIN_INTERVAL):
-        drone.send_rc_control(lr, fb, ud, yaw)
-        last_rc = new_rc
-        last_rc_send = now
-
-
-def stop_and_reset_rc_state():
-    global last_rc, last_rc_send
-    drone.send_rc_control(0, 0, 0, 0)
-    last_rc = (0, 0, 0, 0)
-    last_rc_send = time.time()
-
-
 # =====================================================================
 #  Main
 # =====================================================================
@@ -579,6 +560,25 @@ LOST_TIMEOUT = 1.0
 # RC throttling state
 last_rc = (0, 0, 0, 0)
 last_rc_send = 0.0
+
+
+def send_rc_throttled(lr, fb, ud, yaw):
+    """Only send if command changed or heartbeat interval elapsed."""
+    global last_rc, last_rc_send
+    now = time.time()
+    new_rc = (lr, fb, ud, yaw)
+    elapsed = now - last_rc_send
+    if should_send_rc(new_rc, last_rc, elapsed, RC_HEARTBEAT, RC_MIN_INTERVAL):
+        drone.send_rc_control(lr, fb, ud, yaw)
+        last_rc = new_rc
+        last_rc_send = now
+
+
+def stop_and_reset_rc_state():
+    global last_rc, last_rc_send
+    drone.send_rc_control(0, 0, 0, 0)
+    last_rc = (0, 0, 0, 0)
+    last_rc_send = time.time()
 
 
 try:
