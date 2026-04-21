@@ -223,7 +223,7 @@ class FALCON(Tello):
         self.password = password
 
         # Thresholds for determining finger on
-        self.finger_thresholds = (0.31, 0.31, 0.31, 0.31)  # V
+        self.finger_thresholds = (0.3, 0.3, 0.3, 0.3)  # V
 
         # Drone movement commands
         self.move_dist = move_dist  # cm
@@ -232,6 +232,24 @@ class FALCON(Tello):
         self.flight_control = FlightControl()
         self.aruco_data = FiducialData()
         self.fiducial = Fiducial()
+        self.commands = {   # gesture-to-command mapping
+            '0000': 'quit',
+            '0001': 'arc_right',
+            # '0010': '',   # hard gesture to make
+            '0011': 'arc_left',
+            # '0100': '',   # cannot flip people off for demo
+            # '0101': '',   # hard gesture to make
+            '0110': 'down',
+            '0111': 'up',
+            '1000': 'target_1',
+            '1001': 'flip',
+            # '1010': '',
+            # '1011': '',
+            '1100': 'target_2',
+            # '1101': '',
+            '1110': 'target_3',
+            '1111': 'target_0',
+        }
 
         # Connect to WiFi before initializing Tello
         # self._connect_wifi()
@@ -378,7 +396,14 @@ class FALCON(Tello):
         - Any one-shot behavior (e.g., `'flip'`, `'arc_left'`, `'arc_right'`) must be
           debounced by the caller, not inside this method.
         """
-        raise NotImplementedError
+        
+        # Compare fingers against thresholds to get states, 0 if active 1 if not
+        states = ''.join(['0' if f > t else '1' for f, t in zip(fingers, self.finger_thresholds)])
+
+        if states in self.commands:
+            return self.commands[states]
+        return None
+
 
     def _arc_to_next_fiducial(self, frame_reader, current_target_id: int, direction: str) -> int | None:
         """
