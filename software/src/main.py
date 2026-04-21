@@ -2,20 +2,14 @@ from hardware.firmware import server
 import threading, socket
 from software.lib.falcon import FALCON
 from software.lib import variables
-import subprocess
-from pathlib import Path
 
 def server_thread(conn: socket.socket, sock: socket.socket):
     '''Thread function to run the server'''
     print('Starting server thread...')
     
-    # # Wait for the drone to be connected before looking for instructions
-    # while not variables.drone_connected:
-    #     continue
-    
     server.run_server(conn, sock)
 
-def drone_thread():
+def drone_thread(tello: FALCON):
     '''Thread function to run the drone controller'''
     print('Starting drone thread...')
 
@@ -23,21 +17,20 @@ def drone_thread():
     while not variables.glove_connected:
         continue
 
-    tello = FALCON()
     tello.track_target()
 
 def main():
     '''Main entry point for the application'''
 
-    # Configure the AP interface to be the correct IP address
-    subprocess.run(['bash', Path(__file__).parent.parent.joinpath('scripts', 'config_ap.sh')], check=True)
+    # Connect drone to wifi and start AP mode interface for server
+    tello = FALCON()
 
     # Start the server and connect to glove before starting threads
     conn, sock = server.server_init()
     
     # Create the server and drone threads
     server_thrd = threading.Thread(target=server_thread, args=(conn, sock,), daemon=True)
-    drone_thrd = threading.Thread(target=drone_thread, daemon=True)
+    drone_thrd = threading.Thread(target=drone_thread, args=(tello,), daemon=True)
     
     # Start both threads
     server_thrd.start()
@@ -50,6 +43,9 @@ def main():
     except KeyboardInterrupt:
         print('\nShutting down threads...')
         print('Threads terminated.')
+    finally:
+        # Reset WiFi interfaces
+        tello._reset_wifi()
 
 if __name__ == '__main__':
     main()

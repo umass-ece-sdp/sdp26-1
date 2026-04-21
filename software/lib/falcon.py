@@ -1,6 +1,5 @@
 import subprocess
 from pathlib import Path
-from typing import Optional
 from djitellopy import Tello
 import time
 import threading
@@ -9,9 +8,7 @@ import cv2
 import cv2.aruco as aruco
 from software.lib import variables
 from dataclasses import dataclass, field
-from queue import Queue, Empty
 from threading import Thread
-import imageio as iio  # type: ignore[reportMissingImports]
 from collections import deque
 from datetime import datetime
 import os
@@ -216,17 +213,13 @@ class FALCON(Tello):
             when instructed to by the user.
     '''
 
-    def __init__(self, *, interface: str = 'wlx90de80899a92', ssid: str = 'TELLO-AA7B55', password: str = '', move_dist: int = 35):
+    def __init__(self, *, ssid: str, password: str):
         self.file_path = Path(__file__).parent
-        self.interface = interface
         self.ssid = ssid
         self.password = password
 
         # Thresholds for determining finger on
         self.finger_thresholds = (0.3, 0.3, 0.3, 0.3)  # V
-
-        # Drone movement commands
-        self.move_dist = move_dist  # cm
 
         # Flight control and fiducial data
         self.flight_control = FlightControl()
@@ -268,18 +261,12 @@ class FALCON(Tello):
 
     def _connect_wifi(self) -> None:
         '''
-        Automatically connects Linux devices to the drone using a bash
-        script stored in software/scripts. Searches, starting from the
-        working directory, until it finds the script. ***This will
-        only work for Linux devices, Windows users will need to
-        connect manually. Run any scripts containing this function
-        from the parent directory of the repository.***
+        Automatically configures WiFi on Linux devices by invoking
+        setup_wifi.sh with the configured SSID and password.
         '''
-        # Call to bash script to connect WiFi
-        path_to_script = self.file_path.parent.joinpath('scripts', 'connection_client.sh').as_posix()
-        cmd = ['bash', path_to_script, self.interface, self.ssid, self.password]
+        path_to_script = self.file_path.parent.joinpath('scripts', 'setup_wifi.sh').as_posix()
+        cmd = ['bash', path_to_script, self.ssid, self.password]
 
-        # Error checking
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
             print('STDOUT:\n', result.stdout)
@@ -292,25 +279,23 @@ class FALCON(Tello):
             print('Cannot connect to Tello\'s WiFi, exiting...')
             exit()
 
-    # Currently unused
-    def map_fingers(self, fingers: tuple[float, float, float, float]) -> str | None:
-        """Maps finger sensors to different drone commands."""
-        f_act = [True if f > thresh else False for f, thresh in zip(fingers, self.finger_thresholds)]
+    def _reset_wifi(self) -> None:
+        '''
+        Restores Linux WiFi interfaces by invoking reset_wifi.sh.
+        '''
+        path_to_script = self.file_path.parent.joinpath('scripts', 'reset_wifi.sh').as_posix()
+        cmd = ['bash', path_to_script]
 
-        if f_act[0] and f_act[1] and f_act[2] and f_act[3]:                       # Fist (all active)
-            return 'closer'
-        elif not (f_act[0] and f_act[1] and f_act[2] and f_act[3]):     # Open hand (all inactive)
-            return 'farther'
-        elif not (f_act[0]) and f_act[1] and f_act[2] and f_act[3]:                 # Index finger up
-            return 'left'
-        elif f_act[0] and f_act[1] and f_act[2] and not (f_act[3]):                 # Pinky up
-            return 'right'
-        elif not (f_act[0] and f_act[1]) and f_act[2] and f_act[3]:             # Peace sign
-            return 'land'
-        elif f_act[0] and not (f_act[1] and f_act[2]) and f_act[3]:             # Rock & roll
-            return 'takeoff'
+        try:
+            result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+            print('STDOUT:\n', result.stdout)
+            print('WiFi reset successfully.')
 
-        return None
+        except subprocess.CalledProcessError as e:
+            print("Command failed with exit", e.returncode)
+            print('STDOUT:\n', e.stdout)
+            print('STDERR:\n', e.stderr)
+            print('Cannot reset WiFi configuration.')
 
     def _clamp(self, val, lo, hi):
         return max(lo, min(hi, val))
@@ -403,7 +388,6 @@ class FALCON(Tello):
         if states in self.commands:
             return self.commands[states]
         return None
-
 
     def _arc_to_next_fiducial(self, frame_reader, current_target_id: int, direction: str) -> int | None:
         """
