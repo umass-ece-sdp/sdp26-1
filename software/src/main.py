@@ -23,7 +23,10 @@ def main():
     '''Main entry point for the application'''
 
     # Connect drone to wifi and start AP mode interface for server
-    tello = FALCON()
+    tello = FALCON(
+        ssid='TELLO-FE046A',
+        password=''
+    )
 
     # Start the server and connect to glove before starting threads
     conn, sock = server.server_init()

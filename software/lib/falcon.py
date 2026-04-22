@@ -239,13 +239,13 @@ class FALCON(Tello):
             # '1010': '',
             # '1011': '',
             '1100': 'target_2',
-            # '1101': '',
+            '1101': 'target_0',
             '1110': 'target_3',
-            '1111': 'target_0',
+            # '1111': '',
         }
 
         # Connect to WiFi before initializing Tello
-        # self._connect_wifi()
+        self._connect_wifi()
 
         # Initialize normal Tello behavior
         super().__init__()
@@ -253,8 +253,13 @@ class FALCON(Tello):
         self._last_rc = (0, 0, 0, 0)
         self._last_rc_send = 0.0
 
+        time.sleep(3)
+
         # Connect to the drone and set it to SDK mode
-        self.connect()
+        # Note: wait_for_state=False because some Tello units don't reliably send state packets
+        # self.connect()
+        self.connect(wait_for_state=False)
+        time.sleep(3)
 
         # # Let the environment know the drone is connected
         # variables.set_drone_on()

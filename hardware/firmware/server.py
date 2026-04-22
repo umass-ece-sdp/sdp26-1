@@ -50,7 +50,7 @@ def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tu
         str: The received 4-character string, or None if connection closed.
     """
     try:
-        print('Reading instruction...')
+        # print('Reading instruction...')
         # Receive exactly 24 bytes
         packet = conn.recv(24)
         
@@ -83,7 +83,7 @@ def run_server(conn: socket.socket, sock: socket.socket, debug: bool=False):
         t0 = time.time()
     
     try:
-        print('Waiting for instructions...')
+        # print('Waiting for instructions...')
         while True:
             # Receive instruction from ESP32
             instruction = receive_instructions(conn)
