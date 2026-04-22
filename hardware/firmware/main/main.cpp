@@ -8,6 +8,7 @@ WiFiClient client;
 float finger_reading[4];
 float speed;
 float distance;
+bool listen = false;
 bool imuOK = false;
 float accel_reading[3] = {0.0f, 0.0f, 0.0f};
 float gravity_est[3] = {0.0f, 0.0f, 0.0f};
@@ -37,7 +38,8 @@ void setup()
 void loop()
 {
     // Read stretch sensors
-    read_fingers(finger_reading);
+	read_listener(listen);
+    read_fingers(finger_reading, listen);
 
     // Read IMU data
     if (imuOK)
@@ -48,7 +50,7 @@ void loop()
     }
 
     // Read UWB
-    distance = get_UWB_distance(Serial1, "TAG12345");
+    // distance = get_UWB_distance(Serial1, "TAG12345");
     // if (distance >= 0.0f)
     // {
     //     Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
@@ -58,5 +60,5 @@ void loop()
     store_data(packet, finger_reading, speed, distance);
     connect_and_send(client, packet);
 
-    // delay(WAIT_TIME);
+    delay(WAIT_TIME);
 }

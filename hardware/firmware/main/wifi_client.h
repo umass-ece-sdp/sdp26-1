@@ -9,7 +9,7 @@
 #define WIFI_PASS "team1-falcon"
 #define HOST_IP "192.168.20.1"
 #define PORT 5000
-#define WAIT_TIME 10 // in milliseconds
+#define WAIT_TIME 90 // in milliseconds
 
 // Function prototypes
 void setup_wifi();

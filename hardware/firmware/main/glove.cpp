@@ -80,14 +80,17 @@ void setup_UWB()
 	Serial.println("[INIT] UWB Module initialized on Serial1.");
 }
 
-bool read_listener()
+void read_listener(bool &listen)
 {
-	return (digitalRead(EVENT_LISTENER_PIN) == HIGH);
+	if (digitalRead(EVENT_LISTENER_PIN) == HIGH)
+	{
+		listen = !listen;
+	}
 }
 
-void read_fingers(float (&reading)[4])
+void read_fingers(float (&reading)[4], bool &listen)
 {
-	if (read_listener())
+	if (listen)
 	{
 		reading[0] = (analogRead(STRETCH_PIN_1) / ADC_RESOLUTION) * ADC_VREF_V;
 		reading[1] = (analogRead(STRETCH_PIN_2) / ADC_RESOLUTION) * ADC_VREF_V;
@@ -170,18 +173,21 @@ void filter_IMU(const float (&accel_reading)[3], uint32_t &lastIMUus, bool &imuF
 {
 	// Prepare filter
 	const uint32_t nowUs = micros();
-	float dt = 0.2f;
+	float dt = 0.02f; // Default to 50Hz (20ms); will be corrected after first sample
 	if (!imuFilterReady)
 	{
 		gravity_est[0] = accel_reading[0];
 		gravity_est[1] = accel_reading[1];
 		gravity_est[2] = accel_reading[2];
+		lastIMUus = nowUs;
 		imuFilterReady = true;
+		return; // Skip velocity update on first sample
 	}
 	else
 	{
 		dt = (nowUs - lastIMUus) * 1e-6f;
-		if (dt <= 0.0f || dt > 0.2f)
+		// Clamp dt to reasonable range: [5ms, 100ms] for 50Hz nominal rate
+		if (dt < 0.005f || dt > 0.1f)
 		{
 			dt = 0.02f;
 		}
