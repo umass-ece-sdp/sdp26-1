@@ -245,7 +245,7 @@ class FALCON(Tello):
         }
 
         # Connect to WiFi before initializing Tello
-        self._connect_wifi()
+        # self._connect_wifi()
 
         # Initialize normal Tello behavior
         super().__init__()
@@ -269,8 +269,8 @@ class FALCON(Tello):
         Automatically configures WiFi on Linux devices by invoking
         setup_wifi.sh with the configured SSID and password.
         '''
-        path_to_script = self.file_path.parent.joinpath('scripts', 'setup_wifi.sh').as_posix()
-        cmd = ['bash', path_to_script, self.ssid, self.password]
+        path_to_script = self.file_path.parent.joinpath('scripts', 'setup_wifi.ps1').as_posix()
+        cmd = ['PS', path_to_script, self.ssid, self.password]
 
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
@@ -288,8 +288,8 @@ class FALCON(Tello):
         '''
         Restores Linux WiFi interfaces by invoking reset_wifi.sh.
         '''
-        path_to_script = self.file_path.parent.joinpath('scripts', 'reset_wifi.sh').as_posix()
-        cmd = ['bash', path_to_script]
+        path_to_script = self.file_path.parent.joinpath('scripts', 'setup_wifi.ps1').as_posix()
+        cmd = ['PS', path_to_script, '-Teardown']
 
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
@@ -903,5 +903,5 @@ class FALCON(Tello):
 
 
 if __name__ == '__main__':
-    tello = FALCON()
+    tello = FALCON(ssid="TELLO-FE046A", password="")
     tello.track_target()
