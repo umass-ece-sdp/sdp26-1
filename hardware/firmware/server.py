@@ -5,7 +5,7 @@ from typing import Optional
 from software.lib import variables
 import time
 
-HOST = '192.168.20.1'
+HOST = '192.168.137.1'
 PORT = 5000
 # WAIT_TIME = 10 # wait time in ms
 
@@ -98,9 +98,9 @@ def run_server(conn: socket.socket, sock: socket.socket, debug: bool=False):
                 t = time.time()
                 print(
                     '----- Glove Data -----',
-                    f'\tFinger sensors: {instr['fingers'][0]:.3f}, {instr['fingers'][1]:.3f}, {instr['fingers'][2]:.3f}, {instr['fingers'][3]:.3f} V',
-                    f'\tSpeed: {instr['speed']:.3f} m/s',
-                    f'\tDistance: {instr['dist']:.3f} m',
+                    f'\tFinger sensors: {instr["fingers"][0]:.3f}, {instr["fingers"][1]:.3f}, {instr["fingers"][2]:.3f}, {instr["fingers"][3]:.3f} V',
+                    f'\tSpeed: {instr["speed"]:.3f} m/s',
+                    f'\tDistance: {instr["dist"]:.3f} m',
                     f'\tTime between instructions: {t - t0:.3f} s',
                     sep='\n',
                 )
