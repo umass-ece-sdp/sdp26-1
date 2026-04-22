@@ -21,12 +21,12 @@ import queue
 from datetime import datetime
 
 # --- Debug ---
-GROUND_TEST = False  # Set False for real flight. Skips takeoff/land/RC sends.
+GROUND_TEST = True  # Set False for real flight. Skips takeoff/land/RC sends.
 
 # --- Config ---
 MARKER_SIZE = 0.213
 ARUCO_DICT = aruco.DICT_4X4_50
-TARGET_ID = 3
+TARGET_ID = 0
 VALID_TARGETS = [0, 1, 2, 3]
 
 # --- Control tuning ---
@@ -68,15 +68,6 @@ MANUAL_UD_SPEED = 50
 
 SMOOTH_WINDOW = 3
 
-# --- Squareness correction (face-the-marker) ---
-# Adds an LR strafe contribution to physically circle around the marker
-# until you're viewing it head-on. Combined with existing centering,
-# this produces "orbit-while-facing" behavior.
-SQUARENESS_GAIN = 60          # how hard to chase squareness
-SQUARENESS_DEAD_ZONE = 0.05   # ignore tiny perspective effects
-SQUARENESS_MAX_CONTRIB = 40   # cap so it can't override basic centering
-SQUARENESS_SMOOTH_WINDOW = 5  # extra smoothing — edge ratios are jittery
-
 # --- Orbit config ---
 ORBIT_YAW_SPEED = 35
 ORBIT_LATERAL_SPEED = 45
@@ -84,8 +75,8 @@ ORBIT_CHECK_INTERVAL = 0.5
 ORBIT_TIMEOUT = 30.0
 
 # --- Arc-to-next-fiducial config ---
-ARC_YAW_SPEED = 30              # baseline yaw at TARGET_DIST (3.05m)
-ARC_LATERAL_SPEED = 55          # baseline lateral at TARGET_DIST (3.05m)
+ARC_YAW_SPEED = 35              # baseline yaw at TARGET_DIST (3.05m)
+ARC_LATERAL_SPEED = 45          # baseline lateral at TARGET_DIST (3.05m)
 ARC_CHECK_INTERVAL = 0.15       # check for new fiducials more often than orbit
 ARC_TIMEOUT = 20.0              # max seconds to arc before giving up
 ARC_CENTERING_TIMEOUT = 4.0     # max seconds to spend centering on new fiducial
@@ -318,12 +309,10 @@ class VideoWriterThread(threading.Thread):
 # =====================================================================
 #  Helpers
 # =====================================================================
-def clear_histories(dist_history, lr_history, vert_history, square_history=None):
+def clear_histories(dist_history, lr_history, vert_history):
     dist_history.clear()
     lr_history.clear()
     vert_history.clear()
-    if square_history is not None:
-        square_history.clear()
 
 
 def orbit_until_found(drone, frame_reader, target_id):
@@ -703,7 +692,6 @@ else:
 dist_history = []
 lr_history = []
 vert_history = []
-square_history = []
 
 last_target_time = time.time()
 LOST_TIMEOUT = 1.0
@@ -821,32 +809,6 @@ try:
                             -LR_MAX, LR_MAX
                         ))
 
-                    # --- Squareness correction ---
-                    # Compare left edge length vs right edge length of the marker.
-                    # If right edge is longer, we're viewing from the right side
-                    # → strafe LEFT to face it head-on (and vice versa).
-                    # ArUco corner order: TL=0, TR=1, BR=2, BL=3
-                    pts = corner.reshape(4, 2)
-                    left_edge_len = np.linalg.norm(pts[0] - pts[3])   # TL - BL
-                    right_edge_len = np.linalg.norm(pts[1] - pts[2])  # TR - BR
-                    longer = max(left_edge_len, right_edge_len)
-                    if longer > 1:  # avoid div-by-zero on tiny markers
-                        raw_square = (right_edge_len - left_edge_len) / longer
-                        square_history.append(raw_square)
-                        if len(square_history) > SQUARENESS_SMOOTH_WINDOW:
-                            square_history.pop(0)
-                        smooth_square = float(np.median(square_history))
-
-                        if abs(smooth_square) > SQUARENESS_DEAD_ZONE:
-                            sq_contrib = clamp(
-                                SQUARENESS_GAIN * smooth_square,
-                                -SQUARENESS_MAX_CONTRIB, SQUARENESS_MAX_CONTRIB
-                            )
-                            # Positive squareness (right edge longer)
-                            # → strafe left → subtract from lr_cmd
-                            lr_cmd = int(clamp(lr_cmd - sq_contrib,
-                                               -LR_MAX, LR_MAX))
-
                     error_y = marker_cy - center_y
                     vert_history.append(error_y)
                     if len(vert_history) > SMOOTH_WINDOW:
@@ -910,7 +872,7 @@ try:
 
             if new_id is not None:
                 TARGET_ID = new_id
-                clear_histories(dist_history, lr_history, vert_history, square_history)
+                clear_histories(dist_history, lr_history, vert_history)
                 print(f"[ARC] Now tracking ID {TARGET_ID}")
             else:
                 print(f"[ARC] No handoff — resuming ID {TARGET_ID}")
@@ -925,7 +887,7 @@ try:
                 print(f"[GROUND TEST] Orbit to ID {orbit_target} skipped — "
                       f"switching target instead")
                 TARGET_ID = orbit_target
-                clear_histories(dist_history, lr_history, vert_history, square_history)
+                clear_histories(dist_history, lr_history, vert_history)
                 last_target_time = time.time()
                 continue
             print(f"[INPUT] Shift+{orbit_target} — orbiting to find ID {orbit_target}")
@@ -939,7 +901,7 @@ try:
 
             if found:
                 TARGET_ID = orbit_target
-                clear_histories(dist_history, lr_history, vert_history, square_history)
+                clear_histories(dist_history, lr_history, vert_history)
                 print(f"[ORBIT] Now tracking ID {TARGET_ID}")
             else:
                 print(f"[ORBIT] ID {orbit_target} not found. Resuming ID {TARGET_ID}")
@@ -951,7 +913,7 @@ try:
             new_target = key - ord('0')
             if new_target != TARGET_ID:
                 TARGET_ID = new_target
-                clear_histories(dist_history, lr_history, vert_history, square_history)
+                clear_histories(dist_history, lr_history, vert_history)
                 print(f"Switched to target ID: {TARGET_ID}")
 
         # --- Status display ---
