@@ -6,6 +6,7 @@ from software.lib import variables
 import time
 
 HOST = '192.168.20.1'
+HOST = '192.168.137.1'
 PORT = 5000
 # WAIT_TIME = 10 # wait time in ms
 
