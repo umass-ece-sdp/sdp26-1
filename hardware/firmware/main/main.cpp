@@ -1,10 +1,11 @@
 #include "glove.h"
-#include "wifi_client.h"
+#include "wifi_server.h"
 
 // Globals
 Adafruit_LIS3DH lis;
 sensors_event_t accel;
-WiFiClient client;
+WiFiServer server(PORT);      // TCP server listening on PORT
+WiFiClient serverClient;       // Connected client
 float finger_reading[4];
 float speed;
 float distance;
@@ -24,11 +25,16 @@ void setup()
     Serial.begin(115200);
     delay(500);
 
-    // Initialize pins for finger sensors, IMU, UWB, setup WiFi
+    // Initialize pins for finger sensors, IMU, UWB, and start WiFi Access Point
     setup_glove();
     setup_IMU(lis, imuOK, 4, 50);
     // setup_UWB();
-    setup_wifi();
+    setup_ap();
+    
+    // Start the TCP server on the AP
+    server.begin();
+    Serial.print("[Glove] TCP Server started on port ");
+    Serial.println(PORT);
 
     Serial.println("[Glove] Initialization complete");
 
@@ -56,9 +62,9 @@ void loop()
     //     Serial.printf("  Distance to TAG12345: %.2f meters\n", distance);
     // }
 
-    // Package data and send it to the glove
+    // Package data and send it to the connected base station client
     store_data(packet, finger_reading, speed, distance);
-    connect_and_send(client, packet);
+    accept_and_serve(server, serverClient, packet);
 
     delay(WAIT_TIME);
 }

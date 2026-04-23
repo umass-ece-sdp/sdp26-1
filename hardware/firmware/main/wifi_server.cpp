@@ -1,4 +1,4 @@
-#include "wifi_client.h"
+#include "wifi_server.h"
 
 void setup_ap()
 {
@@ -19,14 +19,14 @@ void setup_ap()
     WiFi.setTxPower(WIFI_POWER_19_5dBm);
     
     Serial.println("[AP] Creating soft AP...");
-    // Create soft AP with explicit channel (1 is standard), 1 hidden network, max 4 clients
+    // Create soft AP with explicit channel (1 is standard), 0 visible, max 4 clients
     bool apStarted = WiFi.softAP(AP_SSID, AP_PASS, 1, 0, 4);
     
     if (apStarted)
     {
         // Configure IP address (gateway at 192.168.4.1)
-        IPAddress apIP(192, 168, 4, 1);
-        IPAddress gateway(192, 168, 4, 1);
+        IPAddress apIP(AP_IP_1, AP_IP_2, AP_IP_3, AP_IP_4);
+        IPAddress gateway(AP_IP_1, AP_IP_2, AP_IP_3, AP_IP_4);
         IPAddress subnet(255, 255, 255, 0);
         WiFi.softAPConfig(apIP, gateway, subnet);
         
@@ -40,8 +40,18 @@ void setup_ap()
         Serial.println(WiFi.softAPIP());
         Serial.print("[AP] MAC Address: ");
         Serial.println(WiFi.softAPmacAddress());
-        Serial.println("[AP] Waiting for base station to connect...");
         Serial.println("[AP] ========================================");
+        Serial.print("[AP] TCP Server listening on ");
+        Serial.print(AP_IP_1);
+        Serial.print(".");
+        Serial.print(AP_IP_2);
+        Serial.print(".");
+        Serial.print(AP_IP_3);
+        Serial.print(".");
+        Serial.print(AP_IP_4);
+        Serial.print(":");
+        Serial.println(PORT);
+        Serial.println("[AP] Waiting for base station client to connect...");
         delay(500);
     }
     else
@@ -56,63 +66,56 @@ void setup_ap()
     }
 }
 
-void connect_and_send(WiFiClient &client, const Packet &packet)
+void accept_and_serve(WiFiServer &server, WiFiClient &client, const Packet &packet)
 {
-    // Try to connect to server if not already connected
-    if (!client.connected())
+    // Check if a new client is trying to connect
+    if (server.hasClient())
     {
-        // Try to connect to the base station's fixed IP on the ESP32 AP network
-        Serial.print("[CLIENT] Attempting connection to ");
-        Serial.print(HOST_IP);
-        Serial.print(":");
-        Serial.println(PORT);
-        
-        if (!client.connect(HOST_IP, PORT, 5000))  // 5 second timeout
+        // Accept the connection
+        if (!client.connected())
         {
-            // Connection failed - server not ready or wrong IP
-            Serial.print("[CLIENT] Connection failed. Retrying in ");
-            Serial.print(WAIT_TIME);
-            Serial.println("ms...");
-            delay(WAIT_TIME);
-            return;
+            client = server.available();
+            client.setNoDelay(true);
+            Serial.print("[SERVER] Base station connected from: ");
+            Serial.println(client.remoteIP());
         }
-        
-        client.setNoDelay(true);
-        Serial.print("[CLIENT] Connected to server at ");
-        Serial.print(HOST_IP);
-        Serial.print(":");
-        Serial.println(PORT);
     }
-
-    // Send the packet
+    
+    // If client is connected, send the packet and wait for ACK
     if (client.connected())
     {
+        // Send the sensor packet (24 bytes)
         size_t bytes_sent = client.write((uint8_t *)&packet, sizeof(packet));
+        
         if (bytes_sent == sizeof(packet))
         {
-            // Wait for ACK from server (with timeout)
+            Serial.print("[SERVER] Sent packet (");
+            Serial.print(sizeof(packet));
+            Serial.println(" bytes)");
+            
+            // Wait for ACK from client with timeout
             unsigned long timeout = millis() + 5000;
             while (client.available() == 0 && millis() < timeout)
             {
                 delay(10);
             }
-
+            
             if (client.available())
             {
+                // Read ACK
                 String response = client.readStringUntil('\n');
-                // Optional: log successful send
-                // Serial.println("[CLIENT] Received ACK");
+                // Serial.print("[SERVER] Received: ");
+                // Serial.println(response);
             }
             else
             {
-                // Timeout waiting for ACK - disconnect and reconnect next time
-                Serial.println("[CLIENT] No ACK received, reconnecting...");
-                client.stop();
+                Serial.println("[SERVER] No ACK received, waiting for client...");
+                // Don't disconnect, just wait for next packet
             }
         }
         else
         {
-            Serial.println("[CLIENT] Failed to send packet");
+            Serial.println("[SERVER] Failed to send packet, client disconnected");
             client.stop();
         }
     }

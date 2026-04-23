@@ -5,7 +5,9 @@ from typing import Optional
 from software.lib import variables
 import time
 
-HOST = '192.168.20.1'
+# Bind to the fixed base station IP on ESP32 AP network
+# The base station is configured to use this IP when connected to the glove AP
+HOST = '192.168.4.100'
 PORT = 5000
 # WAIT_TIME = 10 # wait time in ms
 

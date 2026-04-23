@@ -1,13 +1,13 @@
-from hardware.firmware import server
+from hardware.firmware import glove_client
 import threading, socket
 from software.lib.falcon import FALCON
 from software.lib import variables
 
-def server_thread(conn: socket.socket, sock: socket.socket):
-    '''Thread function to run the server'''
-    print('Starting server thread...')
+def glove_thread(glove_sock: socket.socket):
+    '''Thread function to receive glove data'''
+    print('Starting glove client thread...')
     
-    server.run_server(conn, sock)
+    glove_client.run_glove_client(glove_sock)
 
 def drone_thread(tello: FALCON):
     '''Thread function to run the drone controller'''
@@ -20,35 +20,51 @@ def drone_thread(tello: FALCON):
     tello.track_target()
 
 def main():
-    '''Main entry point for the application'''
+    '''
+    Main entry point for the application.
+    
+    Startup sequence:
+    1. Glove (ESP32) must be powered on first to create its WiFi AP "FALCON-Glove"
+    2. Base station connects to:
+       - Tello drone on one WiFi interface
+       - ESP32 glove AP on second WiFi interface (via setup_wifi.sh)
+    3. Base station connects to glove's TCP server at 192.168.4.1:5000
+    4. Drone control loop reads glove instructions and commands the Tello
+    '''
 
-    # Connect drone to wifi and start AP mode interface for server
+    # Initialize Tello drone (connects to Tello's WiFi SSID)
+    # Note: Base station must already be connected to Tello before this step
     tello = FALCON(
         ssid='TELLO-FE046A',
         password=''
     )
 
-    # Start the server and connect to glove before starting threads
-    conn, sock = server.server_init()
+    # Connect to the glove's TCP server
+    # (Base station must already be connected to ESP32 AP via setup_wifi.sh)
+    glove_sock = glove_client.glove_client_init()
     
-    # Create the server and drone threads
-    server_thrd = threading.Thread(target=server_thread, args=(conn, sock,), daemon=True)
+    # Create the glove and drone threads
+    glove_thrd = threading.Thread(target=glove_thread, args=(glove_sock,), daemon=True)
     drone_thrd = threading.Thread(target=drone_thread, args=(tello,), daemon=True)
     
     # Start both threads
-    server_thrd.start()
+    glove_thrd.start()
     drone_thrd.start()
     
     try:
         # Wait for both threads to complete
-        server_thrd.join()
+        glove_thrd.join()
         drone_thrd.join()
     except KeyboardInterrupt:
         print('\nShutting down threads...')
         print('Threads terminated.')
     finally:
-        # Reset WiFi interfaces
+        # Reset WiFi interfaces (disconnect from Tello)
         tello._reset_wifi()
+
+if __name__ == '__main__':
+    main()
+
 
 if __name__ == '__main__':
     main()
