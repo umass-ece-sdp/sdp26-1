@@ -35,8 +35,8 @@ def main():
     # Initialize Tello drone (connects to Tello's WiFi SSID)
     # Note: Base station must already be connected to Tello before this step
     tello = FALCON(
-        ssid='TELLO-FE046A',
-        password=''
+        # ssid='TELLO-FE046A',
+        # password=''
     )
 
     # Connect to the glove's TCP server
@@ -58,9 +58,9 @@ def main():
     except KeyboardInterrupt:
         print('\nShutting down threads...')
         print('Threads terminated.')
-    finally:
+    # finally:
         # Reset WiFi interfaces (disconnect from Tello)
-        tello._reset_wifi()
+        # tello._reset_wifi()
 
 if __name__ == '__main__':
     main()

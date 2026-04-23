@@ -213,10 +213,9 @@ class FALCON(Tello):
             when instructed to by the user.
     '''
 
-    def __init__(self, *, ssid: str, password: str):
+    # def __init__(self, *, ssid: str, password: str):
+    def __init__(self):
         self.file_path = Path(__file__).parent
-        self.ssid = ssid
-        self.password = password
 
         # Thresholds for determining finger on
         self.finger_thresholds = (0.3, 0.3, 0.3, 0.3)  # V
@@ -245,7 +244,7 @@ class FALCON(Tello):
         }
 
         # Connect to WiFi before initializing Tello
-        self._connect_wifi()
+        # self._connect_wifi()
 
         # Initialize normal Tello behavior
         super().__init__()
@@ -270,7 +269,8 @@ class FALCON(Tello):
         setup_wifi.sh with the configured SSID and password.
         '''
         path_to_script = self.file_path.parent.joinpath('scripts', 'setup_wifi.sh').as_posix()
-        cmd = ['bash', path_to_script, self.ssid, self.password]
+        # cmd = ['bash', path_to_script, self.ssid, self.password]
+        cmd = ['bash', path_to_script]
 
         try:
             result = subprocess.run(cmd, check=True, capture_output=True, text=True)
