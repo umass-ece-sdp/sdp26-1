@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
+# Reset WiFi connections for FALCON system
+# Hardcoded values - no user input needed
+
 set -e
 
-# In the new architecture, base station is a client to both:
-# 1. Tello drone (on one WiFi interface)
-# 2. ESP32 glove AP (on second WiFi interface, optional)
-# 
-# This script simply disconnects both interfaces gracefully.
+echo "=========================================="
+echo "FALCON WiFi Reset"
+echo "=========================================="
 
 # Detect all available WiFi interfaces
 mapfile -t WIFI_IFACES < <(nmcli -t -f DEVICE,TYPE device | awk -F: '$2=="wifi" {print $1}')
 
 if [ "${#WIFI_IFACES[@]}" -eq 0 ]; then
-    echo "No WiFi interface detected."
+    echo "⚠ No WiFi interface detected."
     exit 0
 fi
 
@@ -21,5 +22,9 @@ for WIFI_IFACE in "${WIFI_IFACES[@]}"; do
     nmcli device disconnect "$WIFI_IFACE" 2>/dev/null || true
 done
 
-echo "✓ WiFi cleanup complete."
-echo "  All connections have been disconnected."
+echo ""
+echo "=========================================="
+echo "✓ WiFi Cleanup Complete"
+echo "=========================================="
+echo "All connections have been disconnected."
+echo "=========================================="
