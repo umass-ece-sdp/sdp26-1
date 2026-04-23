@@ -5,8 +5,8 @@ from typing import Optional
 from software.lib import variables
 import time
 
-# HOST = '192.168.20.1'
-HOST = '192.168.137.1'
+HOST = '192.168.20.1'
+# HOST = '192.168.137.1'
 PORT = 5000
 # WAIT_TIME = 10 # wait time in ms
 
@@ -32,12 +32,16 @@ def server_init() -> tuple[socket.socket, socket.socket]:
     print('Binding complete')
 
     # Listen on the port for connections
-    sock.listen(9)
-    conn, addr = sock.accept()
-    conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    print(f'Connected with {addr[0]}: {(str(addr[1]))}')
-    variables.set_glove_on()
-    return conn, sock
+    try:
+        sock.listen(9)
+        conn, addr = sock.accept()
+        conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+        print(f'Connected with {addr[0]}: {(str(addr[1]))}')
+        variables.set_glove_on()
+        return conn, sock
+    except KeyboardInterrupt:
+        print('\nListening Interrupted, exiting.\n')
+        exit()
 
 def receive_instructions(conn: socket.socket) -> Optional[tuple[tuple, tuple, tuple]]:
     """
