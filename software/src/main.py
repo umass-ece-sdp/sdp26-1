@@ -1,5 +1,5 @@
 from hardware.firmware import server
-import threading, socket
+import threading, socket, time
 from software.lib.falcon import FALCON
 from software.lib import variables
 
@@ -8,16 +8,6 @@ def server_thread(conn: socket.socket, sock: socket.socket):
     print('Starting server thread...')
     
     server.run_server(conn, sock)
-
-def drone_thread(tello: FALCON):
-    '''Thread function to run the drone controller'''
-    print('Starting drone thread...')
-
-    # Wait for glove to be connected before starting drone
-    while not variables.glove_connected:
-        continue
-
-    tello.track_target()
 
 def main():
     '''Main entry point for the application'''
@@ -28,24 +18,32 @@ def main():
         password=''
     )
 
+    # Give the hotspot time to fully initialize
+    print('Waiting for hotspot to initialize...')
+    time.sleep(2)
+    
     # Start the server and connect to glove before starting threads
+    # NOW the hotspot should be ready to bind to 192.168.20.1
     conn, sock = server.server_init()
     
-    # Create the server and drone threads
+    # Create the server thread (background task)
     server_thrd = threading.Thread(target=server_thread, args=(conn, sock,), daemon=True)
-    drone_thrd = threading.Thread(target=drone_thread, args=(tello,), daemon=True)
     
-    # Start both threads
+    # Start server thread
     server_thrd.start()
-    drone_thrd.start()
+    
+    # Wait for glove to be connected before starting drone
+    print('Waiting for glove connection...')
+    while not variables.glove_connected:
+        continue
+    
+    print('Glove connected, starting drone tracking...')
     
     try:
-        # Wait for both threads to complete
-        server_thrd.join()
-        drone_thrd.join()
+        # Run tracking on main thread so OpenCV display window works properly
+        tello.track_target()
     except KeyboardInterrupt:
-        print('\nShutting down threads...')
-        print('Threads terminated.')
+        print('\nShutting down...')
     finally:
         # Reset WiFi interfaces
         tello._reset_wifi()
