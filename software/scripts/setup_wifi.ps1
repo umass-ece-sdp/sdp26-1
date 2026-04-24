@@ -21,7 +21,7 @@ param(
 # =====================================================================
 $TELLO_SSID       = "TELLO-FE046A"
 $AP_SSID          = "jetson_nano_wifi"
-$AP_PASSWORD      = "drone1234"
+$AP_PASSWORD      = "team1-falcon"
 $AP_IP            = "192.168.137.1"       # Mobile Hotspot default
 $SERVER_PORT      = 5000
 $TELLO_SUBNET     = "192.168.10.0"
