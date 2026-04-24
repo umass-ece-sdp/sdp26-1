@@ -17,6 +17,7 @@ Adafruit_LIS3DH lis;
 sensors_event_t accel;
 float finger_reading[4];
 float speed;
+bool listen = false;
 bool imuOK = false;
 float accel_reading[3] = {0.0f, 0.0f, 0.0f};
 float gravity_est[3] = {0.0f, 0.0f, 0.0f};
@@ -54,7 +55,8 @@ void loop()
 {
     // ── Stretch Sensors ───────────────────────────────────────────────────────
     Serial.println("=== Stretch Sensors ===");
-    read_fingers(finger_reading);
+    read_listener(listen);
+    read_fingers(finger_reading, listen);
     for (int i = 0; i < 4; i++)
     {
         Serial.printf("  Sensor %d  |  voltage: %.3f V\n",
