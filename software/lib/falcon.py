@@ -12,7 +12,6 @@ from threading import Thread
 from collections import deque
 from datetime import datetime
 import os
-import sys
 import queue
 
 from software.lib.fiducials import Fiducial
@@ -119,12 +118,6 @@ class DetectorThread(Thread):
             corners, ids, _ = self.detector.detectMarkers(gray)
 
             frame_proc_count += 1
-            now = time.time()
-            if now - last_log > 2.0:  # Log every 2 seconds
-                print(f"[DETECTOR] Processed {frame_proc_count} frames ({none_count} None), last frame: {frame_bgr.shape}")
-                last_log = now
-                frame_proc_count = 0
-                none_count = 0
 
             with self.lock:
                 self.result = {
@@ -718,7 +711,6 @@ class FALCON(Tello):
             time.sleep(0.03)
 
     def track_target(self, frame_display_queue=None):
-        print("[INFO] Starting track_target()")
         battery = self.get_battery()
         print(f"Battery: {battery}%")
 
@@ -735,11 +727,10 @@ class FALCON(Tello):
         det_thread.start()
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        # Video recording thread enabled now that display works properly
         video_save_dir = os.path.expanduser("~/tello_videos")
         os.makedirs(video_save_dir, exist_ok=True)
         video_path = os.path.join(video_save_dir, f"tello_flight_{timestamp}.mp4")
-        print(f"[VIDEO] Will save to: {video_path}")
+        print(f"[VIDEO] Recording to: {video_path}")
         video_thread = VideoWriterThread(frame_reader, video_path, self.flight_control.VIDEO_FPS)
         video_thread.start()
 
@@ -800,8 +791,6 @@ class FALCON(Tello):
                 target_found = False
 
                 if ids is not None and corners is not None:
-                    if loop_count == 1:
-                        print(f"[DETECTION] Found {len(ids)} marker(s)!")
                     aruco.drawDetectedMarkers(frame, corners, ids)
 
                     for corner, marker_id in zip(corners, ids.flatten()):
@@ -833,8 +822,6 @@ class FALCON(Tello):
                         if int(marker_id) == self.aruco_data.TARGET_ID:
                             target_found = True
                             last_target_time = time.time()
-                            if loop_count <= 10 or loop_count % 100 == 0:
-                                print(f"[TARGET] Detected target marker ID {marker_id} at distance {current_marker_dist:.2f}m")
 
                             marker_cx = int(corner[0, :, 0].mean())
                             marker_cy = int(corner[0, :, 1].mean())
@@ -983,13 +970,9 @@ class FALCON(Tello):
                 self._send_rc_throttled(lr_cmd, fb_cmd, ud_cmd, yaw_cmd)
 
                 display_count += 1
-                if display_count == 1:
-                    print(f"[DEBUG] Starting frame display to window...")
-                if display_count % 30 == 0:
-                    print(f"[DEBUG] Displayed {display_count} frames")
                 
                 try:
-                    # Send frame to main thread for display (frames are passed by queue, not imshow)
+                    # Send frame to main thread for display
                     if frame_display_queue is not None:
                         try:
                             frame_display_queue.put_nowait(frame)
@@ -997,12 +980,8 @@ class FALCON(Tello):
                             # Queue full, skip this frame
                             pass
                     
-                    # NOTE: Do NOT call cv2.waitKey() from daemon thread on Linux Qt backend!
-                    # It causes "QObject::startTimer: Timers cannot be started from another thread"
-                    # Main thread handles all window operations via cv2.waitKey()
-                    
                 except Exception as e:
-                    print(f"[DEBUG] Display error: {e}")
+                    print(f"[ERROR] Display error: {e}")
 
         finally:
             print("Landing...")

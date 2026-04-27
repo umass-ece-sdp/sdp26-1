@@ -49,11 +49,10 @@ def main():
     
     # Create OpenCV window on MAIN THREAD before starting drone thread
     # (OpenCV window creation AND updates must happen on the main thread on Linux)
-    # NOTE: No longer using cv2.startWindowThread() - display happens in main loop below
     window_name = "Tello ArUco Tracker"
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(window_name, 960, 720)
-    print(f"[DEBUG] OpenCV window created on main thread: {window_name}")
+    print(f"[INFO] Window created: {window_name}")
     
     # Create the glove and drone threads
     glove_thrd = threading.Thread(target=glove_thread, args=(glove_sock,), daemon=True)
@@ -63,7 +62,7 @@ def main():
     glove_thrd.start()
     drone_thrd.start()
     
-    print("[DEBUG] Threads started. Keeping main thread alive for window event processing...")
+    print("[INFO] Drone control started. Press 'q' in window to exit.")
     
     try:
         # Main thread must display frames AND process window events on Linux
@@ -74,13 +73,9 @@ def main():
                 # Try to get a frame from the queue (non-blocking with 50ms timeout)
                 # This lets us process window events frequently
                 frame = frame_display_queue.get(timeout=0.050)
-                display_count += 1
                 
                 # CRITICAL: Do cv2.imshow on MAIN THREAD on Linux!
                 cv2.imshow(window_name, frame)
-                
-                if display_count % 30 == 0:
-                    print(f"[MAIN] Displayed {display_count} frames")
                     
             except queue.Empty:
                 # No frame in queue, that's OK - just process window events
@@ -89,13 +84,12 @@ def main():
             # Process window events and keypresses
             key = cv2.waitKey(10)  # Short timeout for responsive window
             if key == ord('q'):
-                print("[DEBUG] 'q' pressed - exiting")
+                print("[INFO] Exit requested")
                 break
     except KeyboardInterrupt:
-        print('\nShutting down threads...')
+        print('\n[INFO] Shutting down...')
     finally:
         cv2.destroyAllWindows()
-        print('Threads terminated.')
         # Reset WiFi interfaces (disconnect from Tello)
         # tello._reset_wifi()
 
