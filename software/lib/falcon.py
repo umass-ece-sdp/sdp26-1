@@ -322,9 +322,9 @@ class FALCON(Tello):
     def _hud(self, frame, text, pos, color):
         cv2.putText(frame, text, pos, cv2.FONT_HERSHEY_SIMPLEX, 0.55, color, 2)
 
-    def _pose_from_corner(self, corner):
+    def _pose_from_corner(self, corner, marker_id: int):
         success, _, tvec = cv2.solvePnP(
-            self.fiducial.obj_points,
+            self.fiducial.get_obj_points_for_target(marker_id),
             corner.reshape(4, 2),
             self.fiducial.camera_matrix,
             self.fiducial.dist_coeffs,
@@ -490,7 +490,7 @@ class FALCON(Tello):
                     if ids is not None and corners is not None:
                         aruco.drawDetectedMarkers(display_bgr, corners, ids)
                         for corner, marker_id in zip(corners, ids.flatten()):
-                            pose = self._pose_from_corner(corner)
+                            pose = self._pose_from_corner(corner, int(marker_id))
                             if pose is None:
                                 continue
                             dist, _ = pose
@@ -564,7 +564,7 @@ class FALCON(Tello):
                 for corner, marker_id in zip(corners, ids.flatten()):
                     if int(marker_id) != new_id:
                         continue
-                    pose = self._pose_from_corner(corner)
+                    pose = self._pose_from_corner(corner, int(marker_id))
                     if pose is None:
                         continue
                     found_new = True
@@ -698,13 +698,13 @@ class FALCON(Tello):
                     aruco.drawDetectedMarkers(frame, corners, ids)
 
                     for corner, marker_id in zip(corners, ids.flatten()):
-                        pose = self._pose_from_corner(corner)
+                        pose = self._pose_from_corner(corner, int(marker_id))
                         if pose is None:
                             continue
                         current_marker_dist, tvec = pose
 
                         success, rvec, _ = cv2.solvePnP(
-                            self.fiducial.obj_points,
+                            self.fiducial.get_obj_points_for_target(int(marker_id)),
                             corner.reshape(4, 2),
                             self.fiducial.camera_matrix,
                             self.fiducial.dist_coeffs,
