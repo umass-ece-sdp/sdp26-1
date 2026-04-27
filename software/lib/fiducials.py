@@ -14,7 +14,8 @@ fiducial_dir = fp.parent.joinpath('fiducials')
 if not fiducial_dir.exists():
     fiducial_dir.mkdir()
 
-MARKER_SIZE_METERS = 0.213
+LARGE_MARKER_SIZE_METERS = 0.213
+SMALL_MARKER_SIZE_METERS = 0.17
 ARUCO_DICT_ID = cv2.aruco.DICT_4X4_50
 CAMERA_MATRIX = np.array([
     [921.170702, 0.000000, 459.904354],
@@ -25,7 +26,8 @@ DIST_COEFFS = np.array([-0.033458, 0.105152, 0.001256, -0.006647, 0.000000], dty
 
 
 class Fiducial:
-    MARKER_SIZE = MARKER_SIZE_METERS
+    LARGE_MARKER_SIZE = LARGE_MARKER_SIZE_METERS
+    SMALL_MARKER_SIZE = SMALL_MARKER_SIZE_METERS
     ARUCO_DICT = ARUCO_DICT_ID
 
     def __init__(self):
@@ -35,13 +37,20 @@ class Fiducial:
         self.detector = cv2.aruco.ArucoDetector(self.aruco_dict, self.parameters)
 
         # Initialize matrices and vectors
-        half = Fiducial.MARKER_SIZE / 2
-        self.obj_points = np.array([
-            [-half,  half, 0],
-            [half,  half, 0],
-            [half, -half, 0],
-            [-half, -half, 0],
-        ], dtype=np.float32)  # Matrix for corner coordinates of fiducial
+        large_half = Fiducial.LARGE_MARKER_SIZE / 2
+        small_half = Fiducial.SMALL_MARKER_SIZE / 2
+        self.large_obj_points = np.array([
+            [-large_half,  large_half, 0],
+            [large_half,  large_half, 0],
+            [large_half, -large_half, 0],
+            [-large_half, -large_half, 0],
+        ], dtype=np.float32)
+        self.small_obj_points = np.array([
+            [-small_half,  small_half, 0],
+            [small_half,  small_half, 0],
+            [small_half, -small_half, 0],
+            [-small_half, -small_half, 0],
+        ], dtype=np.float32)
 
         # DJI Tello camera calibration for distance (z) measurement
         self.camera_matrix = CAMERA_MATRIX.copy()
@@ -60,6 +69,14 @@ class Fiducial:
         cv2.imwrite(str(fiducial_dir.joinpath('right_shoulder_marker.png')), right_shoulder_marker)
         cv2.imwrite(str(fiducial_dir.joinpath('back_marker.png')), back_marker)
 
+    def get_obj_points_for_target(self, target_id):
+        target_id_int = int(target_id)
+        if target_id_int in (0, 3):
+            return self.large_obj_points
+        if target_id_int in (1, 2):
+            return self.small_obj_points
+        return self.large_obj_points
+
     def detect_marker(self, frame, target_id):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert frame to black and white for better detection
         corners, ids, _ = self.detector.detectMarkers(gray)  # Run detection
@@ -71,7 +88,7 @@ class Fiducial:
 
                 # Calculate x y and z coordinates
                 success, rvec, tvec = cv2.solvePnP(
-                    self.obj_points,
+                    self.get_obj_points_for_target(target_id),
                     corner.reshape(4, 2),
                     self.camera_matrix,
                     self.dist_coeffs,
