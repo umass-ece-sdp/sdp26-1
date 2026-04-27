@@ -12,6 +12,8 @@ from threading import Thread
 from collections import deque
 from datetime import datetime
 import os
+import sys
+import queue
 
 from software.lib.fiducials import Fiducial
 
@@ -89,19 +91,40 @@ class DetectorThread(Thread):
         }
 
     def run(self):
+        frame_proc_count = 0
+        none_count = 0
+        last_log = time.time()
+        
         while self.running:
             frame = self.frame_reader.frame
             if frame is None:
+                none_count += 1
                 time.sleep(0.005)
                 continue
 
+            # CRITICAL: Make a copy immediately to avoid frame_reader buffer corruption
+            # Multiple threads read frame_reader.frame concurrently - we must copy now
+            frame = frame.copy()
+            
             if frame.shape[1] < 600:
                 time.sleep(0.02)
                 continue
 
+            # frame_reader.frame is in RGB format from Tello
+            # Convert to BGR for OpenCV display and processing
             frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             gray = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY)
+            
+            # Detect ArUco markers in the grayscale frame
             corners, ids, _ = self.detector.detectMarkers(gray)
+
+            frame_proc_count += 1
+            now = time.time()
+            if now - last_log > 2.0:  # Log every 2 seconds
+                print(f"[DETECTOR] Processed {frame_proc_count} frames ({none_count} None), last frame: {frame_bgr.shape}")
+                last_log = now
+                frame_proc_count = 0
+                none_count = 0
 
             with self.lock:
                 self.result = {
@@ -114,10 +137,12 @@ class DetectorThread(Thread):
 
     def snapshot(self):
         with self.lock:
+            # Make a copy of the frame to avoid corruption from concurrent updates
+            frame_copy = self.result['frame'].copy() if self.result['frame'] is not None else None
             return {
                 'corners': self.result['corners'],
                 'ids': self.result['ids'],
-                'frame': self.result['frame'],
+                'frame': frame_copy,
             }
 
     def stop(self):
@@ -158,32 +183,80 @@ class VideoWriterThread(Thread):
             if frame is None:
                 continue
 
-            bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-            h, w = bgr.shape[:2]
+            # CRITICAL: Make a copy immediately to avoid frame_reader buffer corruption
+            frame = frame.copy()
+            
+            # Keep raw RGB frame for video writing
+            rgb_frame = frame
+            bgr_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
+            h, w = bgr_frame.shape[:2]
 
             if self.writer is None:
                 while self.running and w < min_real_w:
                     frame = self.frame_reader.frame
                     if frame is None:
                         continue
-                    bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                    h, w = bgr.shape[:2]
+                    # CRITICAL: Copy immediately to avoid buffer corruption
+                    frame = frame.copy()
+                    frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                    h, w = frame_bgr.shape[:2]
                 if not self.running:
                     break
 
-                fourcc = cv2.VideoWriter.fourcc(*'mp4v')
-                self.writer = cv2.VideoWriter(self.filepath, fourcc, self.fps, (w, h))
-                if not self.writer.isOpened():
-                    print(f"[VIDEO] Failed to open writer at {self.filepath}")
+                # Try multiple codec/container combinations
+                # Format: (codec_name, file_extension)
+                # H.264 works best with MP4, XVID works best with AVI, MJPG works with AVI
+                codecs_to_try = [
+                    ('H264', '.mp4'),  # H.264 in MP4 container (most compatible)
+                    ('h264', '.mp4'),  # Alternative H.264 name
+                    ('XVID', '.avi'),  # XVID in AVI container (not MP4!)
+                    ('MJPG', '.avi'),  # Motion JPEG in AVI container
+                    ('mp4v', '.mp4'),  # MPEG-4 Part 14 (official MP4 video codec)
+                ]
+                
+                self.writer = None
+                selected_filepath = self.filepath
+                selected_codec = None
+                
+                for codec_name, file_ext in codecs_to_try:
+                    # Adapt filename extension to codec/container combination
+                    if file_ext != '.mp4':
+                        test_filepath = self.filepath.replace('.mp4', file_ext)
+                    else:
+                        test_filepath = self.filepath
+                    
+                    fourcc = cv2.VideoWriter.fourcc(*codec_name)
+                    temp_writer = cv2.VideoWriter(test_filepath, fourcc, self.fps, (w, h))
+                    
+                    if temp_writer.isOpened():
+                        # Test that it actually works by trying to write a dummy frame
+                        try:
+                            dummy_frame = bgr_frame.copy()
+                            temp_writer.write(dummy_frame)
+                            self.writer = temp_writer
+                            selected_filepath = test_filepath
+                            selected_codec = codec_name
+                            print(f"[VIDEO] Using codec {codec_name} with {file_ext} container")
+                            break
+                        except Exception as e:
+                            temp_writer.release()
+                            print(f"[VIDEO] Codec {codec_name} failed to write: {e}")
+                    else:
+                        temp_writer.release()
+                
+                if self.writer is None or not self.writer.isOpened():
+                    print(f"[VIDEO] Failed to initialize VideoWriter with any codec at {self.filepath}")
+                    print(f"[VIDEO] Try installing: sudo apt install libavcodec-extra ffmpeg")
                     self.running = False
                     return
+                    
                 expected_shape = (h, w)
-                print(f"[VIDEO] Recording {w}x{h} @ {self.fps} FPS -> {self.filepath}")
+                print(f"[VIDEO] Recording {w}x{h} @ {self.fps} FPS -> {selected_filepath}")
 
             if (h, w) != expected_shape:
                 continue
 
-            self.writer.write(bgr)
+            self.writer.write(bgr_frame)
             self.frames_written += 1
 
     def stop(self):
@@ -483,6 +556,9 @@ class FALCON(Tello):
                 current_dist_seen = None
 
                 if frame is not None and frame.shape[1] >= 600:
+                    # CRITICAL: Copy immediately to avoid buffer corruption
+                    frame = frame.copy()
+                    # frame is RGB from Tello - convert to BGR for processing
                     display_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
                     gray = cv2.cvtColor(display_bgr, cv2.COLOR_BGR2GRAY)
                     corners, ids, _ = self.fiducial.detector.detectMarkers(gray)
@@ -525,7 +601,7 @@ class FALCON(Tello):
                         2,
                     )
                     cv2.imshow("Tello ArUco Tracker", display_bgr)
-                    cv2.waitKey(1)
+                    cv2.waitKey(30)
 
                 if new_id is not None:
                     print(f"[ARC] Found new fiducial ID {new_id} — centering")
@@ -551,6 +627,9 @@ class FALCON(Tello):
                 time.sleep(0.02)
                 continue
 
+            # CRITICAL: Copy immediately to avoid buffer corruption
+            frame = frame.copy()
+            # frame is RGB from Tello - convert to BGR for processing
             display_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             gray = cv2.cvtColor(display_bgr, cv2.COLOR_BGR2GRAY)
             corners, ids, _ = self.fiducial.detector.detectMarkers(gray)
@@ -589,7 +668,7 @@ class FALCON(Tello):
                     2,
                 )
                 cv2.imshow("Tello ArUco Tracker", display_bgr)
-                cv2.waitKey(1)
+                cv2.waitKey(30)
                 time.sleep(0.05)
                 continue
 
@@ -634,11 +713,12 @@ class FALCON(Tello):
                 (0, 200, 100) if in_tol else (0, 165, 255),
             )
             cv2.imshow("Tello ArUco Tracker", display_bgr)
-            cv2.waitKey(1)
+            cv2.waitKey(30)
 
             time.sleep(0.03)
 
-    def track_target(self):
+    def track_target(self, frame_display_queue=None):
+        print("[INFO] Starting track_target()")
         battery = self.get_battery()
         print(f"Battery: {battery}%")
 
@@ -655,13 +735,25 @@ class FALCON(Tello):
         det_thread.start()
 
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        video_path = os.path.join(str(self.file_path), f"tello_flight_{timestamp}.mp4")
+        # Video recording thread enabled now that display works properly
+        video_save_dir = os.path.expanduser("~/tello_videos")
+        os.makedirs(video_save_dir, exist_ok=True)
+        video_path = os.path.join(video_save_dir, f"tello_flight_{timestamp}.mp4")
+        print(f"[VIDEO] Will save to: {video_path}")
         video_thread = VideoWriterThread(frame_reader, video_path, self.flight_control.VIDEO_FPS)
         video_thread.start()
 
         print("Taking off...")
-        self.takeoff()
-        time.sleep(3)
+        drone_airborne = False
+        try:
+            self.takeoff()
+            drone_airborne = True
+            time.sleep(3)
+        except Exception as e:
+            print(f"[WARNING] Takeoff failed: {e}")
+            print("[INFO] Continuing with ground-based tracking...")
+            time.sleep(1)
+        print("[TRACE] After takeoff try/except block", flush=True)
 
         dist_history = deque(maxlen=self.flight_control.SMOOTH_WINDOW)
         lr_history = deque(maxlen=self.flight_control.SMOOTH_WINDOW)
@@ -670,16 +762,29 @@ class FALCON(Tello):
         last_target_time = time.time()
         last_gesture = None
 
+        frame_count = 0
+        display_count = 0
+        none_frame_count = 0
+        window_name = "Tello ArUco Tracker"
+        loop_count = 0
+        
         try:
             while True:
+                loop_count += 1
+                    
                 snap = det_thread.snapshot()
+                    
                 frame = snap['frame']
+                frame_count += 1
 
                 if frame is None:
+                    none_frame_count += 1
+                    if frame_count % 100 == 0:
+                        print(f"[DEBUG] Waiting for frames... ({frame_count} checks)")
                     time.sleep(0.01)
                     continue
 
-                frame = frame.copy()
+                # snapshot() already returns a copy, safe to modify
                 corners = snap['corners']
                 ids = snap['ids']
 
@@ -695,6 +800,8 @@ class FALCON(Tello):
                 target_found = False
 
                 if ids is not None and corners is not None:
+                    if loop_count == 1:
+                        print(f"[DETECTION] Found {len(ids)} marker(s)!")
                     aruco.drawDetectedMarkers(frame, corners, ids)
 
                     for corner, marker_id in zip(corners, ids.flatten()):
@@ -726,6 +833,8 @@ class FALCON(Tello):
                         if int(marker_id) == self.aruco_data.TARGET_ID:
                             target_found = True
                             last_target_time = time.time()
+                            if loop_count <= 10 or loop_count % 100 == 0:
+                                print(f"[TARGET] Detected target marker ID {marker_id} at distance {current_marker_dist:.2f}m")
 
                             marker_cx = int(corner[0, :, 0].mean())
                             marker_cy = int(corner[0, :, 1].mean())
@@ -873,8 +982,27 @@ class FALCON(Tello):
 
                 self._send_rc_throttled(lr_cmd, fb_cmd, ud_cmd, yaw_cmd)
 
-                cv2.imshow("Tello ArUco Tracker", frame)
-                cv2.waitKey(1)
+                display_count += 1
+                if display_count == 1:
+                    print(f"[DEBUG] Starting frame display to window...")
+                if display_count % 30 == 0:
+                    print(f"[DEBUG] Displayed {display_count} frames")
+                
+                try:
+                    # Send frame to main thread for display (frames are passed by queue, not imshow)
+                    if frame_display_queue is not None:
+                        try:
+                            frame_display_queue.put_nowait(frame)
+                        except:
+                            # Queue full, skip this frame
+                            pass
+                    
+                    # NOTE: Do NOT call cv2.waitKey() from daemon thread on Linux Qt backend!
+                    # It causes "QObject::startTimer: Timers cannot be started from another thread"
+                    # Main thread handles all window operations via cv2.waitKey()
+                    
+                except Exception as e:
+                    print(f"[DEBUG] Display error: {e}")
 
         finally:
             print("Landing...")
