@@ -284,7 +284,7 @@ class FALCON(Tello):
         self.file_path = Path(__file__).parent
 
         # Thresholds for determining finger on
-        self.finger_thresholds = (0.3, 0.3, 0.3, 0.3)  # V
+        self.finger_thresholds = (0.175, 0.2, 0.2, 0.2)  # V
 
         # Flight control and fiducial data
         self.flight_control = FlightControl()
@@ -455,10 +455,16 @@ class FALCON(Tello):
         
         # Compare fingers against thresholds to get states, 0 if active 1 if not
         states = ''.join(['0' if f > t else '1' for f, t in zip(fingers, self.finger_thresholds)])
+        command = None
 
         if states in self.commands:
-            return self.commands[states]
-        return None
+            command = self.commands[states]
+        
+        print(
+            f'States: {states}\n',
+            f'Command: {command}',
+        )
+        return command
 
     def _arc_to_next_fiducial(self, frame_reader, current_target_id: int, direction: str) -> int | None:
         """
