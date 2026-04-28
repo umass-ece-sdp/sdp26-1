@@ -42,8 +42,7 @@ struct Packet
 void setup_glove();
 void setup_IMU(Adafruit_LIS3DH &imu, bool &imuOK, const int &accelRange, const int &dataRate);
 void setup_UWB();
-void read_listener(bool &listen);
-void read_fingers(float (&reading)[4], bool &listen);
+void read_fingers(float (&reading)[4]);
 void read_IMU(Adafruit_LIS3DH &imu, sensors_event_t &accel, float (&accel_reading)[3]);
 float get_UWB_distance(HardwareSerial &uwbSerial, const char *tagAddress);
 void store_data(Packet &packet, const float (&finger_readings)[4], const float &speed, const float &UWB_distance);

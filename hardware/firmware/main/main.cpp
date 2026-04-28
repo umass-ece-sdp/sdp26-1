@@ -9,7 +9,6 @@ WiFiClient serverClient;       // Connected client
 float finger_reading[4];
 float speed;
 float distance;
-bool listen = false;
 bool imuOK = false;
 float accel_reading[3] = {0.0f, 0.0f, 0.0f};
 float gravity_est[3] = {0.0f, 0.0f, 0.0f};
@@ -44,8 +43,7 @@ void setup()
 void loop()
 {
     // Read stretch sensors
-	read_listener(listen);
-    read_fingers(finger_reading, listen);
+    read_fingers(finger_reading);
 
     // Read IMU data
     if (imuOK)

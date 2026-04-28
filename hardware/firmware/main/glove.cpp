@@ -80,17 +80,9 @@ void setup_UWB()
 	Serial.println("[INIT] UWB Module initialized on Serial1.");
 }
 
-void read_listener(bool &listen)
+void read_fingers(float (&reading)[4])
 {
 	if (digitalRead(EVENT_LISTENER_PIN) == HIGH)
-	{
-		listen = !listen;
-	}
-}
-
-void read_fingers(float (&reading)[4], bool &listen)
-{
-	if (listen)
 	{
 		reading[0] = (analogRead(STRETCH_PIN_1) / ADC_RESOLUTION) * ADC_VREF_V;
 		reading[1] = (analogRead(STRETCH_PIN_2) / ADC_RESOLUTION) * ADC_VREF_V;
