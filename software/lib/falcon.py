@@ -202,9 +202,9 @@ class VideoWriterThread(Thread):
                 codecs_to_try = [
                     # ('H264', '.mp4'),  # H.264 in MP4 container (most compatible)
                     # ('h264', '.mp4'),  # Alternative H.264 name
-                    ('mp4v', '.mp4'),  # MPEG-4 Part 14 (official MP4 video codec)
-                    ('XVID', '.avi'),  # XVID in AVI container (not MP4!)
+                    # ('mp4v', '.mp4'),  # MPEG-4 Part 14 (official MP4 video codec)
                     ('MJPG', '.avi'),  # Motion JPEG in AVI container
+                    ('XVID', '.avi'),  # XVID in AVI container (not MP4!)
                 ]
                 
                 self.writer = None
@@ -284,29 +284,31 @@ class FALCON(Tello):
         self.file_path = Path(__file__).parent
 
         # Thresholds for determining finger on
-        self.finger_thresholds = (0.175, 0.2, 0.2, 0.2)  # V
+        self.finger_thresholds = (0.175, 0.17, 0.2, 0.2)  # V
 
         # Flight control and fiducial data
         self.flight_control = FlightControl()
         self.aruco_data = FiducialData()
         self.fiducial = Fiducial()
         self.commands = {   # gesture-to-command mapping
-            '0000': 'quit',
-            '0001': 'arc_right',
+            # '0000': 'quit',
+            # '0001': 'arc_right',
             # '0010': '',   # hard gesture to make
-            '0011': 'arc_left',
+            # '0011': 'arc_left',
             # '0100': '',   # cannot flip people off for demo
             # '0101': '',   # hard gesture to make
-            '0110': 'down',
-            '0111': 'up',
-            '1000': 'target_1',
-            '1001': 'flip',
+            # '0110': 'down',
+            # '0111': 'up',
+            # '1000': 'target_1',
+            # '1001': 'flip',
             # '1010': '',
             # '1011': '',
-            '1100': 'target_2',
-            '1101': 'target_0',
-            '1110': 'target_3',
+            # '1100': 'target_2',
+            # '1101': 'target_0',
+            # '1110': 'target_3',
             # '1111': '',
+            '0100': 'arc_left',
+            '1111': 'quit',
         }
 
         # Connect to WiFi before initializing Tello
@@ -453,6 +455,10 @@ class FALCON(Tello):
           debounced by the caller, not inside this method.
         """
         
+        # Check if the sensors are sending data
+        if -1 in fingers:
+            return None
+        
         # Compare fingers against thresholds to get states, 0 if active 1 if not
         states = ''.join(['0' if f > t else '1' for f, t in zip(fingers, self.finger_thresholds)])
         command = None
@@ -460,10 +466,11 @@ class FALCON(Tello):
         if states in self.commands:
             command = self.commands[states]
         
-        print(
-            f'States: {states}\n',
-            f'Command: {command}',
-        )
+        if not command == None:
+            print(
+                f'States: {states}\n',
+                f'Command: {command}',
+            )
         return command
 
     def _arc_to_next_fiducial(self, frame_reader, current_target_id: int, direction: str) -> int | None:
