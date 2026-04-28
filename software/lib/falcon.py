@@ -200,11 +200,11 @@ class VideoWriterThread(Thread):
                 # Format: (codec_name, file_extension)
                 # H.264 works best with MP4, XVID works best with AVI, MJPG works with AVI
                 codecs_to_try = [
-                    ('H264', '.mp4'),  # H.264 in MP4 container (most compatible)
-                    ('h264', '.mp4'),  # Alternative H.264 name
+                    # ('H264', '.mp4'),  # H.264 in MP4 container (most compatible)
+                    # ('h264', '.mp4'),  # Alternative H.264 name
+                    ('mp4v', '.mp4'),  # MPEG-4 Part 14 (official MP4 video codec)
                     ('XVID', '.avi'),  # XVID in AVI container (not MP4!)
                     ('MJPG', '.avi'),  # Motion JPEG in AVI container
-                    ('mp4v', '.mp4'),  # MPEG-4 Part 14 (official MP4 video codec)
                 ]
                 
                 self.writer = None
