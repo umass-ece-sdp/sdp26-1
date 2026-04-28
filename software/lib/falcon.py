@@ -487,7 +487,20 @@ class FALCON(Tello):
             yaw_sign = -1
             lr_sign = 1
 
-        print(f"[ARC] Arcing {direction} from ID {current_target_id} to find next fiducial")
+        # Determine allowed next fiducials depending on the direction
+        # Counter-clockwise (left): Back(3) -> Left Shoulder(1) -> Chest(0) -> Right Shoulder(2)
+        if direction == 'left':
+            order = [3, 1, 0, 2]
+        else:
+            order = [3, 2, 0, 1]
+            
+        try:
+            curr_idx = order.index(current_target_id)
+            allowed_next_ids = {order[(curr_idx + 1) % 4], order[(curr_idx + 2) % 4]}
+        except ValueError:
+            allowed_next_ids = {0, 1, 2, 3} - {current_target_id}
+
+        print(f"[ARC] Arcing {direction} from ID {current_target_id} to find next fiducial. Allowed IDs: {allowed_next_ids}")
 
         self.send_rc_control(0, 0, 0, 0)
         time.sleep(0.3)
@@ -572,7 +585,7 @@ class FALCON(Tello):
                             if current_dist_seen is None or dist < current_dist_seen:
                                 current_dist_seen = dist
 
-                            if int(marker_id) != current_target_id and new_id is None:
+                            if int(marker_id) in allowed_next_ids and new_id is None:
                                 new_id = int(marker_id)
 
                     if current_dist_seen is not None:
