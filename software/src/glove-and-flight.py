@@ -38,6 +38,7 @@ import socket
 import struct
 import threading
 import queue
+import platform
 from datetime import datetime
 
 # =====================================================================
@@ -83,11 +84,15 @@ GESTURE_COOLDOWN = 1.5       # seconds
 GESTURE_MAP = {
     '1000': 'arc_left',
     '1100': 'arc_right',
-    '1110': 'quit',
+    '0000': 'quit',
+    '0100': 'flip',
+    '1001': 'up',
+    '0011': 'down',
 }
 
 # --- ArUco / tracking ---
-MARKER_SIZE = 0.213
+MARKER_SIZE_DEFAULT = 0.2032
+SHOULDER_MARKER_SIZE = 0.127
 ARUCO_DICT = aruco.DICT_4X4_50
 TARGET_ID = 0
 VALID_TARGETS = [0, 1, 2, 3]
@@ -150,6 +155,15 @@ RC_HEARTBEAT = 0.25
 VIDEO_FPS = 30
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Detect OS for video codec selection
+OS_TYPE = platform.system()
+if OS_TYPE == 'Windows':
+    VIDEO_CODEC = 'mp4v'
+    VIDEO_EXT = '.mp4'
+else:  # Linux, macOS, etc.
+    VIDEO_CODEC = 'XVID'
+    VIDEO_EXT = '.avi'
+
 
 # =====================================================================
 #  ArUco setup
@@ -159,12 +173,20 @@ detector_params = aruco.DetectorParameters()
 detector_params.cornerRefinementMethod = aruco.CORNER_REFINE_NONE
 detector = aruco.ArucoDetector(aruco_dict, detector_params)
 
-half = MARKER_SIZE / 2
-obj_points = np.array([
-    [-half,  half, 0],
-    [ half,  half, 0],
-    [ half, -half, 0],
-    [-half, -half, 0],
+half_default = MARKER_SIZE_DEFAULT / 2
+OBJ_POINTS_DEFAULT = np.array([
+    [-half_default,  half_default, 0],
+    [ half_default,  half_default, 0],
+    [ half_default, -half_default, 0],
+    [-half_default, -half_default, 0],
+], dtype=np.float32)
+
+half_shoulder = SHOULDER_MARKER_SIZE / 2
+OBJ_POINTS_SHOULDER = np.array([
+    [-half_shoulder,  half_shoulder, 0],
+    [ half_shoulder,  half_shoulder, 0],
+    [ half_shoulder, -half_shoulder, 0],
+    [-half_shoulder, -half_shoulder, 0],
 ], dtype=np.float32)
 
 camera_matrix = np.array([
@@ -304,7 +326,7 @@ class VideoWriterThread(threading.Thread):
                 if stable_count < STABLE_REQUIRED:
                     continue
 
-                fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+                fourcc = cv2.VideoWriter_fourcc(*VIDEO_CODEC)
                 self.writer = cv2.VideoWriter(
                     self.filepath, fourcc, VIDEO_FPS, (w, h)
                 )
@@ -549,8 +571,9 @@ def arc_to_next_fiducial(drone, frame_reader, current_target_id, direction):
                 if ids is not None:
                     aruco.drawDetectedMarkers(display_bgr, corners, ids)
                     for corner, mid in zip(corners, ids.flatten()):
+                        current_obj_points = OBJ_POINTS_SHOULDER if mid in (1, 2) else OBJ_POINTS_DEFAULT
                         success, rvec, tvec = cv2.solvePnP(
-                            obj_points, corner.reshape(4, 2),
+                            current_obj_points, corner.reshape(4, 2),
                             camera_matrix, dist_coeffs
                         )
                         if not success:
@@ -623,8 +646,9 @@ def arc_to_next_fiducial(drone, frame_reader, current_target_id, direction):
             for corner, mid in zip(corners, ids.flatten()):
                 if int(mid) != new_id:
                     continue
+                current_obj_points = OBJ_POINTS_SHOULDER if mid in (1, 2) else OBJ_POINTS_DEFAULT
                 success, rvec, tvec = cv2.solvePnP(
-                    obj_points, corner.reshape(4, 2),
+                    current_obj_points, corner.reshape(4, 2),
                     camera_matrix, dist_coeffs
                 )
                 if not success:
@@ -719,7 +743,7 @@ det_thread.start()
 
 # Start video writer thread
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-video_path = os.path.join(SCRIPT_DIR, f"tello_flight_{timestamp}.mp4")
+video_path = os.path.join(SCRIPT_DIR, f"tello_flight_{timestamp}{VIDEO_EXT}")
 video_thread = VideoWriterThread(frame_reader, video_path)
 video_thread.start()
 
@@ -846,8 +870,9 @@ try:
             aruco.drawDetectedMarkers(frame, corners, ids)
 
             for corner, marker_id in zip(corners, ids.flatten()):
+                current_obj_points = OBJ_POINTS_SHOULDER if marker_id in (1, 2) else OBJ_POINTS_DEFAULT
                 success, rvec, tvec = cv2.solvePnP(
-                    obj_points, corner.reshape(4, 2),
+                    current_obj_points, corner.reshape(4, 2),
                     camera_matrix, dist_coeffs
                 )
                 if not success:
