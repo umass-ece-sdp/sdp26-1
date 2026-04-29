@@ -26,6 +26,13 @@ Threads:
   - Detector: ArUco detection on latest frame
   - Video writer: saves raw stream to MP4
   - Glove client: reads TCP packets, decodes gestures, queues events
+
+Tuning Notes:
+  - The forward/backward motion uses a PD (Proportional-Derivative) controller.
+  - If you experience motor "twitching" or jitter as the drone hovers near the target,
+    this might be "Derivative Kick" from frame-to-frame camera noise. 
+  - To fix it, smooth the calculated `velocity` in the tracking loop with a Low-Pass Filter 
+    (like an Exponential Moving Average), or try lowering `FB_MIN_SPEED`.
 '''
 
 from djitellopy import Tello
@@ -108,12 +115,9 @@ TARGET_DIST_INDEX = 0
 TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
 DIST_DEAD_ZONE = 0.08
 
-FB_TIERS = [
-    (2.0, 100),
-    (1.0,  75),
-    (0.4,  45),
-    (0.08, 20),
-]
+FB_P_GAIN = 45.0
+FB_D_GAIN = 20.0
+FB_MIN_SPEED = 15
 FB_MAX = 100
 
 LR_SPEED = 70
@@ -211,11 +215,19 @@ def clamp(val, lo, hi):
     return max(lo, min(hi, val))
 
 
-def fb_speed_from_error(abs_err):
-    for threshold, speed in FB_TIERS:
-        if abs_err > threshold:
-            return speed
-    return 0
+def fb_speed_calc(dist_error, velocity):
+    abs_err = abs(dist_error)
+    if abs_err < DIST_DEAD_ZONE:
+        return 0
+        
+    p_term = abs_err * FB_P_GAIN
+    d_term = -velocity * FB_D_GAIN 
+    
+    speed = p_term + d_term
+    
+    if speed > 0:
+        speed = max(FB_MIN_SPEED, speed)
+    return int(clamp(speed, 0, FB_MAX))
 
 
 def urgency_from_error(abs_err):
@@ -624,6 +636,9 @@ def arc_to_next_fiducial(drone, frame_reader, current_target_id, direction):
 
     center_start = time.time()
     in_tolerance_since = None
+    
+    last_arc_update_time = time.time()
+    prev_arc_dist_err = 0.0
 
     while True:
         elapsed = time.time() - center_start
@@ -692,7 +707,17 @@ def arc_to_next_fiducial(drone, frame_reader, current_target_id, direction):
             ))
 
         abs_d = abs(dist_err)
-        fb_speed = fb_speed_from_error(abs_d)
+        
+        now = time.time()
+        dt = now - last_arc_update_time
+        if dt > 0:
+            velocity = (dist_err - prev_arc_dist_err) / dt
+        else:
+            velocity = 0.0
+        last_arc_update_time = now
+        prev_arc_dist_err = dist_err
+        
+        fb_speed = fb_speed_calc(dist_err, velocity)
         if fb_speed > 0:
             sign = 1 if dist_err > 0 else -1
             fb_cmd = int(clamp(sign * fb_speed, -FB_MAX, FB_MAX))
@@ -779,6 +804,9 @@ LOST_TIMEOUT = 1.0
 
 last_rc = (0, 0, 0, 0)
 last_rc_send = 0.0
+
+last_update_time = time.time()
+previous_dist_error = 0.0
 
 
 def send_rc_throttled(lr, fb, ud, yaw):
@@ -950,7 +978,16 @@ try:
                     dist_error = current_dist - TARGET_DIST
                     abs_err = abs(dist_error)
 
-                    fb_speed = fb_speed_from_error(abs_err)
+                    now = time.time()
+                    dt = now - last_update_time
+                    if dt > 0:
+                        velocity = (dist_error - previous_dist_error) / dt
+                    else:
+                        velocity = 0.0
+                    last_update_time = now
+                    previous_dist_error = dist_error
+
+                    fb_speed = fb_speed_calc(dist_error, velocity)
                     if fb_speed > 0:
                         sign = 1 if dist_error > 0 else -1
                         fb_cmd = int(clamp(sign * fb_speed, -FB_MAX, FB_MAX))
@@ -1025,9 +1062,9 @@ try:
         dist_str = f"{current_dist:.2f}m" if current_dist else "N/A"
         if current_dist is not None:
             _err = abs(current_dist - TARGET_DIST)
-            _fb_tier = fb_speed_from_error(_err)
+            _fb_speed = fb_speed_calc(_err, 0.0)
             _urgency = urgency_from_error(_err)
-            tier_str = f"  TIER:{_fb_tier} URG:{_urgency:.1f}x"
+            tier_str = f"  SPD:{_fb_speed} URG:{_urgency:.1f}x"
         else:
             tier_str = ""
 
