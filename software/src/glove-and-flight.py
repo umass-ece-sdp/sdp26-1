@@ -64,10 +64,10 @@ GLOVE_CONNECT_TIMEOUT = 5.0
 # Indexed by RAW packet index for the left-hand glove:
 #   [0]=pinky, [1]=ring, [2]=middle, [3]=index
 FINGER_UP_THRESHOLD = [
-    0.12,   # [0] pinky
-    0.12,   # [1] ring
-    0.16,   # [2] middle
-    0.20,   # [3] index
+    0.20,   # [0] pinky
+    0.23,   # [1] ring
+    0.27,   # [2] middle
+    0.29,   # [3] index
 ]
 
 # Maps packet index -> pattern position (leftmost first).
