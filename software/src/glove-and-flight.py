@@ -852,6 +852,26 @@ try:
                         TARGET_DIST_INDEX -= 1
                         TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
                         print(f"Target distance decreased to {TARGET_DIST}m")
+                elif action == 'up':
+                    print("[GLOVE] Moving up ~3 feet")
+                    if not GROUND_TEST:
+                        drone.send_rc_control(0, 0, 0, 0)
+                        reset_rc_state()
+                        time.sleep(0.3)
+                        try:
+                            drone.move_up(91)  # 3 ft = 91.44 cm
+                        except Exception as e:
+                            print(f"Move up failed: {e}")
+                elif action == 'down':
+                    print("[GLOVE] Moving down ~3 feet")
+                    if not GROUND_TEST:
+                        drone.send_rc_control(0, 0, 0, 0)
+                        reset_rc_state()
+                        time.sleep(0.3)
+                        try:
+                            drone.move_down(91)
+                        except Exception as e:
+                            print(f"Move down failed: {e}")
         except queue.Empty:
             pass
 
