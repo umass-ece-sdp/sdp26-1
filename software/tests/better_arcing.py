@@ -21,7 +21,7 @@ import queue
 from datetime import datetime
 
 # --- Debug ---
-GROUND_TEST = True  # Set False for real flight. Skips takeoff/land/RC sends.
+GROUND_TEST = False  # Set False for real flight. Skips takeoff/land/RC sends.
 
 # --- Config ---
 MARKER_SIZE = 0.213
