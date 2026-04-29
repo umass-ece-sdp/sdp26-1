@@ -88,6 +88,8 @@ GESTURE_MAP = {
     '0100': 'flip',
     '1001': 'up',
     '0011': 'down',
+    '1010': 'further',
+    '0110': 'closer',
 }
 
 # --- ArUco / tracking ---
@@ -101,7 +103,9 @@ VALID_TARGETS = [0, 1, 2, 3]
 YAW_SPEED = 50
 YAW_DEAD_ZONE = 25
 
-TARGET_DIST = 3.048
+TARGET_DISTS = [3.048, 6.096, 9.144, 12.192]
+TARGET_DIST_INDEX = 0
+TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
 DIST_DEAD_ZONE = 0.08
 
 FB_TIERS = [
@@ -838,6 +842,16 @@ try:
                     handle_arc('left')
                 elif action == 'arc_right':
                     handle_arc('right')
+                elif action == 'further':
+                    if TARGET_DIST_INDEX < len(TARGET_DISTS) - 1:
+                        TARGET_DIST_INDEX += 1
+                        TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
+                        print(f"Target distance increased to {TARGET_DIST}m")
+                elif action == 'closer':
+                    if TARGET_DIST_INDEX > 0:
+                        TARGET_DIST_INDEX -= 1
+                        TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
+                        print(f"Target distance decreased to {TARGET_DIST}m")
         except queue.Empty:
             pass
 
