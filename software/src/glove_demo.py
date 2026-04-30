@@ -39,7 +39,6 @@ GESTURE_MAP = {
 
 def calibrate_glove_thresholds():
     global FINGER_UP_THRESHOLD
-    import time
     print("\n" + "="*50)
     print("  GLOVE CALIBRATION")
     print("="*50)
