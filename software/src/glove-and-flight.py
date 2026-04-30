@@ -88,6 +88,8 @@ GESTURE_MAP = {
     '0100': 'flip',
     '1001': 'up',
     '0011': 'down',
+    '1010': 'further',
+    '0110': 'closer',
 }
 
 # --- ArUco / tracking ---
@@ -101,7 +103,9 @@ VALID_TARGETS = [0, 1, 2, 3]
 YAW_SPEED = 50
 YAW_DEAD_ZONE = 25
 
-TARGET_DIST = 3.048
+TARGET_DISTS = [3.048, 6.096, 9.144, 12.192]
+TARGET_DIST_INDEX = 0
+TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
 DIST_DEAD_ZONE = 0.08
 
 FB_TIERS = [
@@ -838,6 +842,36 @@ try:
                     handle_arc('left')
                 elif action == 'arc_right':
                     handle_arc('right')
+                elif action == 'further':
+                    if TARGET_DIST_INDEX < len(TARGET_DISTS) - 1:
+                        TARGET_DIST_INDEX += 1
+                        TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
+                        print(f"Target distance increased to {TARGET_DIST}m")
+                elif action == 'closer':
+                    if TARGET_DIST_INDEX > 0:
+                        TARGET_DIST_INDEX -= 1
+                        TARGET_DIST = TARGET_DISTS[TARGET_DIST_INDEX]
+                        print(f"Target distance decreased to {TARGET_DIST}m")
+                elif action == 'up':
+                    print("[GLOVE] Moving up ~3 feet")
+                    if not GROUND_TEST:
+                        drone.send_rc_control(0, 0, 0, 0)
+                        reset_rc_state()
+                        time.sleep(0.3)
+                        try:
+                            drone.move_up(91)  # 3 ft = 91.44 cm
+                        except Exception as e:
+                            print(f"Move up failed: {e}")
+                elif action == 'down':
+                    print("[GLOVE] Moving down ~3 feet")
+                    if not GROUND_TEST:
+                        drone.send_rc_control(0, 0, 0, 0)
+                        reset_rc_state()
+                        time.sleep(0.3)
+                        try:
+                            drone.move_down(91)
+                        except Exception as e:
+                            print(f"Move down failed: {e}")
         except queue.Empty:
             pass
 
