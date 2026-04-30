@@ -3,6 +3,7 @@ import numpy as np
 import threading
 import sys
 import os
+import time
 
 # Add the project root to the python path so absolute imports like 'software...' work
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -24,6 +25,72 @@ FINGER_UP_THRESHOLD = [
 
 # Order of fingers left-to-right on left hand: Index, Middle, Ring, Pinky
 FINGER_ORDER = [3, 2, 1, 0]
+
+GESTURE_MAP = {
+    '1000': 'arc_left',
+    '1100': 'arc_right',
+    '0000': 'quit',
+    '0100': 'flip',
+    '1001': 'up',
+    '0011': 'down',
+    '1010': 'further',
+    '0110': 'closer',
+}
+
+def calibrate_glove_thresholds():
+    global FINGER_UP_THRESHOLD
+    import time
+    print("\n" + "="*50)
+    print("  GLOVE CALIBRATION")
+    print("="*50)
+    
+    def get_fingers():
+        instr = variables.read_instr()
+        if 'fingers' in instr:
+             return instr['fingers']
+        return (0.0, 0.0, 0.0, 0.0)
+    
+    # Wait until we get a clear "released" state first (-1.0 on all fingers)
+    if get_fingers()[0] >= -0.5:
+        print("Please release the button on the glove to begin...")
+        while get_fingers()[0] >= -0.5:
+            time.sleep(0.05)
+
+    print("Keep your hand flat (fingers unbent). Press the button on the glove to record.")
+    while get_fingers()[0] < -0.5:
+        time.sleep(0.05)
+    
+    # Short delay to let the reading stabilize after the button press
+    time.sleep(0.1)
+    straight_voltages = get_fingers()
+    print(f"Recorded straight: {straight_voltages}")
+
+    # Wait for the user to release the button
+    while get_fingers()[0] >= -0.5:
+        time.sleep(0.05)
+
+    print("\nBend all your fingers. Press the button on the glove to record.")
+    while get_fingers()[0] < -0.5:
+        time.sleep(0.05)
+        
+    # Short delay to stabilize
+    time.sleep(0.1)
+    bent_voltages = get_fingers()
+    print(f"Recorded bent: {bent_voltages}")
+    
+    # Wait for release to prevent accidental triggering after calibration
+    while get_fingers()[0] >= -0.5:
+        time.sleep(0.05)
+
+    for i in range(4):
+        FINGER_UP_THRESHOLD[i] = (straight_voltages[i] + bent_voltages[i]) / 2.0
+    
+    print("\nNew Thresholds (FINGER_UP_THRESHOLD):")
+    print(f"  [0] pinky:  {FINGER_UP_THRESHOLD[0]:.3f}")
+    print(f"  [1] ring:   {FINGER_UP_THRESHOLD[1]:.3f}")
+    print(f"  [2] middle: {FINGER_UP_THRESHOLD[2]:.3f}")
+    print(f"  [3] index:  {FINGER_UP_THRESHOLD[3]:.3f}")
+    print("="*50 + "\n")
 
 def main():
     # Initialize the glove connection using the existing client logic
@@ -48,6 +115,10 @@ def main():
     finger_names = ["Index", "Middle", "Ring", "Pinky"]
     
     print("Starting display. Press 'ESC' in the window to quit.")
+    
+    # Run calibration before starting visualization
+    time.sleep(1) # Let the background thread grab some values
+    calibrate_glove_thresholds()
     
     # Store the last valid known finger state (1s and 0s) and voltages
     # We initialize to all 0s (not pulled/Red)
@@ -118,6 +189,14 @@ def main():
             pattern_str = ''.join(map(str, bits))
             cv2.putText(img, f"Hand Permutation: {pattern_str}", (100, 80), 
                         cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+            
+            # Map bits for command lookup (glove-and-flight expects 1 for up, 0 for down)
+            mapped_str = ''.join(['0' if b == 1 else '1' for b in bits])
+            cmd = GESTURE_MAP.get(mapped_str, 'None')
+            
+            # Display current command
+            cv2.putText(img, f"Command: {cmd}", (100, 120), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), 2, cv2.LINE_AA)
             
             # Draw an indicator for the "Event Listener" Button
             # The button_pressed variable was set above based on the firmware sending -1.0
