@@ -49,6 +49,7 @@ from datetime import datetime
 GROUND_TEST = False    # True = no takeoff / no RC sends, just stream + detect
 GLOVE_DEBUG = True     # Print finger voltages + recognized gestures
 GLOVE_ENABLED = True   # If False, runs keyboard-only (no glove socket)
+CALIBRATE_THRESHOLDS = True # True to calibrate thresholds before starting
 
 # --- Glove ---
 GLOVE_HOST = '192.168.4.1'
@@ -724,6 +725,55 @@ def arc_to_next_fiducial(drone, frame_reader, current_target_id, direction):
 
         time.sleep(0.03)
 
+def calibrate_glove_thresholds(glove_thread):
+    global FINGER_UP_THRESHOLD
+    print("\n" + "="*50)
+    print("  GLOVE CALIBRATION")
+    print("="*50)
+    
+    # Wait until we get a clear "released" state first (-1.0 on all fingers)
+    # The default state in the class is 0.0, so this wait handles initialization
+    if glove_thread.last_fingers[0] >= -0.5:
+        print("Please release the button on the glove to begin...")
+        while glove_thread.last_fingers[0] >= -0.5:
+            time.sleep(0.05)
+
+    print("Keep your hand flat (fingers unbent). Press the button on the glove to record.")
+    while glove_thread.last_fingers[0] < -0.5:
+        time.sleep(0.05)
+    
+    # Short delay to let the reading stabilize after the button press
+    time.sleep(0.1)
+    straight_voltages = glove_thread.last_fingers
+    print(f"Recorded straight: {straight_voltages}")
+
+    # Wait for the user to release the button
+    while glove_thread.last_fingers[0] >= -0.5:
+        time.sleep(0.05)
+
+    print("\nBend all your fingers. Press the button on the glove to record.")
+    while glove_thread.last_fingers[0] < -0.5:
+        time.sleep(0.05)
+        
+    # Short delay to stabilize
+    time.sleep(0.1)
+    bent_voltages = glove_thread.last_fingers
+    print(f"Recorded bent: {bent_voltages}")
+    
+    # Wait for release to prevent accidental triggering after calibration
+    while glove_thread.last_fingers[0] >= -0.5:
+        time.sleep(0.05)
+
+    for i in range(4):
+        FINGER_UP_THRESHOLD[i] = (straight_voltages[i] + bent_voltages[i]) / 2.0
+    
+    print("\nNew Thresholds (FINGER_UP_THRESHOLD):")
+    print(f"  [0] pinky:  {FINGER_UP_THRESHOLD[0]:.3f}")
+    print(f"  [1] ring:   {FINGER_UP_THRESHOLD[1]:.3f}")
+    print(f"  [2] middle: {FINGER_UP_THRESHOLD[2]:.3f}")
+    print(f"  [3] index:  {FINGER_UP_THRESHOLD[3]:.3f}")
+    print("="*50 + "\n")
+
 
 # =====================================================================
 #  Main
@@ -758,6 +808,13 @@ glove_thread = None
 if GLOVE_ENABLED:
     glove_thread = GloveThread(gesture_queue, glove_stop)
     glove_thread.start()
+    
+    if CALIBRATE_THRESHOLDS:
+        print("[GLOVE] Waiting for glove to connect for calibration...")
+        while not glove_thread.connected:
+            time.sleep(0.1)
+        time.sleep(0.5) # Give it a moment to receive initial packets
+        calibrate_glove_thresholds(glove_thread)
 else:
     print("[GLOVE] Disabled in config - keyboard only")
 
