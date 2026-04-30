@@ -113,7 +113,7 @@ def main():
     
     finger_names = ["Index", "Middle", "Ring", "Pinky"]
     
-    print("Starting display. Press 'ESC' in the window to quit.")
+    print("Starting display. Press 'q' in the window to quit.")
     
     # Run calibration before starting visualization
     time.sleep(1) # Let the background thread grab some values
@@ -137,6 +137,12 @@ def main():
             else:
                 # Default empty state before any data arrives
                 fingers = (0.0, 0.0, 0.0, 0.0)
+                
+            # Draw Connection Status Indicator
+            conn_status = "Connected" if variables.glove_connected else "Disconnected"
+            conn_color = (0, 255, 0) if variables.glove_connected else (0, 0, 255)
+            cv2.putText(img, f"Glove: {conn_status}", (400, 40), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, conn_color, 2, cv2.LINE_AA)
             
             # The C++ firmware returns -1.0 for all fingers when the button is RELEASED.
             # We can use that to accurately toggle our button indicator.
@@ -174,6 +180,16 @@ def main():
                 cv2.rectangle(img, (rect_x, rect_y), (rect_x + rect_w, rect_y + rect_h), color, -1)
                 # Border
                 cv2.rectangle(img, (rect_x, rect_y), (rect_x + rect_w, rect_y + rect_h), (255, 255, 255), 2)
+                
+                # Draw arrows representing finger state
+                if bit == 0:
+                    # Arrow Pointing Up (Relaxed)
+                    cv2.arrowedLine(img, (rect_x + 35, rect_y + 130), (rect_x + 35, rect_y + 30), (255, 255, 255), 3, tipLength=0.3)
+                else:
+                    # U-Turn Arrow (Bent)
+                    cv2.line(img, (rect_x + 25, rect_y + 130), (rect_x + 25, rect_y + 80), (255, 255, 255), 3)
+                    cv2.ellipse(img, (rect_x + 35, rect_y + 80), (10, 10), 0, 180, 360, (255, 255, 255), 3)
+                    cv2.arrowedLine(img, (rect_x + 45, rect_y + 80), (rect_x + 45, rect_y + 130), (255, 255, 255), 3, tipLength=0.3)
                 
                 # Label
                 cv2.putText(img, finger_names[i], (rect_x, rect_y + rect_h + 30), 
@@ -213,7 +229,7 @@ def main():
             cv2.imshow(window_name, img)
             
             # Polling delay + listen for Escape Key
-            if cv2.waitKey(30) & 0xFF == 27: # ESC
+            if cv2.waitKey(30) & 0xFF == ord('q'): # ESC
                 break
                 
     except KeyboardInterrupt:
